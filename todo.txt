@@ -1,0 +1,5 @@
+1. .gitignore
+	- review this to ensure correct
+
+2. docker-compose.yml
+	- move extra_hosts to .env file

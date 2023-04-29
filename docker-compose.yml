@@ -36,8 +36,6 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_php_${PHP_VERSION}
     volumes:
       - ${PATH_TO_CODE}:/var/www/html
-    extra_hosts:
-      - "dmz.local:192.168.1.26"
     networks:
       - app_network
 

@@ -62,7 +62,7 @@ services:
       dockerfile: php.dockerfile
       args:
         - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_composer
+    container_name: ${COMPOSE_PROJECT_NAME}_composer_${PHP_VERSION}
     volumes:
       - ${PATH_TO_CODE}:/var/www/html
     working_dir: /var/www/html
@@ -77,7 +77,7 @@ services:
       dockerfile: php.dockerfile
       args:
         - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_artisan
+    container_name: ${COMPOSE_PROJECT_NAME}_artisan_${PHP_VERSION}
     volumes:
       - ${PATH_TO_CODE}:/var/www/html
     working_dir: /var/www/html
@@ -102,7 +102,7 @@ services:
       dockerfile: php.dockerfile
       args:
         - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_phpunit
+    container_name: ${COMPOSE_PROJECT_NAME}_phpunit_${PHP_VERSION}
     volumes:
       - ${PATH_TO_CODE}:/var/www/html
     working_dir: /var/www/html
@@ -125,7 +125,7 @@ services:
       dockerfile: php.dockerfile
       args:
         - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_horizon
+    container_name: ${COMPOSE_PROJECT_NAME}_horizon_${PHP_VERSION}
     volumes:
       - ${PATH_TO_CODE}:/var/www/html
     working_dir: /var/www/html
@@ -140,7 +140,7 @@ services:
       dockerfile: php.dockerfile
       args:
         - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_cron
+    container_name: ${COMPOSE_PROJECT_NAME}_cron_${PHP_VERSION}
     volumes:
       - ${PATH_TO_CODE}:/var/www/html
     working_dir: /var/www/html

@@ -27,11 +27,15 @@ RUN apk add freetds unixodbc sqlite libldap php-ldap
 #	&& apk add --allow-untrusted msodbcsql17_17.5.2.1-1_amd64.apk \
 #	&& apk add --allow-untrusted mssql-tools_17.5.2.1-1_amd64.apk
 
-# mssql odbc for dabase connection version 18
-RUN curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/msodbcsql18_18.1.1.1-1_amd64.apk \
-	&& curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/mssql-tools18_18.1.1.1-1_amd64.apk \
-	&& apk add --allow-untrusted msodbcsql18_18.1.1.1-1_amd64.apk \
-	&& apk add --allow-untrusted mssql-tools18_18.1.1.1-1_amd64.apk
+#RUN curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/msodbcsql18_18.1.1.1-1_amd64.apk \
+#	&& curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/mssql-tools18_18.1.1.1-1_amd64.apk \
+#	&& apk add --allow-untrusted msodbcsql18_18.1.1.1-1_amd64.apk \
+#	&& apk add --allow-untrusted mssql-tools18_18.1.1.1-1_amd64.apk
+
+RUN curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/msodbcsql18_18.3.2.1-1_arm64.apk \
+	&& curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/mssql-tools18_18.3.1.1-1_arm64.apk \
+	&& apk add --allow-untrusted msodbcsql18_18.3.2.1-1_arm64.apk \
+	&& apk add --allow-untrusted mssql-tools18_18.3.1.1-1_arm64.apk
 
 
 RUN pecl install redis sqlsrv pdo_sqlsrv \

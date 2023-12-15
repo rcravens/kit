@@ -16,7 +16,7 @@ RUN mkdir -p /etc/nginx/certs
 
 ADD ./nginx/certs/ /etc/nginx/certs/
 
-RUN cd /etc/nginx/certs && ./create-ca.sh && ./create-certificate.sh "${APP_DOMAIN}"
+RUN cd /etc/nginx/certs && chmod +x create-ca.sh && ./create-ca.sh && chmod +x create-certificate.sh && ./create-certificate.sh "${APP_DOMAIN}"
 
 RUN rm -rf /etc/nginx/certs.app.* && \
     cp /etc/nginx/certs/${APP_DOMAIN}.crt /etc/nginx/certs/app.crt && \

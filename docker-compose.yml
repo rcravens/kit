@@ -28,6 +28,7 @@ services:
       - app_network
 
   php:
+    #user: 1000:1000
     #platform: linux/amd64
     build:
       context: .
@@ -56,6 +57,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
   composer:
+    #user: 1000:1000 
     #platform: linux/amd64
     build:
       context: .
@@ -71,6 +73,7 @@ services:
       - app_network
 
   artisan:
+    #user: 1000:1000
     #platform: linux/amd64
     build:
       context: .
@@ -96,6 +99,7 @@ services:
       - app_network
 
   phpunit:
+    #user: 1000:1000
     #platform: linux/amd64
     build:
       context: .
@@ -119,6 +123,7 @@ services:
       - app_network
 
   horizon:
+    #user: 1000:1000
     #platform: linux/amd64
     build:
       context: .
@@ -134,6 +139,7 @@ services:
       - app_network
 
   cron:
+    #user: 1000:1000
     #platform: linux/amd64
     build:
       context: .

@@ -42,7 +42,8 @@ services:
       - app_network
 
   mysql:
-    image: mariadb:${MARIADB_VERSION}
+    #image: mariadb:${MARIADB_VERSION}
+    image: arm64v8/mysql:${MYSQL_VERSION}
     container_name: ${COMPOSE_PROJECT_NAME}_mysql
     ports:
       - ${MYSQL_ON_HOST}:3306

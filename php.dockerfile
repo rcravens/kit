@@ -2,6 +2,10 @@ ARG PHP_VERSION
 
 FROM php:${PHP_VERSION}-fpm-alpine
 
+ARG TARGETARCH
+
+RUN echo $TARGETARCH
+
 RUN addgroup -g 1000 laravel && adduser -G laravel -g laravel -s /bin/sh -D laravel
 
 RUN mkdir -p /var/www/html
@@ -21,25 +25,34 @@ RUN apk --no-cache --virtual _build_deps_ add \
 # Add packages that need to be kept on the system
 RUN apk add freetds unixodbc sqlite libldap php-ldap
 
+# mssql odbc for dabase connection version 18
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
 # mssql odbc for dabase connection version 17
-#RUN curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.5.2.1-1_amd64.apk \
-#	&& curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.5.2.1-1_amd64.apk \
-#	&& apk add --allow-untrusted msodbcsql17_17.5.2.1-1_amd64.apk \
-#	&& apk add --allow-untrusted mssql-tools_17.5.2.1-1_amd64.apk
+	#curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.5.2.1-1_amd64.apk \
+	#	&& curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.5.2.1-1_amd64.apk \
+	#	&& apk add --allow-untrusted msodbcsql17_17.5.2.1-1_amd64.apk \
+	#	&& apk add --allow-untrusted mssql-tools_17.5.2.1-1_amd64.apk
+	
+	#curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/msodbcsql18_18.1.1.1-1_amd64.apk \
+	#	&& curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/mssql-tools18_18.1.1.1-1_amd64.apk \
+	#	&& apk add --allow-untrusted msodbcsql18_18.1.1.1-1_amd64.apk \
+	#	&& apk add --allow-untrusted mssql-tools18_18.1.1.1-1_amd64.apk
 
-#RUN curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/msodbcsql18_18.1.1.1-1_amd64.apk \
-#	&& curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/mssql-tools18_18.1.1.1-1_amd64.apk \
-#	&& apk add --allow-untrusted msodbcsql18_18.1.1.1-1_amd64.apk \
-#	&& apk add --allow-untrusted mssql-tools18_18.1.1.1-1_amd64.apk
-
-RUN curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/msodbcsql18_18.3.2.1-1_arm64.apk \
+	curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/msodbcsql18_18.1.1.1-1_amd64.apk \
+	&& curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/mssql-tools18_18.1.1.1-1_amd64.apk \
+	&& apk add --allow-untrusted msodbcsql18_18.1.1.1-1_amd64.apk \
+	&& apk add --allow-untrusted mssql-tools18_18.1.1.1-1_amd64.apk; \
+    elif [ "$TARGETARCH" = "arm64" ]; then \
+	curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/msodbcsql18_18.3.2.1-1_arm64.apk \
 	&& curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/mssql-tools18_18.3.1.1-1_arm64.apk \
 	&& apk add --allow-untrusted msodbcsql18_18.3.2.1-1_arm64.apk \
-	&& apk add --allow-untrusted mssql-tools18_18.3.1.1-1_arm64.apk
+	&& apk add --allow-untrusted mssql-tools18_18.3.1.1-1_arm64.apk; \
+    fi;
+
 
 
 RUN pecl install redis sqlsrv pdo_sqlsrv \
-    && docker-php-ext-enable redis \
+	&& docker-php-ext-enable redis \
 	&& docker-php-ext-enable --ini-name 30-sqlsrv.ini sqlsrv \
 	&& docker-php-ext-enable --ini-name 35-pdo_sqlsrv.ini pdo_sqlsrv
 

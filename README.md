@@ -5,6 +5,9 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 
 ## Getting Started
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GwgwgoWCm8Q/0.jpg)](https://www.youtube.com/watch?v=GwgwgoWCm8Q)
+
+
 ### Configuration Settings
 Copy `.env_example` to `.env` and set the following variables:
 

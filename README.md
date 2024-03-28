@@ -3,6 +3,19 @@
 
 This is a pretty simplified, but complete, workflow for using Docker and Docker Compose with Laravel development. The included docker-compose.yml file, Dockerfiles, and config files, set up a LEMP stack powering a Laravel application in the `code` directory.
 
+## Features
+- `nginx` - Already configured with SSL/TLS
+- `php` - All the drivers for `SQL Server ODBC Drivers`, `Active Directory via LDAP`. Configurable PHP version
+- `mysql` - Data is stored on local disk NOT INSIDE container. Persists across rebuilding container.
+- `composer` - Easily run all your favorite composer commands.
+- `artisan` - Easily run all your favorite artisan commands.
+- `npm` - Easily run all your favorite npm commands.
+- `phpunit` - Easily run your unit tests.
+- `redis` - Easily use redis for your session cache.
+- `horizon` - Easily use horizon to manage your workers and job queues.
+- `cron` - Easily use cron to schedule periodic commands.
+
+
 ## Getting Started
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GwgwgoWCm8Q/0.jpg)](https://www.youtube.com/watch?v=GwgwgoWCm8Q)

@@ -30,8 +30,8 @@ function display_help {
     echo "  ${GREEN}kit stop${NC}           Stop the application"
     echo "  ${GREEN}kit restart${NC}        Stop and start the application"
     echo "  ${GREEN}kit destroy${NC}        Stop the application and delete all images"
-    echo "  ${GREEN}kit horizon up${NC}     Starts horizon"
-    echo "  ${GREEN}kit horizon down${NC}   Stops horizon"
+    echo "  ${GREEN}kit horizon start${NC}  Starts horizon"
+    echo "  ${GREEN}kit horizon stop${NC}   Stops horizon"
     echo "  ${GREEN}kit ps${NC}             Display the status of all containers"
     echo
     echo "${YELLOW}Artisan Commands:${NC}"
@@ -112,9 +112,9 @@ elif [ "$1" == "ssh" ]; then
 
 # Start / stop horizon
 elif [ "$1" == "horizon" ]; then
-    if [ "$2" == "up" ]; then
+    if [ "$2" == "start" ]; then
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d horizon
-    elif [ "$2" == "down" ]; then
+    elif [ "$2" == "stop" ]; then
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} stop horizon
     fi
 

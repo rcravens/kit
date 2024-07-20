@@ -62,13 +62,13 @@ To get started, make sure you have [Docker installed](https://docs.docker.com/do
 
 Next, open the .env file and update any settings (e.g., versions & exposed ports) to match your desired development environment.
 
-Then, navigate in your terminal to that directory, and spin up the containers for the full web server stack by running `docker-compose up -d --build nginx`.
+Then, navigate in your terminal to that directory, and spin up the containers for the full web server stack by running `kit build` and then `kit up`.
 
 After that completes, run the following to install and compile the dependencies for the application:
 
-- `docker-compose run --rm composer install`
-- `docker-compose run --rm npm install`
-- `docker-compose run --rm npm run dev`
+- `kit composer install`
+- `kit npm install`
+- `kit npm run build`
 
 When the container network is up, the following services and their ports are available to the host machine:
 
@@ -78,16 +78,14 @@ When the container network is up, the following services and their ports are ava
 
 Additional containers are included that are not brought up with the webserver stack, and are instead used as "command services". These allow you to run commands that interact with your application's code, without requiring their software to be installed and maintained on the host machine. These are:
 
-- `docker-compose run --rm composer <COMMAND>` runs a composer command
-- `docker-compose run --rm artisan <COMMAND>` runs an artisan command
-- `docker-compose run --rm npm <COMMAND>` runs a npm command 
-- `docker-compose run --rm cron` starts a crontab that runs the `php artisan schedule` command
-- `docker-compose run -d horizon` starts a new horizon container (you can start multiple horizon containers)
-- `docker-compose stop horizon` stops all the horizon containers
+- `kit composer <COMMAND>` runs a composer command
+- `kit artisan <COMMAND>` runs an artisan command
+- `kit npm <COMMAND>` runs a npm command 
+- `kit horizon start` starts a new horizon container (you can start multiple horizon containers)
+- `kit horizon stop` stops all the horizon containers
 
-You would use them just like you would with their native counterparts, including your command after any of those lines above (e.g. `docker-compose run --rm artisan db:seed`).
+You would use them just like you would with their native counterparts, including your command after any of those lines above (e.g. `kit artisan db:seed`).
 
 You can create an interactive shell by doing one of the following:
 
-- `docker-compose run -it --entrypoint /bin/bash <SERVICE>`
--  `docker compose exec -it <SERVICE> /bin/sh` 
+- `kit ssh <SERVICE>`

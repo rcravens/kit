@@ -15,6 +15,23 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 - `horizon` - Easily use horizon to manage your workers and job queues.
 - `cron` - Easily use cron to schedule periodic commands.
 
+## Quick Start
+1. Copy `.env_example` to `.env`
+2. Adjust values in `.env` (see Configuration Settings below)
+3. `./kit create` to create a new Laravel application based on `.env` settings
+
+The create command will do the following automatically:
+1. Create code directory as specified by PATH_TO_CODE variable in `.env`
+2. Clone the Laravel framework into the code directory
+3. Create a `.env` in the code directory for the Laravel application. Many of the values are updated based on the `.env` in the docker settings
+4. Build the Docker images. 
+5. `composer install` to install PHP dependencies
+6. `php artisan key:generate` to create the app key
+7. `php artisan migrate` to run the initial migrations
+8. `npm install` to install the Node dependencies
+9. `npm run build` to build the front-end assets
+10. `./kit open` to open up a browser tab to the application
+
 
 ## Getting Started
 
@@ -58,34 +75,55 @@ For local development, update your Operating System's host file. For example, ad
 
 ## Usage
 
+### Starting / Stopping Application
 To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system, and then copy this directory to a desired location on your development machine.
 
 Next, open the .env file and update any settings (e.g., versions & exposed ports) to match your desired development environment.
 
-Then, navigate in your terminal to that directory, and spin up the containers for the full web server stack by running `kit build` and then `kit up`.
+Then, navigate in your terminal to that directory, and spin up the containers for the full web server stack by running:
 
-After that completes, run the following to install and compile the dependencies for the application:
+- `./kit build` to build the Docker images
+- `./kit start` to start the running the web application
+- `./kit open`  to open the web application in the browser
 
-- `kit composer install`
-- `kit npm install`
-- `kit npm run build`
+Once running you can do one of the following:
 
+- `./kit stop`    to stop the web application
+- `./kit restart` to restart the running the web application (equivalent to stop and the start)
+- `./kit destroy` to stop the web application and delete the associated Docker images
+
+### Exposed Ports
 When the container network is up, the following services and their ports are available to the host machine:
 
 - **nginx** - `:HTTPS_ON_HOST`, `:HTTP_ON_HOST`
 - **mysql** - `:MYSQL_ON_HOST`
 - **redis** - `:REDIS_ON_HOST`
 
-Additional containers are included that are not brought up with the webserver stack, and are instead used as "command services". These allow you to run commands that interact with your application's code, without requiring their software to be installed and maintained on the host machine. These are:
+### Additional Services & Shortcuts
+Additional services are included that are not brought up with the webserver stack, and are instead used as "command services". These allow you to run commands that interact with your application's code, without requiring their software to be installed and maintained on the host machine. These are:
 
-- `kit composer <COMMAND>` runs a composer command
-- `kit artisan <COMMAND>` runs an artisan command
-- `kit npm <COMMAND>` runs a npm command 
-- `kit horizon start` starts a new horizon container (you can start multiple horizon containers)
-- `kit horizon stop` stops all the horizon containers
+- `./kit composer <COMMAND>` runs a composer command (e.g., `./kit composer install`)
+- `./kit artisan <COMMAND>`  runs an artisan command (e.g., `./kit artisan db:seed`)
+- `./kit npm <COMMAND>`      runs a npm command (e.g., `./kit npm install`)
 
-You would use them just like you would with their native counterparts, including your command after any of those lines above (e.g. `kit artisan db:seed`).
+You would use them just like you would with their native counterparts, including your command after any of those lines above (e.g. `./kit artisan db:seed`). Here are a few shortcuts for common commands:
 
+- `./kit migrate` equivalent to `./kit artisan migrate`
+
+### Queues, Jobs, and Cron
+To run Laravel jobs use the following commands to start / stop Laravel Horizon. Horizon will run in its own container:
+
+- `./kit horizon start`   starts a new horizon container (you can start multiple horizon containers to increase the number of workers). NOTE: If Laravel Horizon is not installed, it will be installed automatically
+- `./kit horizon stop`    stops all the horizon containers
+- `./kit horizon destroy` stops all the horizon containers and deletes the associated Docker images
+
+To automatically schedule jobs use the following commands to run `php artisan schedule:run`
+
+- `./kit cron start`   starts a new horizon container (recommended you only run a single cron container)
+- `./kit cron stop`    stops all the horizon containers
+- `./kit cron destroy` stops all the horizon containers and deletes the associated Docker images
+
+### Shell Access
 You can create an interactive shell by doing one of the following:
 
-- `kit ssh <SERVICE>`
+- `kit ssh <SERVICE>` for example `./kit ssh nginx` to access a shell command inside the nginx container.

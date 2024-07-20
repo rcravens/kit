@@ -25,14 +25,22 @@ function display_help {
     echo "      ${GREEN}kit prod build${NC} Build the production version of the application"
     echo
     echo "${YELLOW}Commands:${NC}"
-    echo "  ${GREEN}kit build${NC}          Build the application"
-    echo "  ${GREEN}kit start${NC}          Start the application"
-    echo "  ${GREEN}kit stop${NC}           Stop the application"
-    echo "  ${GREEN}kit restart${NC}        Stop and start the application"
-    echo "  ${GREEN}kit destroy${NC}        Stop the application and delete all images"
-    echo "  ${GREEN}kit horizon start${NC}  Starts horizon"
-    echo "  ${GREEN}kit horizon stop${NC}   Stops horizon"
-    echo "  ${GREEN}kit ps${NC}             Display the status of all containers"
+    echo "  ${GREEN}kit create${NC}           Creates a new Laravel application"
+    echo "  ${GREEN}kit build${NC}            Build the application"
+    echo "  ${GREEN}kit start${NC}            Start the application"
+    echo "  ${GREEN}kit open${NC}             Opens browser tab to application"
+    echo "  ${GREEN}kit migrate${NC}          Runs database migrations"
+    echo "  ${GREEN}kit stop${NC}             Stop the application"
+    echo "  ${GREEN}kit restart${NC}          Stop and start the application"
+    echo "  ${GREEN}kit destroy${NC}          Stop the application and delete all images"
+    echo "  ${GREEN}kit horizon start${NC}    Starts horizon"
+    echo "  ${GREEN}kit horizon stop${NC}     Stops horizon"
+    echo "  ${GREEN}kit horizon destroy${NC}  Stops horizon and delete associated images"
+    echo "  ${GREEN}kit cron start${NC}       Starts horizon"
+    echo "  ${GREEN}kit cron stop${NC}        Stops horizon"
+    echo "  ${GREEN}kit cron destroy${NC}     Stops horizon and delete associated images"
+    echo "  ${GREEN}kit ssh <SERVICE>${NC}    Opens shell access to container"
+    echo "  ${GREEN}kit ps${NC}               Display the status of all containers"
     echo
     echo "${YELLOW}Artisan Commands:${NC}"
     echo "  ${GREEN}kit artisan ...${NC}    Run an Artisan command"
@@ -41,10 +49,6 @@ function display_help {
     echo "${YELLOW}Composer Commands:${NC}"
     echo "  ${GREEN}kit composer ...${NC}   Run a Composer command"
     echo "  ${GREEN}kit composer require laravel/sanctum${NC}"
-    echo
-    echo "${YELLOW}Node Commands:${NC}"
-    echo "  ${GREEN}kit node ...${NC}         Run a Node command"
-    echo "  ${GREEN}kit node --version${NC}"
     echo
     echo "${YELLOW}NPM Commands:${NC}"
     echo "  ${GREEN}kit npm ...${NC}        Run a npm command"
@@ -72,21 +76,80 @@ else
   ENV_FILE=".env"
 fi
 
+# Make variables in the ENV_FILE accessible to the script
+source ./${ENV_FILE}
+
+# The following are functions that are used in multiple places
+function start_application {
+      docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d nginx
+      if [ ! -d "${PATH_TO_CODE}/vendor" ]; then
+          echo "${YELLOW}${PATH_TO_CODE}/vendor missing...running composer install${NC}"
+          docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm composer install
+          docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan key:generate
+          docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan migrate
+      fi
+      if [ ! -d "${PATH_TO_CODE}/node_modules" ]; then
+          echo "${YELLOW}${PATH_TO_CODE}/node_modules missing...running npm install & npm run build${NC}"
+          docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm npm install
+          docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm npm run build
+      fi
+}
+function open_browser_tab {
+      URL="https://${APP_DOMAIN}:${HTTPS_ON_HOST}"
+      open "${URL}"
+}
+
+# Create new application
+if [ "$1" == "create" ]; then
+    #rm -rf ${PATH_TO_CODE}
+    if [ ! -d "${PATH_TO_CODE}" ]; then
+        echo "${YELLOW}Creating directory ${PATH_TO_CODE}${NC}"
+        mkdir ${PATH_TO_CODE}
+
+        echo "${YELLOW}Cloning Laravel from Github${NC}"
+        git clone https://github.com/laravel/laravel.git ${PATH_TO_CODE}
+
+        echo "${YELLOW}Creating the .env file${NC}"
+        cp ${PATH_TO_CODE}/.env.example ${PATH_TO_CODE}/.env
+        sed -i .bak "s|APP_NAME=Laravel|APP_NAME=${COMPOSE_PROJECT_NAME}|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|APP_URL=.*|APP_URL=https://${APP_DOMAIN}:${HTTPS_ON_HOST}|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|DB_CONNECTION=.*|DB_CONNECTION=mysql|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|.*DB_HOST=.*|DB_HOST=mysql|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|.*DB_PORT=.*|DB_PORT=3306|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|.*DB_DATABASE=.*|DB_DATABASE=${MYSQL_DATABASE}|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|.*DB_USERNAME=.*|DB_USERNAME=${MYSQL_USER}|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|.*DB_PASSWORD=.*|DB_PASSWORD=${MYSQL_PASSWORD}|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|SESSION_DRIVER=.*|SESSION_DRIVER=redis|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|QUEUE_CONNECTION=.*|QUEUE_CONNECTION=redis|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|CACHE_STORE=.*|CACHE_STORE=redis|" ${PATH_TO_CODE}/.env
+        sed -i .bak "s|REDIS_HOST=.*|REDIS_HOST=redis|" ${PATH_TO_CODE}/.env
+        rm ${PATH_TO_CODE}/.env.bak
+
+        echo "${YELLOW}Building the Docker images${NC}"
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build nginx
+
+        echo "${YELLOW}Starting the application${NC}"
+        start_application
+
+        echo "${YELLOW}Opening browser tab${NC}"
+        open_browser_tab
+
+    else
+        echo "${YELLOW}Code directory already exists at: ${PATH_TO_CODE}${NC}"
+    fi
+
 # Build the application
-if [ "$1" == "build" ]; then
+elif [ "$1" == "build" ]; then
     shift 1
     if [ -z "$1" ]; then
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build nginx
-        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm composer install
-        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm npm install
-        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm npm run build
     else
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build "$@"
     fi
 
 # Start the application
 elif [ "$1" == "start" ]; then
-    docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d nginx
+    start_application
 
 # Stop the application
 elif [ "$1" == "stop" ]; then
@@ -99,7 +162,7 @@ elif [ "$1" == "restart" ]; then
 
 # Destroy the application
 elif [ "$1" == "destroy" ]; then
-    docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down
+    docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down --rmi all -v --remove-orphans
 
 # List running processes
 elif [ "$1" == "ps" ]; then
@@ -112,10 +175,29 @@ elif [ "$1" == "ssh" ]; then
 
 # Start / stop horizon
 elif [ "$1" == "horizon" ]; then
+    if [ ! -d "${PATH_TO_CODE}/vendor/laravel/horizon" ]; then
+        echo "${YELLOW}Horizon not found...installing now${NC}"
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm composer require laravel/horizon
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan horizon:install
+    fi
     if [ "$2" == "start" ]; then
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d horizon
+        URL="https://${APP_DOMAIN}:${HTTPS_ON_HOST}/horizon"
+        open "${URL}"
     elif [ "$2" == "stop" ]; then
-        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} stop horizon
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down horizon
+    elif [ "$2" == "destroy" ]; then
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down --rmi all -v horizon
+    fi
+
+# Start / stop cron service
+elif [ "$1" == "cron" ]; then
+    if [ "$2" == "start" ]; then
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d cron
+    elif [ "$2" == "stop" ]; then
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down cron
+    elif [ "$2" == "destroy" ]; then
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down --rmi all -v cron
     fi
 
 # Run composer commands
@@ -132,6 +214,13 @@ elif [ "$1" == "npm" ]; then
 elif [ "$1" == "artisan" ]; then
     shift 1
     docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan "$@"
+
+# Run shortcut commands
+elif [ "$1" == "migrate" ]; then
+    docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan migrate
+
+elif [ "$1" == "open" ]; then
+    open_browser_tab
 
 else
     echo "Unknown command!"

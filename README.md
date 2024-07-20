@@ -30,7 +30,8 @@ The create command will do the following automatically:
 7. `php artisan migrate` to run the initial migrations
 8. `npm install` to install the Node dependencies
 9. `npm run build` to build the front-end assets
-10. `./kit open` to open up a browser tab to the application
+10. Insert domain in /etc/hosts file
+11. `./kit open` to open up a browser tab to the application
 
 
 ## Getting Started

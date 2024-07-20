@@ -131,6 +131,20 @@ if [ "$1" == "create" ]; then
         echo "${YELLOW}Starting the application${NC}"
         start_application
 
+        if [ -f "/etc/hosts" ]; then
+            echo "${YELLOW}Ensuring domain exists in host file${NC}"
+            matches_in_hosts="$(grep -n ${APP_DOMAIN} /etc/hosts | cut -f1 -d:)"
+            if [ ! -z "${matches_in_hosts}" ]; then
+                echo "${YELLOW}Domain exists already${NC}"
+            else
+                sudo -- sh -c -e "echo '127.0.0.1       ${APP_DOMAIN}' >> /etc/hosts"
+                echo "${YELLOW}Domain added${NC}"
+            fi
+        else
+            echo "${YELLOW}Host file not found. You may need to add the domain manually.${NC}"
+        fi
+
+
         echo "${YELLOW}Opening browser tab${NC}"
         open_browser_tab
 

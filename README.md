@@ -23,7 +23,7 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 ## Quick Start
 
 > [!TIP]
-> In the docs below you will see reference to commands like `./kit <COMMAND>`. To make this a bit easier I add the following alias `alias ./kit=kit` so that the commands shorten to `kit <COMMAND>`.
+> In the docs below you will see reference to commands like `./kit <COMMAND>`. To make this a bit easier I add the following alias `alias kit=./kit` so that the commands shorten to `kit <COMMAND>`.
 
 1. Setup directory structure and clone this repo:
 - `mkdir project`

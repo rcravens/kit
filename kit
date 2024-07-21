@@ -1,59 +1,104 @@
 #!/usr/bin/env bash
 
-# Determine if stdout is a terminal...
-if test -t 1; then
-    # Determine if colors are supported...
-    ncolors=$(tput colors)
+# Define color codes
+BOLD='\033[1m'
+YELLOW='\033[0;33m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RESET='\033[0m'
 
-    if test -n "$ncolors" && test "$ncolors" -ge 8; then
-        BOLD="$(tput bold)"
-        YELLOW="$(tput setaf 3)"
-        GREEN="$(tput setaf 2)"
-        NC="$(tput sgr0)"
+# Function to echo text in bold
+function echo_bold {
+    echo -e "${BOLD}$1${RESET}"
+}
+
+# Function to echo text in yellow
+function echo_yellow {
+    echo -e "${YELLOW}$1${RESET}"
+}
+
+# Function to echo text in green
+function echo_green {
+    echo -e "${GREEN}$1${RESET}"
+}
+
+# Function to echo text in blue
+function echo_blue {
+    echo -e "${BLUE}$1${RESET}"
+}
+
+# Function to echo out a command line with aligned descriptions
+function echo_command {
+    local command="$1"
+    local indent="  "
+    if [ ! -z "$2" ]; then
+      local description="$2"
+      local num_command_chars=${#command}
+      local total_command_length=25
+      local num_spaces=`expr $total_command_length - $num_command_chars`
+      local gap=`printf '%*s' "$num_spaces" | tr ' ' " "`
+
+      echo -e "${indent}${GREEN}$command${RESET}${gap}${description}"
+    else
+      echo -e "${indent}${GREEN}$command${RESET}"
     fi
-fi
+}
+
+# Function to echo out an example
+function echo_example {
+    local example="$1"
+    local indent="  --> "
+    if [ ! -z "$2" ]; then
+      local description="$2"
+      local num_command_chars=${#example}
+      local gap="   "
+
+      echo -e "${indent}${BLUE}$example${RESET}${gap}${description}"
+    else
+      echo -e "${indent}${BLUE}$example${RESET}"
+    fi
+}
 
 # Function that prints the available commands...
 function display_help {
-    echo "Laravel Starter Kit"
+    echo -e "${BOLD}Laravel Starter Kit${RESET}"
     echo
-    echo "${YELLOW}Usage:${NC}" >&2
+    echo_yellow "Usage:"
     echo "  kit [prod] COMMAND [options] [arguments]"
     echo
     echo "examples:"
-    echo "      ${GREEN}kit build${NC}      Build the application"
-    echo "      ${GREEN}kit prod build${NC} Build the production version of the application"
+    echo_example "kit build" "Build the application"
+    echo_example "kit prod build" "Build the production version of the application"
     echo
-    echo "${YELLOW}Commands:${NC}"
-    echo "  ${GREEN}kit create${NC}           Creates a new Laravel application"
-    echo "  ${GREEN}kit build${NC}            Build the application"
-    echo "  ${GREEN}kit start${NC}            Start the application"
-    echo "  ${GREEN}kit open${NC}             Opens browser tab to application"
-    echo "  ${GREEN}kit migrate${NC}          Runs database migrations"
-    echo "  ${GREEN}kit stop${NC}             Stop the application"
-    echo "  ${GREEN}kit restart${NC}          Stop and start the application"
-    echo "  ${GREEN}kit destroy${NC}          Stop the application and delete all images"
-    echo "  ${GREEN}kit horizon start${NC}    Starts horizon"
-    echo "  ${GREEN}kit horizon stop${NC}     Stops horizon"
-    echo "  ${GREEN}kit horizon destroy${NC}  Stops horizon and delete associated images"
-    echo "  ${GREEN}kit cron start${NC}       Starts horizon"
-    echo "  ${GREEN}kit cron stop${NC}        Stops horizon"
-    echo "  ${GREEN}kit cron destroy${NC}     Stops horizon and delete associated images"
-    echo "  ${GREEN}kit ssh <SERVICE>${NC}    Opens shell access to container"
-    echo "  ${GREEN}kit ps${NC}               Display the status of all containers"
+    echo_yellow "Commands:"
+    echo_command "kit create" "Creates a new Laravel application"
+    echo_command "kit build" "Build the application"
+    echo_command "kit start" "Start the application"
+    echo_command "kit open" "Opens browser tab to application"
+    echo_command "kit migrate" "Runs database migrations"
+    echo_command "kit stop" "Stop the application"
+    echo_command "kit restart" "Stop and start the application"
+    echo_command "kit destroy" "Stop the application and delete all images"
+    echo_command "kit horizon start" "Starts horizon"
+    echo_command "kit horizon stop" "Stops horizon"
+    echo_command "kit horizon destroy" "Stops horizon and delete associated images"
+    echo_command "kit cron start" "Starts horizon"
+    echo_command "kit cron stop" "Stops horizon"
+    echo_command "kit cron destroy" "Stops horizon and delete associated images"
+    echo_command "kit ssh <SERVICE>" "Opens shell access to container"
+    echo_command "kit ps" "Display the status of all containers"
     echo
-    echo "${YELLOW}Artisan Commands:${NC}"
-    echo "  ${GREEN}kit artisan ...${NC}    Run an Artisan command"
-    echo "  ${GREEN}kit artisan queue:work${NC}"
+    echo_yellow "Artisan Commands:"
+    echo_command "kit artisan ..." "Run an Artisan command"
+    echo_example "kit artisan queue:work"
     echo
-    echo "${YELLOW}Composer Commands:${NC}"
-    echo "  ${GREEN}kit composer ...${NC}   Run a Composer command"
-    echo "  ${GREEN}kit composer require laravel/sanctum${NC}"
+    echo_yellow "Composer Commands:"
+    echo_command "kit composer ..." "Run a Composer command"
+    echo_example "kit composer require laravel/sanctum"
     echo
-    echo "${YELLOW}NPM Commands:${NC}"
-    echo "  ${GREEN}kit npm ...${NC}        Run a npm command"
-    echo "  ${GREEN}kit npx${NC}            Run a npx command"
-    echo "  ${GREEN}kit npm run prod${NC}"
+    echo_yellow "NPM Commands:"
+    echo_command "kit npm ..." "Run a npm command"
+    echo_command "kit npx" "Run a npx command"
     echo
     exit 1
 }

@@ -3,6 +3,11 @@
 
 This is a pretty simplified, but complete, workflow for using Docker and Docker Compose with Laravel development. The included docker-compose.yml file, Dockerfiles, and config files, set up a LEMP stack powering a Laravel application in the `code` directory.
 
+> [!NOTE]
+> Why another Docker based workflow? Two reasons:
+> 1. Enhanced Environment - I had a need to integrate with SQL Server, Active Directory, and other services where it was easier to have full control over the containers.
+> 2. Architecture - I believe that the code for the CI/CD or DevOps tooling does not belong in the same git repo as your application code.
+
 ## Features
 - `nginx` - Already configured with SSL/TLS
 - `php` - All the drivers for `SQL Server ODBC Drivers`, `Active Directory via LDAP`. Configurable PHP version
@@ -16,6 +21,10 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 - `cron` - Easily use cron to schedule periodic commands.
 
 ## Quick Start
+
+> [!TIP]
+> In the docs below you will see reference to commands like `./kit <COMMAND>`. To make this a bit easier I add the following alias `alias ./kit=kit` so that the commands shorten to `kit <COMMAND>`.
+
 1. Copy `.env_example` to `.env`
 2. Adjust values in `.env` (see Configuration Settings below)
 3. `./kit create` to create a new Laravel application based on `.env` settings

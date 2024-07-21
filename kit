@@ -247,6 +247,8 @@ elif [ "$1" == "horizon" ]; then
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down horizon
     elif [ "$2" == "destroy" ]; then
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down --rmi all -v horizon
+    else
+        echo "Unknown command!"
     fi
 
 # Start / stop cron service
@@ -257,6 +259,8 @@ elif [ "$1" == "cron" ]; then
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down cron
     elif [ "$2" == "destroy" ]; then
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down --rmi all -v cron
+    else
+        echo "Unknown command!"
     fi
 
 # Run composer commands

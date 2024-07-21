@@ -29,18 +29,19 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 2. Adjust values in `.env` (see Configuration Settings below)
 3. `./kit create` to create a new Laravel application based on `.env` settings
 
-The create command will do the following automatically:
-1. Create code directory as specified by PATH_TO_CODE variable in `.env`
-2. Clone the Laravel framework into the code directory
-3. Create a `.env` in the code directory for the Laravel application. Many of the values are updated based on the `.env` in the docker settings
-4. Build the Docker images. 
-5. `composer install` to install PHP dependencies
-6. `php artisan key:generate` to create the app key
-7. `php artisan migrate` to run the initial migrations
-8. `npm install` to install the Node dependencies
-9. `npm run build` to build the front-end assets
-10. Insert domain in /etc/hosts file
-11. `./kit open` to open up a browser tab to the application
+> [!IMPORTANT]
+> The `./kit create` command will do all the following automatically:
+> 1. Create code directory as specified by PATH_TO_CODE variable in `.env`
+> 2. Clone the Laravel framework into the code directory
+> 3. Create a `.env` in the code directory for the Laravel application. Many of the values are updated based on the `.env` in the docker settings
+> 4. Build the Docker images. 
+> 5. `composer install` to install PHP dependencies
+> 6. `php artisan key:generate` to create the app key
+> 7. `php artisan migrate` to run the initial migrations
+> 8. `npm install` to install the Node dependencies
+> 9. `npm run build` to build the front-end assets
+> 10. Insert domain in /etc/hosts file
+> 11. `./kit open` to open up a browser tab to the application
 
 
 ## Getting Started

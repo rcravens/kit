@@ -83,13 +83,13 @@ source ./${ENV_FILE}
 function start_application {
       docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d nginx
       if [ ! -d "${PATH_TO_CODE}/vendor" ]; then
-          echo "${YELLOW}${PATH_TO_CODE}/vendor missing...running composer install${NC}"
+          echo "Running composer install (missing directory: ${YELLOW}${PATH_TO_CODE}/vendor)${NC}"
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm composer install
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan key:generate
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan migrate
       fi
       if [ ! -d "${PATH_TO_CODE}/node_modules" ]; then
-          echo "${YELLOW}${PATH_TO_CODE}/node_modules missing...running npm install & npm run build${NC}"
+          echo "Running npm install & npm build (missing directory: ${YELLOW}${PATH_TO_CODE}/node_modules)${NC}"
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm npm install
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm npm run build
       fi

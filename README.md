@@ -25,9 +25,13 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 > [!TIP]
 > In the docs below you will see reference to commands like `./kit <COMMAND>`. To make this a bit easier I add the following alias `alias ./kit=kit` so that the commands shorten to `kit <COMMAND>`.
 
-1. Copy `.env_example` to `.env`
-2. Adjust values in `.env` (see Configuration Settings below)
-3. `./kit create` to create a new Laravel application based on `.env` settings
+1. `mkdir project` - Create project directory. Put this where ever you want.
+2. `cd project` - Move into the project directory
+3. `git clone https://github.com/rcravens/docker_starter_for_laravel.git docker` - Clone this repo
+4. `cd docker` - Move into this repo's directory
+5. `cp .env_example .env` - Create environment file
+6. Adjust values in `.env` (see Configuration Settings below) using your editor of choice
+7. `./kit create` - Create a new Laravel application based on `.env` settings
 
 > [!IMPORTANT]
 > The `./kit create` command will do all the following automatically:

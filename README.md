@@ -58,13 +58,16 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GwgwgoWCm8Q/0.jpg)](https://www.youtube.com/watch?v=GwgwgoWCm8Q)
 
 
-### Configuration Settings
-Copy `.env_example` to `.env` and set the following variables:
+### Docker Environment
+To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system.
+
+Copy `.env.example` to `.env` and set the following variables:
 
 #### Application Settings
-- `COMPOSE_PROJECT_NAME=abc_app` Used in the docker-compose.yml file to namespace the services.
-- `APP_DOMAIN=abc_app.local` - Used in the nginx service to automatically create a self-signed certificate for this domain.
-- `PATH_TO_CODE=../code` - Location of the code that is used to configure map volumes into the containers
+- `COMPOSE_PROJECT_NAME=abc_app` Used in the docker-compose.yml file to namespace the services, domains, and code directories.
+- `APP_DOMAIN=${COMPOSE_PROJECT_NAME}.local` Used in the nginx service to automatically create a self-signed certificate for this domain.
+- `PATH_TO_CODE=../code/${COMPOSE_PROJECT_NAME}` Location of the code that is used to configure map volumes into the containers
+- `CODE_REPO_URL=` Git repo used with the `./kit create` command. If not specified, the Laravel Github repo is used.
 
 #### Docker Container Versions
 The following are used to set the container versions for the services. Here is an example configuration:
@@ -88,12 +91,42 @@ The following are used by docker when building the database service:
 - `MYSQL_PASSWORD=secret`
 - `MYSQL_ROOT_PASSWORD=secret`
 
+### Laravel Environment
+The `./kit create` command will automatically create a `.env` in the code directory based on one of the following rules:
+1. First, if one already exists it will do nothing.
+2. Second, if an environment file exists in `laravel/.env` (or for production `laravel/env.prod`) this file will be copied into the code directory.
+3. Finally, as a fallback the `.env.example` in the code directory file will be copied as `.env`. The variables will be updated to work within the Docker environment.
+
 ### Hosts File
 For local development, update your Operating System's host file. For example, add the following line to resolve a domain to localhost:
 
 - `127.0.0.1     abc_app.local`
 
 ## Usage
+
+### General Usage
+
+Commands have the following format: `./kit [prod] COMMAND [options] [arguments]`
+- `[prod]` flag to specify production environment. If present, then the `docker-compose-prod.yml` and `.env.prod` files are used with the command
+- `COMMAND` the command to run
+- `[options]` any options supported by the command
+- `[arguments]` arguments expected by the command
+
+Here are a few examples showing a command and the production version:
+- `./kit create` and `./kit prod create`
+- `./kit artisan db:seed` and `./kit prod artisan db:seed`
+- `./kit horizon start` and `./kit prod horizon start`
+
+> [!NOTE]
+> In the following the `[prod]` option will be removed for brevity, but all commands support that option.
+
+### Creating a Laravel Application
+
+- `./kit create [--force]` will create a new Laravel application this uses the following:
+  - `--force`: the existing code directory will be deleted first
+  - `CODE_REPO_URL`: if specified the code from this repo wil be cloned, otherwise, the Laravel Github repo will be cloned
+  - `laravel/.env` (or for production `laravel/.env.prod`): if present this file will be copied into the code directory
+
 
 ### Starting / Stopping Application
 To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system, and then copy this directory to a desired location on your development machine.

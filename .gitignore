@@ -1,4 +1,4 @@
 .env
-.env-prod
+.env.prod
 database/data
 .idea

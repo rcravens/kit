@@ -5,6 +5,7 @@ BOLD='\033[1m'
 YELLOW='\033[0;33m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+RED='\033[0;31m'
 RESET='\033[0m'
 
 # Function to echo text in bold
@@ -25,6 +26,11 @@ function echo_green {
 # Function to echo text in blue
 function echo_blue {
     echo -e "${BLUE}$1${RESET}"
+}
+
+# Function to echo text in blue
+function echo_red {
+    echo -e "${RED}$1${RESET}"
 }
 
 # Function to echo out a command line with aligned descriptions
@@ -103,7 +109,7 @@ function display_help {
     exit 1
 }
 
-# Proxy the "help" command...
+# Display the help menu if no commands supplied or if any standard help flags exist
 if [ $# -gt 0 ]; then
     if [ "$1" == "help" ] || [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
         display_help
@@ -112,13 +118,18 @@ else
     display_help
 fi
 
+# Handle differences between local and production environments
 if [ "$1" == "prod" ]; then
-  shift 1
-  COMPOSE_FILE="docker-compose-prod.yml"
-  ENV_FILE=".env-prod"
+    shift 1
+    IS_PROD=true
+    COMPOSE_FILE="docker-compose-prod.yml"
+    ENV_FILE=".env.prod"
+    LARAVEL_ENV_FILE="./laravel/.env.prod"
 else
-  COMPOSE_FILE="docker-compose.yml"
-  ENV_FILE=".env"
+    IS_PROD=false
+    COMPOSE_FILE="docker-compose.yml"
+    ENV_FILE=".env"
+    LARAVEL_ENV_FILE="./laravel/.env"
 fi
 
 # Make variables in the ENV_FILE accessible to the script
@@ -131,7 +142,7 @@ function start_application {
           echo -e "Running composer install (missing directory: ${YELLOW}${PATH_TO_CODE}/vendor)${RESET}"
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm composer install
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan key:generate
-          docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan migrate
+          docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan migrate --force
       fi
       if [ ! -d "${PATH_TO_CODE}/node_modules" ]; then
           echo -e "Running npm install & npm build (missing directory: ${YELLOW}${PATH_TO_CODE}/node_modules)${REST}"
@@ -146,32 +157,56 @@ function open_browser_tab {
 
 # Create new application
 if [ "$1" == "create" ]; then
-    #rm -rf ${PATH_TO_CODE}
+
+    if [ ! -z "$2" ]; then
+        if [ "$2" == "force" ] || [ "$2" == "-f" ] || [ "$2" == "-force" ] || [ "$2" == "--force" ]; then
+            echo_red "Deleting directory: ${PATH_TO_CODE}"
+            rm -rf ${PATH_TO_CODE}
+        fi
+    fi
+
     if [ ! -d "${PATH_TO_CODE}" ]; then
         echo_yellow "Creating directory ${PATH_TO_CODE}"
-        mkdir ${PATH_TO_CODE}
+        mkdir -p ${PATH_TO_CODE}
 
-        echo_yellow "Cloning Laravel from Github"
-        git clone https://github.com/laravel/laravel.git ${PATH_TO_CODE}
+        if [ -z "${CODE_REPO_URL}" ]; then
+            CODE_REPO_URL="https://github.com/laravel/laravel.git"
+        fi
 
-        echo_yellow "Creating the .env file"
-        cp ${PATH_TO_CODE}/.env.example ${PATH_TO_CODE}/.env
-        sed -i .bak "s|APP_NAME=Laravel|APP_NAME=${COMPOSE_PROJECT_NAME}|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|APP_URL=.*|APP_URL=https://${APP_DOMAIN}:${HTTPS_ON_HOST}|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|DB_CONNECTION=.*|DB_CONNECTION=mysql|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|.*DB_HOST=.*|DB_HOST=mysql|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|.*DB_PORT=.*|DB_PORT=3306|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|.*DB_DATABASE=.*|DB_DATABASE=${MYSQL_DATABASE}|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|.*DB_USERNAME=.*|DB_USERNAME=${MYSQL_USER}|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|.*DB_PASSWORD=.*|DB_PASSWORD=${MYSQL_PASSWORD}|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|SESSION_DRIVER=.*|SESSION_DRIVER=redis|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|QUEUE_CONNECTION=.*|QUEUE_CONNECTION=redis|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|CACHE_STORE=.*|CACHE_STORE=redis|" ${PATH_TO_CODE}/.env
-        sed -i .bak "s|REDIS_HOST=.*|REDIS_HOST=redis|" ${PATH_TO_CODE}/.env
-        rm ${PATH_TO_CODE}/.env.bak
+        echo_yellow "Cloning Laravel Project From: ${CODE_REPO_URL}"
+        git clone ${CODE_REPO_URL} ${PATH_TO_CODE}
+
+        if [ ! -f "${PATH_TO_CODE}/.env" ]; then
+            if [ -f "${LARAVEL_ENV_FILE}" ]; then
+                echo_yellow "Copying .env file. Source: ${LARAVEL_ENV_FILE}"
+                cp ${LARAVEL_ENV_FILE} ${PATH_TO_CODE}/.env
+            else
+                if [ -f "${PATH_TO_CODE}/.env.example" ]; then
+                    echo_yellow "Creating the .env file from .env.example"
+                    cp ${PATH_TO_CODE}/.env.example ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|APP_NAME=Laravel|APP_NAME=${COMPOSE_PROJECT_NAME}|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|APP_URL=.*|APP_URL=https://${APP_DOMAIN}:${HTTPS_ON_HOST}|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|DB_CONNECTION=.*|DB_CONNECTION=mysql|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|.*DB_HOST=.*|DB_HOST=mysql|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|.*DB_HOST_READ=.*|DB_HOST_READ=mysql|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|.*DB_HOST_WRITE=.*|DB_HOST_WRITE=mysql|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|.*DB_PORT=.*|DB_PORT=3306|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|.*DB_DATABASE=.*|DB_DATABASE=${MYSQL_DATABASE}|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|.*DB_USERNAME=.*|DB_USERNAME=${MYSQL_USER}|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|.*DB_PASSWORD=.*|DB_PASSWORD=${MYSQL_PASSWORD}|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|SESSION_DRIVER=.*|SESSION_DRIVER=redis|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|QUEUE_CONNECTION=.*|QUEUE_CONNECTION=redis|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|CACHE_STORE=.*|CACHE_STORE=redis|" ${PATH_TO_CODE}/.env
+                    sed -i .bak "s|REDIS_HOST=.*|REDIS_HOST=redis|" ${PATH_TO_CODE}/.env
+                    rm ${PATH_TO_CODE}/.env.bak
+                fi
+            fi
+        else
+            echo_yellow "Found existing .env file"
+        fi
 
         echo_yellow "Building the Docker images"
-        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build nginx
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build --no-cache nginx
 
         echo_yellow "Starting the application"
         start_application

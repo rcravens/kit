@@ -46,7 +46,7 @@ services:
     ports:
       - ${MYSQL_ON_HOST}:3306
     volumes:
-      - ./database/data:/var/lib/mysql
+      - ./database/data/${COMPOSE_PROJECT_NAME}_data:/var/lib/mysql
     networks:
       - app_network
     environment:

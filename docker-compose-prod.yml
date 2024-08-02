@@ -5,37 +5,23 @@ networks:
 
 services:
 
-  nginx:
+  web_app:
     build:
       context: .
-      dockerfile: nginx.dockerfile
+      dockerfile: web_app.dockerfile
       args:
+        - PHP_VERSION=${PHP_VERSION}
         - NGINX_VERSION=${NGINX_VERSION}
         - APP_DOMAIN=${APP_DOMAIN}
-    container_name: ${COMPOSE_PROJECT_NAME}_nginx
+        - PATH_TO_CODE=${PATH_TO_CODE}
+        - CODE_REPO_URL=${CODE_REPO_URL}
+    container_name: ${COMPOSE_PROJECT_NAME}_web_app
     depends_on:
-      - php
       - mysql
       - redis
     ports:
       - ${HTTP_ON_HOST}:80
       - ${HTTPS_ON_HOST}:443
-    volumes:
-      - ${PATH_TO_CODE}:/var/www/html
-    networks:
-      - app_network
-
-  php:
-    #user: 1000:1000
-    #platform: linux/amd64
-    build:
-      context: .
-      dockerfile: php.dockerfile
-      args:
-        - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_php_${PHP_VERSION}
-    volumes:
-      - ${PATH_TO_CODE}:/var/www/html
     networks:
       - app_network
 
@@ -55,64 +41,6 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
-  composer:
-    #user: 1000:1000 
-    #platform: linux/amd64
-    build:
-      context: .
-      dockerfile: php.dockerfile
-      args:
-        - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_composer_${PHP_VERSION}
-    volumes:
-      - ${PATH_TO_CODE}:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ["php", "/bin/composer.phar"]
-    networks:
-      - app_network
-
-  artisan:
-    #user: 1000:1000
-    #platform: linux/amd64
-    build:
-      context: .
-      dockerfile: php.dockerfile
-      args:
-        - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_artisan_${PHP_VERSION}
-    volumes:
-      - ${PATH_TO_CODE}:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ["php", "artisan"]
-    networks:
-      - app_network
-
-  npm:
-    image: node:${NODE_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_npm
-    volumes:
-      - ${PATH_TO_CODE}:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ["npm"]
-    networks:
-      - app_network
-
-  phpunit:
-    #user: 1000:1000
-    #platform: linux/amd64
-    build:
-      context: .
-      dockerfile: php.dockerfile
-      args:
-        - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_phpunit_${PHP_VERSION}
-    volumes:
-      - ${PATH_TO_CODE}:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ["/var/www/html/vendor/bin/phpunit"]
-    networks:
-      - app_network
-
   redis:
     image: redis:${REDIS_VERSION}
     container_name: ${COMPOSE_PROJECT_NAME}_redis
@@ -121,35 +49,4 @@ services:
     networks:
       - app_network
 
-  horizon:
-    #user: 1000:1000
-    #platform: linux/amd64
-    build:
-      context: .
-      dockerfile: php.dockerfile
-      args:
-        - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_horizon_${PHP_VERSION}
-    volumes:
-      - ${PATH_TO_CODE}:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ["php", "artisan", "horizon"]
-    networks:
-      - app_network
-
-  cron:
-    #user: 1000:1000
-    #platform: linux/amd64
-    build:
-      context: .
-      dockerfile: php.dockerfile
-      args:
-        - PHP_VERSION=${PHP_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_cron_${PHP_VERSION}
-    volumes:
-      - ${PATH_TO_CODE}:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ["crond", "-f"]
-    networks:
-      - app_network
 

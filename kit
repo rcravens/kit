@@ -106,6 +106,10 @@ function display_help {
     echo_command "kit npm ..." "Run a npm command"
     echo_command "kit npx" "Run a npx command"
     echo
+    echo_yellow "Docker Container Registry Commands:"
+    echo_command "kit push" "Push an image to the registry"
+    echo_command "kit npx" "Run a npx command"
+    echo
     exit 1
 }
 
@@ -125,11 +129,13 @@ if [ "$1" == "prod" ]; then
     COMPOSE_FILE="docker-compose-prod.yml"
     ENV_FILE=".env.prod"
     LARAVEL_ENV_FILE="./laravel/.env.prod"
+    ENTRY_SERVICE="web_app"
 else
     IS_PROD=false
     COMPOSE_FILE="docker-compose.yml"
     ENV_FILE=".env"
     LARAVEL_ENV_FILE="./laravel/.env"
+    ENTRY_SERVICE="nginx"
 fi
 
 # Make variables in the ENV_FILE accessible to the script
@@ -137,14 +143,14 @@ source ./${ENV_FILE}
 
 # The following are functions that are used in multiple places
 function start_application {
-      docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d nginx
-      if [ ! -d "${PATH_TO_CODE}/vendor" ]; then
+      docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d ${ENTRY_SERVICE}
+      if [[ ! -d "${PATH_TO_CODE}/vendor"  && ! "${IS_PROD}" ]]; then
           echo -e "Running composer install (missing directory: ${YELLOW}${PATH_TO_CODE}/vendor)${RESET}"
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm composer install
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan key:generate
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm artisan migrate --force
       fi
-      if [ ! -d "${PATH_TO_CODE}/node_modules" ]; then
+      if [[ ! -d "${PATH_TO_CODE}/node_modules" && ! "${IS_PROD}" ]]; then
           echo -e "Running npm install & npm build (missing directory: ${YELLOW}${PATH_TO_CODE}/node_modules)${REST}"
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm npm install
           docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} run --rm npm run build
@@ -165,78 +171,82 @@ if [ "$1" == "create" ]; then
         fi
     fi
 
-    if [ ! -d "${PATH_TO_CODE}" ]; then
-        echo_yellow "Creating directory ${PATH_TO_CODE}"
-        mkdir -p ${PATH_TO_CODE}
+    if [ ! "${IS_PROD}" ]; then
+        # Create code directory outside of image to share as a volume
+        if [ ! -d "${PATH_TO_CODE}" ]; then
+            echo_yellow "Creating directory ${PATH_TO_CODE}"
+            mkdir -p ${PATH_TO_CODE}
 
-        if [ -z "${CODE_REPO_URL}" ]; then
-            CODE_REPO_URL="https://github.com/laravel/laravel.git"
-        fi
+            if [ -z "${CODE_REPO_URL}" ]; then
+                CODE_REPO_URL="https://github.com/laravel/laravel.git"
+            fi
 
-        echo_yellow "Cloning Laravel Project From: ${CODE_REPO_URL}"
-        git clone ${CODE_REPO_URL} ${PATH_TO_CODE}
+            echo_yellow "Cloning Laravel Project From: ${CODE_REPO_URL}"
+            git clone ${CODE_REPO_URL} ${PATH_TO_CODE}
 
-        if [ ! -f "${PATH_TO_CODE}/.env" ]; then
-            if [ -f "${LARAVEL_ENV_FILE}" ]; then
-                echo_yellow "Copying .env file. Source: ${LARAVEL_ENV_FILE}"
-                cp ${LARAVEL_ENV_FILE} ${PATH_TO_CODE}/.env
-            else
-                if [ -f "${PATH_TO_CODE}/.env.example" ]; then
-                    echo_yellow "Creating the .env file from .env.example"
-                    cp ${PATH_TO_CODE}/.env.example ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|APP_NAME=Laravel|APP_NAME=${COMPOSE_PROJECT_NAME}|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|APP_URL=.*|APP_URL=https://${APP_DOMAIN}:${HTTPS_ON_HOST}|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|DB_CONNECTION=.*|DB_CONNECTION=mysql|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|.*DB_HOST=.*|DB_HOST=mysql|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|.*DB_HOST_READ=.*|DB_HOST_READ=mysql|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|.*DB_HOST_WRITE=.*|DB_HOST_WRITE=mysql|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|.*DB_PORT=.*|DB_PORT=3306|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|.*DB_DATABASE=.*|DB_DATABASE=${MYSQL_DATABASE}|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|.*DB_USERNAME=.*|DB_USERNAME=${MYSQL_USER}|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|.*DB_PASSWORD=.*|DB_PASSWORD=${MYSQL_PASSWORD}|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|SESSION_DRIVER=.*|SESSION_DRIVER=redis|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|QUEUE_CONNECTION=.*|QUEUE_CONNECTION=redis|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|CACHE_STORE=.*|CACHE_STORE=redis|" ${PATH_TO_CODE}/.env
-                    sed -i .bak "s|REDIS_HOST=.*|REDIS_HOST=redis|" ${PATH_TO_CODE}/.env
-                    rm ${PATH_TO_CODE}/.env.bak
+            if [ ! -f "${PATH_TO_CODE}/.env" ]; then
+                if [ -f "${LARAVEL_ENV_FILE}" ]; then
+                    echo_yellow "Copying .env file. Source: ${LARAVEL_ENV_FILE}"
+                    cp ${LARAVEL_ENV_FILE} ${PATH_TO_CODE}/.env
+                else
+                    if [ -f "${PATH_TO_CODE}/.env.example" ]; then
+                        echo_yellow "Creating the .env file from .env.example"
+                        cp ${PATH_TO_CODE}/.env.example ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|APP_NAME=Laravel|APP_NAME=${COMPOSE_PROJECT_NAME}|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|APP_URL=.*|APP_URL=https://${APP_DOMAIN}:${HTTPS_ON_HOST}|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|DB_CONNECTION=.*|DB_CONNECTION=mysql|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|.*DB_HOST=.*|DB_HOST=mysql|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|.*DB_HOST_READ=.*|DB_HOST_READ=mysql|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|.*DB_HOST_WRITE=.*|DB_HOST_WRITE=mysql|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|.*DB_PORT=.*|DB_PORT=3306|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|.*DB_DATABASE=.*|DB_DATABASE=${MYSQL_DATABASE}|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|.*DB_USERNAME=.*|DB_USERNAME=${MYSQL_USER}|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|.*DB_PASSWORD=.*|DB_PASSWORD=${MYSQL_PASSWORD}|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|SESSION_DRIVER=.*|SESSION_DRIVER=redis|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|QUEUE_CONNECTION=.*|QUEUE_CONNECTION=redis|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|CACHE_STORE=.*|CACHE_STORE=redis|" ${PATH_TO_CODE}/.env
+                        sed -i .bak "s|REDIS_HOST=.*|REDIS_HOST=redis|" ${PATH_TO_CODE}/.env
+                        rm ${PATH_TO_CODE}/.env.bak
+                    fi
                 fi
-            fi
-        else
-            echo_yellow "Found existing .env file"
-        fi
-
-        echo_yellow "Building the Docker images"
-        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build --no-cache nginx
-
-        echo_yellow "Starting the application"
-        start_application
-
-        if [ -f "/etc/hosts" ]; then
-            echo_yellow "Ensuring domain exists in host file"
-            matches_in_hosts="$(grep -n ${APP_DOMAIN} /etc/hosts | cut -f1 -d:)"
-            if [ ! -z "${matches_in_hosts}" ]; then
-                echo_yellow "Domain exists already"
             else
-                sudo -- sh -c -e "echo '127.0.0.1       ${APP_DOMAIN}' >> /etc/hosts"
-                echo_yellow "Domain added"
+                echo_yellow "Found existing .env file"
             fi
+
         else
-            echo_yellow "Host file not found. You may need to add the domain manually."
+            echo_yellow "Code directory already exists at: ${PATH_TO_CODE}"
         fi
-
-
-        echo_yellow "Opening browser tab"
-        open_browser_tab
-
-    else
-        echo_yellow "Code directory already exists at: ${PATH_TO_CODE}"
     fi
+
+    echo_yellow "Building the Docker images"
+    docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build ${ENTRY_SERVICE}
+#        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build --no-cache ${ENTRY_SERVICE}
+
+    echo_yellow "Starting the application"
+    start_application
+
+    if [ -f "/etc/hosts" ]; then
+        echo_yellow "Ensuring domain exists in host file"
+        matches_in_hosts="$(grep -n ${APP_DOMAIN} /etc/hosts | cut -f1 -d:)"
+        if [ ! -z "${matches_in_hosts}" ]; then
+            echo_yellow "Domain exists already"
+        else
+            sudo -- sh -c -e "echo '127.0.0.1       ${APP_DOMAIN}' >> /etc/hosts"
+            echo_yellow "Domain added"
+        fi
+    else
+        echo_yellow "Host file not found. You may need to add the domain manually."
+    fi
+
+    echo_yellow "Opening browser tab"
+    open_browser_tab
+
 
 # Build the application
 elif [ "$1" == "build" ]; then
     shift 1
     if [ -z "$1" ]; then
-        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build nginx
+        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build ${ENTRY_SERVICE}
     else
         docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build "$@"
     fi
@@ -252,7 +262,7 @@ elif [ "$1" == "stop" ]; then
 # Restart the application
 elif [ "$1" == "restart" ]; then
     docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down
-    docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d nginx
+    docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d ${ENTRY_SERVICE}
 
 # Destroy the application
 elif [ "$1" == "destroy" ]; then
@@ -266,6 +276,18 @@ elif [ "$1" == "ps" ]; then
 elif [ "$1" == "ssh" ]; then
     shift 1
     docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE}  exec -it "$@" /bin/sh
+
+# Push image to container registry
+elif [ "$1" == "push" ]; then
+    shift 1
+    if [ "${REGISTRY_TYPE}" == "aws" ] || [ "${REGISTRY_TYPE}" == "AWS" ]; then
+        echo "Found AWS ECR Registry"
+        aws ecr get-login-password --region ${REGISTRY_REGION} | docker login --username ${REGISTRY_USERNAME} --password-stdin ${REGISTRY_URL}
+        docker tag ${REGISTRY_REPO}:latest ${REGISTRY_URL}/${REGISTRY_REPO}:latest
+        docker push ${REGISTRY_URL}/${REGISTRY_REPO}:latest
+    else
+        echo "No container registry found."
+    fi
 
 # Start / stop horizon
 elif [ "$1" == "horizon" ]; then

@@ -25,10 +25,11 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then  \
 		#	&& apk add --allow-untrusted msodbcsql17_17.5.2.1-1_amd64.apk \
 		#	&& apk add --allow-untrusted mssql-tools_17.5.2.1-1_amd64.apk \
 		# mssql odbc for database connection version 18
-		curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/msodbcsql18_18.1.1.1-1_amd64.apk \
-		&& curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f46-da08869c6486/mssql-tools18_18.1.1.1-1_amd64.apk \
-		&& apt-get install --allow-untrusted msodbcsql18_18.1.1.1-1_amd64.apk \
-		&& apt-get install --allow-untrusted mssql-tools18_18.1.1.1-1_amd64.apk; \
+    	curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc \
+    	&& curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
+    	&& apt-get update \
+    	&& ACCEPT_EULA=Y apt-get install -y msodbcsql18 \
+	    && apt-get install -y unixodbc-dev; \
 	elif [ "$TARGETARCH" = "arm64" ]; then  \
     	curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc \
     	&& curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
@@ -94,14 +95,14 @@ RUN rm -rf /var/www/html
 RUN mkdir -p /var/www/html
 RUN git clone ${CODE_REPO_URL} /var/www/html
 COPY ./laravel/.env.prod /var/www/html/.env
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www
 
 WORKDIR /var/www/html
 USER www-data
 RUN php /bin/composer.phar install
 RUN php artisan key:generate
-#RUN npm install
-#RUN npm run build
+RUN npm install
+RUN npm run build
 USER root
 
 # ---------------------------- PHP ----------------------------------------

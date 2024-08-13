@@ -16,10 +16,16 @@ services:
         - APP_DOMAIN=${APP_DOMAIN}
         - PATH_TO_CODE=${PATH_TO_CODE}
         - CODE_REPO_URL=${CODE_REPO_URL}
-    image: ${REGISTRY_URL}/${REGISTRY_REPO}:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_web_app
+    image: ${REGISTRY_URL}/${REGISTRY_REPO}:${REGISTRY_DEPLOYED_VERSION}
     ports:
       - ${HTTP_ON_HOST}:80
       - ${HTTPS_ON_HOST}:443
     networks:
       - app_network
+    deploy:
+      replicas: 5
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure

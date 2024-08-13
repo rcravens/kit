@@ -280,11 +280,19 @@ elif [ "$1" == "ssh" ]; then
 # Push image to container registry
 elif [ "$1" == "push" ]; then
     shift 1
+
+    if [ -z "$1" ]; then
+        TAG="latest"
+    else
+        TAG="$1"
+    fi
+    echo "TAG: ${TAG}"
+
     if [ "${REGISTRY_TYPE}" == "aws" ] || [ "${REGISTRY_TYPE}" == "AWS" ]; then
         echo "Found AWS ECR Registry"
         aws ecr get-login-password --region ${REGISTRY_REGION} | docker login --username ${REGISTRY_USERNAME} --password-stdin ${REGISTRY_URL}
-        docker tag ${REGISTRY_REPO}:latest ${REGISTRY_URL}/${REGISTRY_REPO}:latest
-        docker push ${REGISTRY_URL}/${REGISTRY_REPO}:latest
+        docker tag ${REGISTRY_URL}/${REGISTRY_REPO}:${REGISTRY_DEPLOYED_VERSION} ${REGISTRY_URL}/${REGISTRY_REPO}:${TAG}
+        docker push ${REGISTRY_URL}/${REGISTRY_REPO}:${TAG}
     else
         echo "No container registry found."
     fi

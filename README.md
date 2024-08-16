@@ -31,7 +31,7 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 - `cd project`
 - `git clone https://github.com/rcravens/docker_starter_for_laravel.git docker`
 - `cd docker`
-- `./bin/install.sh` ‼️ this creates a `kit` alias ‼️
+- `./bin/install.sh` ‼️ this creates a `kit` alias that you can use ‼️
 
 2. Create and update the Docker environment file
 
@@ -56,14 +56,16 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 > 10. Insert domain in /etc/hosts file
 > 11. `kit open` to open up a browser tab to the application
 
-## 💥 Getting Started
+## 💥 Videos
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/nrG0O_qqMkk/0.jpg)](https://www.youtube.com/watch?v=nrG0O_qqMkk)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Q8wrgqlpVY4/0.jpg)](https://www.youtube.com/watch?v=Q8wrgqlpVY4)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qbdOO7pnJrU/0.jpg)](https://www.youtube.com/watch?v=qbdOO7pnJrU)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GwgwgoWCm8Q/0.jpg)](https://www.youtube.com/watch?v=GwgwgoWCm8Q)
 
-### Docker Environment
+## 💥 Getting Started
+
+### 👉 Docker Environment
 
 To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system.
 
@@ -115,7 +117,7 @@ The following are used by the `kit prod push` command. These should be configure
 - `REGISTRY_REPO`
 - `REGISTRY_DEPLOYED_VERSION`
 
-### Laravel Environment
+### 👉 Laravel Environment
 
 The `kit create` command will automatically create a `.env` in the code directory based on one of the following rules:
 
@@ -123,7 +125,7 @@ The `kit create` command will automatically create a `.env` in the code director
 2. Second, if an environment file exists in `laravel/.env` (or for production `laravel/env.prod`) this file will be copied into the code directory.
 3. Finally, as a fallback the `.env.example` in the code directory file will be copied as `.env`. The variables will be updated to work within the Docker environment.
 
-### Hosts File
+### 👉 Hosts File
 
 For local development, update your Operating System's host file. For example, add the following line to resolve a domain to localhost:
 

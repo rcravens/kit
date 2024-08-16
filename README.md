@@ -58,6 +58,9 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 
 ## Getting Started
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/nrG0O_qqMkk/0.jpg)](https://www.youtube.com/watch?v=nrG0O_qqMkk)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Q8wrgqlpVY4/0.jpg)](https://www.youtube.com/watch?v=Q8wrgqlpVY4)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qbdOO7pnJrU/0.jpg)](https://www.youtube.com/watch?v=qbdOO7pnJrU)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GwgwgoWCm8Q/0.jpg)](https://www.youtube.com/watch?v=GwgwgoWCm8Q)
 
 ### Docker Environment
@@ -100,6 +103,17 @@ The following are used by docker when building the database service:
 - `MYSQL_USER=laravel`
 - `MYSQL_PASSWORD=secret`
 - `MYSQL_ROOT_PASSWORD=secret`
+
+#### Docker Registry Settings
+
+The following are used by the `kit prod push` command. These should be configured to allow the kit to push Docker images to a remote registry.
+
+- `REGISTRY_TYPE=aws` Only Amazon ECR is supported at this time
+- `REGISTRY_REGION`
+- `REGISTRY_USERNAME`
+- `REGISTRY_URL`
+- `REGISTRY_REPO`
+- `REGISTRY_DEPLOYED_VERSION`
 
 ### Laravel Environment
 

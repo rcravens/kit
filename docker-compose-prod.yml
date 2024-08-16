@@ -23,7 +23,7 @@ services:
     networks:
       - app_network
     deploy:
-      replicas: 5
+      replicas: 1
       update_config:
         parallelism: 2
         delay: 10s

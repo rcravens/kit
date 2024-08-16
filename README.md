@@ -1,4 +1,4 @@
-# Laravel Docker Workflow
+# 🚀 Laravel Docker Kit 🚀
 
 This is a pretty simplified, but complete, workflow for using Docker and Docker Compose with Laravel development. The included docker-compose.yml file, Dockerfiles, and config files, set up a LEMP stack powering a Laravel application in the `code` directory.
 
@@ -7,7 +7,7 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 > 1. Enhanced Environment - I had a need to integrate with SQL Server, Active Directory, and other services where it was easier to have full control over the containers.
 > 2. Architecture - I believe that the code for the CI/CD or DevOps tooling does not belong in the same git repo as your application code.
 
-## Features
+## 💥 Features
 
 - `nginx` - Already configured with SSL/TLS
 - `php` - All the drivers for `SQL Server ODBC Drivers`, `Active Directory via LDAP`. Configurable PHP version
@@ -20,7 +20,7 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 - `horizon` - Easily use horizon to manage your workers and job queues.
 - `cron` - Easily use cron to schedule periodic commands.
 
-## Quick Start
+## 💥 Quick Start
 
 > [!TIP]
 > In the docs below you will see reference to commands like `./kit <COMMAND>`. To make this a bit easier I add the following alias `alias kit=./kit` so that the commands shorten to `kit <COMMAND>`.
@@ -31,7 +31,7 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 - `cd project`
 - `git clone https://github.com/rcravens/docker_starter_for_laravel.git docker`
 - `cd docker`
-- `./bin/install.sh`👉 this creates a `kit` alias
+- `./bin/install.sh` ‼️ this creates a `kit` alias ‼️
 
 2. Create and update the Docker environment file
 
@@ -56,7 +56,7 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 > 10. Insert domain in /etc/hosts file
 > 11. `kit open` to open up a browser tab to the application
 
-## Getting Started
+## 💥 Getting Started
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/nrG0O_qqMkk/0.jpg)](https://www.youtube.com/watch?v=nrG0O_qqMkk)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Q8wrgqlpVY4/0.jpg)](https://www.youtube.com/watch?v=Q8wrgqlpVY4)
@@ -129,7 +129,7 @@ For local development, update your Operating System's host file. For example, ad
 
 - `127.0.0.1     abc_app.local`
 
-## Usage
+## 💥 Usage
 
 ### General Usage
 

@@ -2,3 +2,4 @@
 .env.prod
 database/data
 .idea
+deploy.yml

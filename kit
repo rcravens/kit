@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-BIN_DIRECTORY="./bin"
+export ROOT_DIRECTORY="$PWD"
+export BIN_DIRECTORY="$PWD/bin"
 
 source "$BIN_DIRECTORY/helpers/color_helpers.sh"
 source "$BIN_DIRECTORY/helpers/functions.sh"
@@ -8,21 +9,23 @@ source "$BIN_DIRECTORY/helpers/functions.sh"
 # Handle differences between local and production environments
 if [ "$1" == "prod" ]; then
     shift 1
-    IS_PROD=true
-    COMPOSE_FILE="docker-compose-prod.yml"
-    ENV_FILE=".env.prod"
-    LARAVEL_ENV_FILE="./laravel/.env.prod"
-    ENTRY_SERVICE="web_app"
+    export IS_PROD=true
+    export COMPOSE_FILE="$PWD/docker-compose-prod.yml"
+    export ENV_FILE="$PWD/.env.prod"
+    export LARAVEL_ENV_FILE="$PWD/laravel/.env.prod"
+    export ENTRY_SERVICE="web_app"
 else
-    IS_PROD=false
-    COMPOSE_FILE="docker-compose.yml"
-    ENV_FILE=".env"
-    LARAVEL_ENV_FILE="./laravel/.env"
-    ENTRY_SERVICE="nginx"
+    export IS_PROD=false
+    export COMPOSE_FILE="$PWD/docker-compose.yml"
+    export ENV_FILE="$PWD/.env"
+    export LARAVEL_ENV_FILE="$PWD/laravel/.env"
+    export ENTRY_SERVICE="nginx"
 fi
 
 # Make variables in the ENV_FILE accessible to the script
-source "./${ENV_FILE}"
+set -a # automatically export all variables
+source "$ENV_FILE"
+set +a
 
 
 if [ $# -gt 0 ]; then

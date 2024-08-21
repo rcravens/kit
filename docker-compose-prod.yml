@@ -1,8 +1,4 @@
-networks:
- app_network:
-    name: ${COMPOSE_PROJECT_NAME}
-    driver: bridge
-
+version: "3"
 services:
 
   web_app:
@@ -18,10 +14,8 @@ services:
         - CODE_REPO_URL=${CODE_REPO_URL}
     image: ${REGISTRY_URL}/${REGISTRY_REPO}:${REGISTRY_DEPLOYED_VERSION}
     ports:
-      - ${HTTP_ON_HOST}:80
-      - ${HTTPS_ON_HOST}:443
-    networks:
-      - app_network
+      - "${HTTP_ON_HOST}:80"
+      - "${HTTPS_ON_HOST}:443"
     deploy:
       replicas: 1
       update_config:

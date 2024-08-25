@@ -138,6 +138,4 @@ cp /etc/nginx/certs/${APP_DOMAIN}.key /etc/nginx/certs/app.key
 # ---------------------------- ENTRY POINT ----------------------------------------
 COPY entrypoint-prod.sh /entrypoint.sh
 
-RUN echo "testing"
-
 ENTRYPOINT ["/entrypoint.sh"]

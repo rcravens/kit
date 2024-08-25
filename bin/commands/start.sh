@@ -1,27 +1,30 @@
 #!/usr/bin/env bash
 
 function command_run {
-    if [ -z "$2" ] && [ "$1" == "help" ]; then
+    echo "COMMAND: $COMMAND"
+    echo "ARGS: $ARGS"
+
+    if [ "$ARGS" == "help" ]; then
        command_help
        command_help_details
        return 1
     fi
 
-    docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" up -d "${ENTRY_SERVICE}"
+    run_docker_compose up -d "${ENTRY_SERVICE}"
 
     # If not production...ensure php application is initialized
-    if [[ ! -d "${PATH_TO_CODE}/vendor"  && ! "${IS_PROD}" ]]; then
+    if [[ ! -d "${APP_DIRECTORY}/${PATH_TO_CODE}/vendor"  && $ENV == 'dev' ]]; then
         echo -e "Running composer install (missing directory: ${YELLOW}${PATH_TO_CODE}/vendor)${RESET}"
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm composer install
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm artisan key:generate
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm artisan migrate --force
+        run_docker_compose exec -it "${ENTRY_SERVICE}" php /bin/composer.phar install
+        run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan key:generate
+        run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan migrate --force
     fi
 
     # If not production...ensure node application is initialized
-    if [[ ! -d "${PATH_TO_CODE}/node_modules" && ! "${IS_PROD}" ]]; then
+    if [[ ! -d "${APP_DIRECTORY}/${PATH_TO_CODE}/node_modules" && $ENV == 'dev' ]]; then
         echo -e "Running npm install & npm build (missing directory: ${YELLOW}${PATH_TO_CODE}/node_modules)${REST}"
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm npm install
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm npm run build
+        run_docker_compose exec -it "${ENTRY_SERVICE}" npm install
+        run_docker_compose exec -it "${ENTRY_SERVICE}" npm run build
     fi
 }
 

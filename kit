@@ -2,42 +2,87 @@
 
 export ROOT_DIRECTORY="$PWD"
 export BIN_DIRECTORY="$PWD/bin"
+export APPS_DIRECTORY="$PWD/apps"
 
 source "$BIN_DIRECTORY/helpers/color_helpers.sh"
 source "$BIN_DIRECTORY/helpers/functions.sh"
 
-# Handle differences between local and production environments
-if [ "$1" == "prod" ]; then
-    shift 1
-    export IS_PROD=true
-    export COMPOSE_FILE="$PWD/docker-compose-prod.yml"
-    export ENV_FILE="$PWD/.env.prod"
-    export LARAVEL_ENV_FILE="$PWD/laravel/.env.prod"
-    export ENTRY_SERVICE="web_app"
+# GENERAL COMMAND FORMAT
+# kit [app] [env] [command] [args]
+#   [app] in subdirectory of ./apps directory
+#   [env] in (dev, prod)
+# SHORTENED VERSIONS
+# kit [env] [command] [args]  same as kit first_app [env] [command] [args]
+# kit [command] [args]        same as kt first_app dev [command] [args]
+
+export APP="$1"
+export ENV="$2"
+export COMMAND="$3"
+
+if [ -d "${APPS_DIRECTORY}/${APP}" ]; then
+  # Found a valid app. Shift arguments to prepare for ARGS="$@" line below
+  echo "found directory: $APP"
+  shift 1
 else
-    export IS_PROD=false
-    export COMPOSE_FILE="$PWD/docker-compose.yml"
-    export ENV_FILE="$PWD/.env"
-    export LARAVEL_ENV_FILE="$PWD/laravel/.env"
-    export ENTRY_SERVICE="nginx"
+  # If first argument is not a directory in /apps, default to first app in /apps directory and shift variables
+  APP=$(ls -1 "$APPS_DIRECTORY")
+  ENV="$1"
+  COMMAND="$2"
 fi
+
+if [ "$ENV" == "dev" ] || [ "$ENV" == "prod" ] || [ "$ENV" == "stage" ]; then
+  # Found a valid env. Shift arguments to prepare for ARGS="$@" line below
+  shift 1
+else
+  # Did not find a valid env. Default to 'dev' and shift the command
+  ENV="dev"
+  COMMAND="$1"
+fi
+
+# Shift off the command to leave just the args variable
+shift 1
+ARGS="$@"
+
+export APP_DIRECTORY="${APPS_DIRECTORY}/${APP}"
+export ENV_FILE="$APP_DIRECTORY/.env.${ENV}"
+
+# TEMPLATE - allow the application template to set environment variables
+if [ -f "$APP_DIRECTORY/bin/set_env.sh" ]; then
+  source "$APP_DIRECTORY/bin/set_env.sh"
+fi
+
+# Debugging lines (normally keep this commented out)
+echo_divider
+echo_blue "APP: $APP, ENV: $ENV, COMMAND: $COMMAND, ARGS: $ARGS"
+echo_blue "APP_DIRECTORY: ${APP_DIRECTORY}"
+echo_blue "ENTRY_SERVICE: $ENTRY_SERVICE"
+echo_divider
 
 # Make variables in the ENV_FILE accessible to the script
 set -a # automatically export all variables
 source "$ENV_FILE"
 set +a
 
+# Helper function to run docker compose commands
+function run_docker_compose()
+{
+  docker compose -f "${APP_DIRECTORY}/docker-compose.yml" -f "${APP_DIRECTORY}/docker-compose.${ENV}.yml" --env-file "$ENV_FILE" "$@"
+}
 
-if [ $# -gt 0 ]; then
-    COMMAND=$1
-    shift 1
-
-    COMMAND_FILE="$BIN_DIRECTORY/commands/$COMMAND.sh"
-    if [ -f "$COMMAND_FILE" ]; then
-        source "$COMMAND_FILE"
-        command_run "$*"
-    fi
+# Handle the command
+# TEMPLATE - First look into the template bin/commands directory
+COMMAND_FILE="${APP_DIRECTORY}/bin/commands/${COMMAND}.sh"
+if [ -f "$COMMAND_FILE" ]; then
+  source "$COMMAND_FILE"
+  command_run "$*"
 else
-    source "$BIN_DIRECTORY/commands/help.sh"
-    command_run "$@"
+  # Next look into the main directory for kit commands
+  COMMAND_FILE="$BIN_DIRECTORY/commands/$COMMAND.sh"
+  if [ -f "$COMMAND_FILE" ]; then
+      source "$COMMAND_FILE"
+      command_run "$*"
+  else
+      source "$BIN_DIRECTORY/commands/help.sh"
+      command_run "$@"
+  fi
 fi

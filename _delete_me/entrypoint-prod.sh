@@ -7,6 +7,7 @@ else
     echo "Starting PHP-FPM"
     service php8.3-fpm start
     service php8.3-fpm status
+
     echo "Starting Nginx"
     nginx -g "daemon off;"
 fi

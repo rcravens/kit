@@ -9,13 +9,6 @@ RED=$(printf '\033[0;31m')
 MAGENTA=$(printf '\033[1;35m')
 RESET=$(printf '\033[0m')
 
-RAINBOW="
-  $(printf '\033[38;5;196m')
-  $(printf '\033[38;5;202m')
-  $(printf '\033[38;5;226m')
-  $(printf '\033[38;5;082m')
-"
-
 # Function to echo text in bold
 function echo_bold {
     echo -e "${BOLD}$1${RESET}"

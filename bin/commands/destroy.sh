@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 function command_run {
-    if [ -z "$2" ] && [ "$1" == "help" ]; then
+    if [ "$ARGS" == "help" ]; then
        command_help
        command_help_details
        return 1
     fi
 
-    docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" down --rmi all -v --remove-orphans
+    run_docker_compose down --rmi all -v --remove-orphans
 }
 
 function command_help() {

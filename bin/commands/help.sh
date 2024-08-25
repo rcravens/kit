@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
 
 function display_banner {
-    printf "%s   ___  %s____    %s_____   %s_________  %s\n"      $RAINBOW $RESET
-    printf "%s  |_  ||%s_  _|  |%s_   _| |%s  _   _  | %s\n"      $RAINBOW $RESET
-    printf "%s    | |_%s/ /     %s | |   |%s_/ | | \_| %s\n"      $RAINBOW $RESET
-    printf "%s    |  _%s_'.     %s | |    %s   | |     %s\n"      $RAINBOW $RESET
-    printf "%s   _| | %s \ \_   %s_| |_   %s  _| |_    %s\n"      $RAINBOW $RESET
-    printf "%s  |____|%s|____| |%s_____|  %s |_____|   %s\n"      $RAINBOW $RESET
-    printf "%s        %s        %s        %s           %s\n"      $RAINBOW $RESET
-    echo
+    echo_blue "   ___  ____    _____   _________  "
+    echo_blue "  |_  ||_  _|  |_   _| |  _   _  | "
+    echo_blue "    | |_/ /      | |   |_/ | | \_| "
+    echo_blue "    |  __'.      | |       | |     "
+    echo_blue "   _| |  \ \_   _| |_     _| |_    "
+    echo_blue "  |____||____| |_____|   |_____|   "
+    echo_blue "                                   "
   }
 
   function command_run {
-    if [ -z "$2" ] && [ "$1" == "help" ]; then
+    if [ "$ARGS" == "help" ]; then
        command_help
        command_help_details
        return 1
@@ -22,11 +21,12 @@ function display_banner {
     echo -e "${BOLD}🚀 Laravel Starter Kit 🚀${RESET}"
     echo
     echo_yellow "Usage:"
-    echo "  kit [prod] COMMAND [options] [arguments]"
+    echo "  kit [app] [env] COMMAND [options] [arguments]"
     echo
     echo "examples:"
     echo_example "kit build" "Build the application"
     echo_example "kit prod build" "Build the production version of the application"
+    echo_example "kit abc prod build" "Build the production version of the abc application"
     echo
 
     echo_yellow "💥 Command List:"
@@ -36,42 +36,20 @@ function display_banner {
       command_help
     done
 
-#    echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-#
-#    GENERAL_COMMANDS=('create' 'build' 'start' 'open' 'migrate' 'stop' 'restart' 'destroy' 'horizon' 'cron' 'ssh' 'ps')
-#    for COMMAND in "${GENERAL_COMMANDS[@]}";
-#    do
-#      COMMAND_FILE="$BIN_DIRECTORY/commands/$COMMAND.sh"
-#      source "$COMMAND_FILE"
-#      CMD="${COMMAND}_help"
-#      eval "$CMD"
-#      #echo_command "kit ${COMMAND}" "${HELP}"
-#    done
-#
-#    OTHER_COMMANDS=('artisan' 'composer' 'npm')
-#    for COMMAND in "${OTHER_COMMANDS[@]}";
-#    do
-#      CAP_COMMAND=$(capitalize "$COMMAND")
-#      echo
-#      echo_yellow "💥 ${CAP_COMMAND} Commands:"
-#      COMMAND_FILE="$BIN_DIRECTORY/commands/$COMMAND.sh"
-#      source "$COMMAND_FILE"
-#      HELP="${COMMAND}_help"
-#      eval "$HELP"
-#      EXAMPLES="${COMMAND}_example"
-#      eval "$EXAMPLES"
-#    done
-#
-#    echo_yellow "💥 Docker Container Registry Commands:"
-#    COMMAND_FILE="$BIN_DIRECTORY/commands/$COMMAND.sh"
-#    source "$COMMAND_FILE"
-#    HELP="${COMMAND}_help"
-#    eval "$HELP"
-#    EXAMPLES="${COMMAND}_example"
-#    eval "$EXAMPLES"
-#    echo_command "kit push <TAG>" "Push an image to the registry"
-#    echo_example "kit prod push"
-#    echo_example "kit prod push v1.1"
+    echo_divider
+    echo -e "${BOLD} 👉 Application Specific Commands ${RESET}"
+    for APP_DIR in $APPS_DIRECTORY/*
+    do
+      APP=$(basename "$APP_DIR")
+      echo "Application Specific Commands: $APP"
+      echo_example "kit $APP [env] [command] [args]"
+      for COMMAND_FILE in $APP_DIR/bin/commands/*
+      do
+        source "$COMMAND_FILE"
+        command_help
+      done
+      echo_divider
+    done
 
     echo
     exit 1

@@ -14,7 +14,7 @@ function command_run {
         fi
     fi
 
-    if [ ! "${IS_PROD}" ]; then
+    if [ "$ENV" == "dev" ]; then
         # Create code directory outside of image to share as a volume
         if [ ! -d "${PATH_TO_CODE}" ]; then
             echo_yellow "Creating directory ${PATH_TO_CODE}"

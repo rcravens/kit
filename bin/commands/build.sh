@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
 function command_run {
-    if [ -z "$2" ] && [ "$1" == "help" ]; then
+    if [ "$ARGS" == "help" ]; then
        command_help
        command_help_details
        return 1
     fi
 
-    if [ -z "$1" ]; then
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" build "${ENTRY_SERVICE}"
+    if [ -z "$ARGS" ]; then
+        run_docker_compose build "${ENTRY_SERVICE}"
     else
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" build "$@"
+        run_docker_compose build $ARGS
     fi
 }
 

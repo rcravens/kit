@@ -25,7 +25,9 @@ if [ -d "${APPS_DIRECTORY}/${APP}" ]; then
   shift 1
 else
   # If first argument is not a directory in /apps, default to first app in /apps directory and shift variables
-  APP=$(ls -1 "$APPS_DIRECTORY")
+  APP_DIR=$(ls -d "$APPS_DIRECTORY"/* | head -1)
+  echo "APP_DIR: $APP_DIR"
+  APP=$(basename "$APP_DIR")
   ENV="$1"
   COMMAND="$2"
 fi

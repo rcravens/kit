@@ -3,5 +3,5 @@
 database/data
 .idea
 deploy.yml
-apps/*
 _delete_me/*
+apps/*

@@ -28,9 +28,9 @@ function command_run {
 
             echo_yellow "Cloning Laravel Project From: ${CODE_REPO_URL}"
             git clone "${CODE_REPO_URL}" "${PATH_TO_CODE}"
-            if [ "$IS_DELETE_GIT_DIRECTORY" = true ]; then
+            if $IS_DELETE_GIT_DIRECTORY; then
                echo_yellow "Deleting the cloned Git repository"
-               rm -rf "${PATH_TO_CODE}/.git"
+               //rm -rf "${PATH_TO_CODE}/.git"
             fi
 
             if [ ! -f "${PATH_TO_CODE}/.env" ]; then

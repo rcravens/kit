@@ -8,7 +8,7 @@ function command_run {
     fi
 
     TEMPLATE_TYPE="$1"
-    APP_NAME="$2"
+    export APP_NAME="$2"
     shift 2
 
     TEMPLATE_DIRECTORY="$TEMPLATES_DIRECTORY/$TEMPLATE_TYPE"
@@ -18,9 +18,24 @@ function command_run {
       exit 1
     fi
 
-    APP_DIRECTORY="$APPS_DIRECTORY/$APP_NAME"
+    # Collect information for this template from the user
+    # APP_NAME
+    if [ -z "$APP_NAME" ]; then
+      read -p "Enter the application short name [aaa]: " APP_NAME
+      APP_NAME="${APP_NAME:-aaa}"
+    fi
+
+    # CODE_REPO_URL
+    read -p "Enter the Git repository URL [$TEMPLATE_TYPE default]: " CODE_REPO_URL
+
+
+
+    # Validate the CODE_REPO_URL format
+    export APP_DIRECTORY="$APPS_DIRECTORY/$APP_NAME"
+    echo "APP_NAME: $APP_NAME"
     echo "APP_DIRECTORY: $APP_DIRECTORY"
     echo "TEMPLATE_DIRECTORY: $TEMPLATE_DIRECTORY"
+    echo "CODE_REPO_URL: $CODE_REPO_URL"
 
     # Force delete the existing application from the apps directory
     if [ -n "$1" ]; then
@@ -37,7 +52,13 @@ function command_run {
       echo "An application with this name already exists."
     fi
 
+    # Call the new_init.sh script for the template
+    if [ -f "$APP_DIRECTORY/bin/new_init.sh" ]; then
+      export CODE_REPO_URL
+     . "$APP_DIRECTORY/bin/new_init.sh"
+    fi
 
+    echo_green "Application '$APP_NAME' created successfully."
 }
 
 function command_help() {

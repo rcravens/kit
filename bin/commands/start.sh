@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
 function command_run {
-    echo "COMMAND: $COMMAND"
-    echo "ARGS: $ARGS"
-
     if [ "$ARGS" == "help" ]; then
        command_help
        command_help_details

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function command_run {
-    if [ -z "$2" ] && [ "$1" == "help" ]; then
+    if [ "$ARG" == "help" ]; then
        command_help
        command_help_details
        return 1
@@ -62,11 +62,10 @@ function command_run {
     fi
 
     echo_yellow "Building the Docker images"
-    docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" build "${ENTRY_SERVICE}"
-#        docker compose -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build --no-cache ${ENTRY_SERVICE}
+    run_docker_compose build "${ENTRY_SERVICE}"
 
     echo_yellow "Starting the application"
-    source "start.sh"
+    source "$BIN_DIRECTORY/commands/start.sh"
     command_run "$@"
 
     if [ -f "/etc/hosts" ]; then
@@ -83,7 +82,7 @@ function command_run {
     fi
 
     echo_yellow "Opening browser tab"
-    source "open.sh"
+    source "$BIN_DIRECTORY/commands/open.sh"
     command_run "$@"
 }
 

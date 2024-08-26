@@ -43,7 +43,7 @@ fi
 
 # Shift off the command to leave just the args variable
 shift 1
-ARGS="$@"
+ARGS=$#
 
 export APP_DIRECTORY="${APPS_DIRECTORY}/${APP}"
 export ENV_FILE="$APP_DIRECTORY/.env.${ENV}"
@@ -82,7 +82,7 @@ else
   COMMAND_FILE="$BIN_DIRECTORY/commands/$COMMAND.sh"
   if [ -f "$COMMAND_FILE" ]; then
       source "$COMMAND_FILE"
-      command_run "$*"
+      command_run "$@"
   else
       source "$BIN_DIRECTORY/commands/help.sh"
       command_run "$@"

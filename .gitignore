@@ -1,8 +1,9 @@
 .env
 .env.prod
+.env.stage
+.env.dev
 database/data
 .idea
 deploy.yml
 _delete_me/*
-apps/abc
-apps/ddd
+apps

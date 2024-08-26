@@ -1,7 +1,0 @@
-.env
-.env.prod
-.env.stage
-.env.dev
-database/data
-.idea
-deploy.yml

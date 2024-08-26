@@ -1,32 +1,28 @@
 #!/usr/bin/env bash
 
 function command_run {
-    if [ "$ARG" == "help" ]; then
+    if [ -z "$1" ] || [ "$ARG" == "help" ]; then
        command_help
        command_help_details
-       return 1
+       exit 1
     fi
 
     TEMPLATE_TYPE="$1"
     APP_NAME="$2"
     shift 2
 
-    case "$TEMPLATE_TYPE" in
-      "laravel" )
-        TEMPLATE_REPO="https://github.com/rcravens/kit-laravel-template"
-        ;;
-      *)
-        echo_red "Unsupported template type: $TEMPLATE_TYPE"
-        command_help
-        return 1
-        ;;
-    esac
+    TEMPLATE_DIRECTORY="$TEMPLATES_DIRECTORY/$TEMPLATE_TYPE"
+    if [ ! -d "$TEMPLATE_DIRECTORY" ]; then
+      echo_red "The '$TEMPLATE_TYPE' template does not exist."
+      command_help_details
+      exit 1
+    fi
 
     APP_DIRECTORY="$APPS_DIRECTORY/$APP_NAME"
     echo "APP_DIRECTORY: $APP_DIRECTORY"
-    echo "TEMPLATE_REPO: $TEMPLATE_REPO"
-    echo "TEMPLATE_TYPE: $TEMPLATE_TYPE"
+    echo "TEMPLATE_DIRECTORY: $TEMPLATE_DIRECTORY"
 
+    # Force delete the existing application from the apps directory
     if [ -n "$1" ]; then
         if [ "$1" == "force" ] || [ "$1" == "-f" ] || [ "$1" == "-force" ] || [ "$1" == "--force" ]; then
             echo_red "Deleting apps directory: ${APP_DIRECTORY}"
@@ -34,12 +30,14 @@ function command_run {
         fi
     fi
 
+    # Create the new application from the template
     if [ ! -d "$APP_DIRECTORY" ]; then
-      git clone -b master --depth 1 --single-branch $TEMPLATE_REPO "$APP_DIRECTORY"
-      rm -rf "$APP_DIRECTORY/.git"
+      cp -a "$TEMPLATE_DIRECTORY" "$APP_DIRECTORY"
     else
       echo "An application with this name already exists."
     fi
+
+
 }
 
 function command_help() {
@@ -48,7 +46,11 @@ function command_help() {
 
 function command_help_details() {
     echo_divider
-    echo "Examples:"
-    echo_example "kit new laravel [APP NAME]" "Creates a new Laravel application."
+    echo "Available Templates:"
+    for TEMP_DIR in $TEMPLATES_DIRECTORY/*
+    do
+      TEMPLATE=$(basename "$TEMP_DIR")
+      echo_example "kit new $TEMPLATE [APP NAME]"
+    done
     echo_divider
 }

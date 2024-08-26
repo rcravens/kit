@@ -3,6 +3,7 @@
 export ROOT_DIRECTORY="$PWD"
 export BIN_DIRECTORY="$PWD/bin"
 export APPS_DIRECTORY="$PWD/apps"
+export TEMPLATES_DIRECTORY="$PWD/templates"
 
 source "$BIN_DIRECTORY/helpers/color_helpers.sh"
 source "$BIN_DIRECTORY/helpers/functions.sh"
@@ -77,15 +78,18 @@ function run_docker_compose()
 COMMAND_FILE="${APP_DIRECTORY}/bin/commands/${COMMAND}.sh"
 if [ -f "$COMMAND_FILE" ]; then
   source "$COMMAND_FILE"
+  # shellcheck disable=SC2086
   command_run $ARGS
 else
   # Next look into the main directory for kit commands
   COMMAND_FILE="$BIN_DIRECTORY/commands/$COMMAND.sh"
   if [ -f "$COMMAND_FILE" ]; then
       source "$COMMAND_FILE"
-      command_run "$ARGS"
+      # shellcheck disable=SC2086
+      command_run $ARGS
   else
       source "$BIN_DIRECTORY/commands/help.sh"
-      command_run "$ARGS"
+      # shellcheck disable=SC2086
+      command_run $ARGS
   fi
 fi

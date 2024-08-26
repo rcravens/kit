@@ -30,7 +30,7 @@ function display_banner {
     echo
 
     echo_yellow "💥 Command List:"
-    for COMMAND_FILE in $BIN_DIRECTORY/commands/*
+    for COMMAND_FILE in $BIN_DIRECTORY/commands/*.sh
     do
       source "$COMMAND_FILE"
       command_help
@@ -43,7 +43,7 @@ function display_banner {
       APP=$(basename "$APP_DIR")
       echo "Application Specific Commands: $APP"
       echo_example "kit $APP [env] [command] [args]"
-      for COMMAND_FILE in $APP_DIR/bin/commands/*
+      for COMMAND_FILE in $APP_DIR/bin/commands/*.sh
       do
         source "$COMMAND_FILE"
         command_help

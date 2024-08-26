@@ -10,7 +10,7 @@ function command_run {
     run_docker_compose up -d "${ENTRY_SERVICE}"
 
     # If not production...ensure php application is initialized
-    if [[ ! -d "${APP_DIRECTORY}/${PATH_TO_CODE}/vendor"  && $ENV == 'dev' ]]; then
+    if [[ ! -d "${PATH_TO_CODE}/vendor"  && $ENV == 'dev' ]]; then
         echo -e "Running composer install (missing directory: ${YELLOW}${PATH_TO_CODE}/vendor)${RESET}"
         run_docker_compose exec -it "${ENTRY_SERVICE}" php /bin/composer.phar install
         run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan key:generate
@@ -18,7 +18,7 @@ function command_run {
     fi
 
     # If not production...ensure node application is initialized
-    if [[ ! -d "${APP_DIRECTORY}/${PATH_TO_CODE}/node_modules" && $ENV == 'dev' ]]; then
+    if [[ ! -d "${PATH_TO_CODE}/node_modules" && $ENV == 'dev' ]]; then
         echo -e "Running npm install & npm build (missing directory: ${YELLOW}${PATH_TO_CODE}/node_modules)${REST}"
         run_docker_compose exec -it "${ENTRY_SERVICE}" npm install
         run_docker_compose exec -it "${ENTRY_SERVICE}" npm run build

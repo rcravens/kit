@@ -20,12 +20,18 @@ function command_run {
             echo_yellow "Creating directory ${PATH_TO_CODE}"
             mkdir -p "${PATH_TO_CODE}"
 
+            IS_DELETE_GIT_DIRECTORY=false
             if [ -z "${CODE_REPO_URL}" ]; then
                 CODE_REPO_URL="https://github.com/laravel/laravel.git"
+                IS_DELETE_GIT_DIRECTORY=true
             fi
 
             echo_yellow "Cloning Laravel Project From: ${CODE_REPO_URL}"
             git clone "${CODE_REPO_URL}" "${PATH_TO_CODE}"
+            if [ "$IS_DELETE_GIT_DIRECTORY" = true ]; then
+               echo_yellow "Deleting the cloned Git repository"
+               rm -rf "${PATH_TO_CODE}/.git"
+            fi
 
             if [ ! -f "${PATH_TO_CODE}/.env" ]; then
                 if [ -f "${LARAVEL_ENV_FILE}" ]; then

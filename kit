@@ -21,7 +21,6 @@ export COMMAND="$3"
 
 if [ -d "${APPS_DIRECTORY}/${APP}" ]; then
   # Found a valid app. Shift arguments to prepare for ARGS="$@" line below
-  echo "found directory: $APP"
   shift 1
 else
   # If first argument is not a directory in /apps, default to first app in /apps directory and shift variables
@@ -43,10 +42,11 @@ fi
 
 # Shift off the command to leave just the args variable
 shift 1
-ARGS=$#
+ARGS=$@
 
 export APP_DIRECTORY="${APPS_DIRECTORY}/${APP}"
 export ENV_FILE="$APP_DIRECTORY/.env.${ENV}"
+export PATH_TO_CODE="$ROOT_DIRECTORY/../code/${APP}"
 
 # TEMPLATE - allow the application template to set environment variables
 if [ -f "$APP_DIRECTORY/bin/set_env.sh" ]; then
@@ -56,8 +56,9 @@ fi
 # Debugging lines (normally keep this commented out)
 echo_divider
 echo_blue "APP: $APP, ENV: $ENV, COMMAND: $COMMAND, ARGS: $ARGS"
-echo_blue "APP_DIRECTORY: ${APP_DIRECTORY}"
+echo_blue "APP_DIRECTORY: $APP_DIRECTORY"
 echo_blue "ENTRY_SERVICE: $ENTRY_SERVICE"
+echo_blue "PATH_TO_CODE: $PATH_TO_CODE"
 echo_divider
 
 # Make variables in the ENV_FILE accessible to the script
@@ -76,15 +77,15 @@ function run_docker_compose()
 COMMAND_FILE="${APP_DIRECTORY}/bin/commands/${COMMAND}.sh"
 if [ -f "$COMMAND_FILE" ]; then
   source "$COMMAND_FILE"
-  command_run "$*"
+  command_run $ARGS
 else
   # Next look into the main directory for kit commands
   COMMAND_FILE="$BIN_DIRECTORY/commands/$COMMAND.sh"
   if [ -f "$COMMAND_FILE" ]; then
       source "$COMMAND_FILE"
-      command_run "$@"
+      command_run "$ARGS"
   else
       source "$BIN_DIRECTORY/commands/help.sh"
-      command_run "$@"
+      command_run "$ARGS"
   fi
 fi

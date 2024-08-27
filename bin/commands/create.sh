@@ -29,8 +29,8 @@ function command_run {
             echo_yellow "Cloning Laravel Project From: ${CODE_REPO_URL}"
             git clone "${CODE_REPO_URL}" "${PATH_TO_CODE}"
             if $IS_DELETE_GIT_DIRECTORY; then
-               echo_yellow "Deleting the cloned Git repository"
-               //rm -rf "${PATH_TO_CODE}/.git"
+               echo_yellow "Deleting the cloned .git repository"
+               rm -rf "${PATH_TO_CODE}/.git"
             fi
 
             if [ ! -f "${PATH_TO_CODE}/.env" ]; then
@@ -41,7 +41,7 @@ function command_run {
                     if [ -f "${PATH_TO_CODE}/.env.example" ]; then
                         echo_yellow "Creating the .env file from .env.example"
                         cp "${PATH_TO_CODE}"/.env.example "${PATH_TO_CODE}"/.env
-                        sed -i .bak "s|APP_NAME=Laravel|APP_NAME=${COMPOSE_PROJECT_NAME}|" "${PATH_TO_CODE}"/.env
+                        sed -i .bak "s|APP_NAME=Laravel|APP_NAME=${APP_NAME}|" "${PATH_TO_CODE}"/.env
                         sed -i .bak "s|APP_URL=.*|APP_URL=https://${APP_DOMAIN}:${HTTPS_ON_HOST}|" "${PATH_TO_CODE}"/.env
                         sed -i .bak "s|DB_CONNECTION=.*|DB_CONNECTION=mysql|" "${PATH_TO_CODE}"/.env
                         sed -i .bak "s|.*DB_HOST=.*|DB_HOST=mysql|" "${PATH_TO_CODE}"/.env
@@ -67,12 +67,17 @@ function command_run {
         fi
     fi
 
-    echo_yellow "Building the Docker images"
-    run_docker_compose build "${ENTRY_SERVICE}"
-
     echo_yellow "Starting the application"
-    source "$BIN_DIRECTORY/commands/start.sh"
-    command_run "$@"
+    eval "./kit ${APP} ${ENV} start"
+    # HACK: Don't understand why the original start fails to mount the volume
+    echo_yellow "Restarting the container to ensure the volume is mounted correctly....hackety hack..."
+    eval "./kit ${APP} ${ENV} stop"
+    eval "./kit ${APP} ${ENV} start"
+
+    # Call the build.sh script for the template
+    if [ -f "$APP_DIRECTORY/bin/build.sh" ]; then
+     . "$APP_DIRECTORY/bin/build.sh"
+    fi
 
     if [ -f "/etc/hosts" ]; then
         echo_yellow "Ensuring domain exists in host file"
@@ -88,8 +93,7 @@ function command_run {
     fi
 
     echo_yellow "Opening browser tab"
-    source "$BIN_DIRECTORY/commands/open.sh"
-    command_run "$@"
+    eval "./kit ${APP} ${ENV} open"
 }
 
 function command_help() {

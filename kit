@@ -56,37 +56,39 @@ fi
 
 # Debugging lines (normally keep this commented out)
 echo_divider
-echo_blue "APP: $APP, ENV: $ENV, COMMAND: $COMMAND, ARGS: $ARGS"
-echo_blue "APP_DIRECTORY: $APP_DIRECTORY"
-echo_blue "ENTRY_SERVICE: $ENTRY_SERVICE"
-echo_blue "PATH_TO_CODE: $PATH_TO_CODE"
+echo -e "${RED}NEW COMMAND:${RESET} APP: ${BLUE}$APP${RESET}, ENV: ${BLUE}$ENV${RESET}, COMMAND: ${BLUE}$COMMAND${RESET}, ARGS: ${BLUE}$ARGS${RESET}"
+#echo_blue "APP_DIRECTORY: $APP_DIRECTORY"
+#echo_blue "ENTRY_SERVICE: $ENTRY_SERVICE"
+#echo_blue "PATH_TO_CODE: $PATH_TO_CODE"
 echo_divider
 
 # Exit early if the ENV_FILE does not exist
-if [ ! -f "$ENV_FILE" ]; then
+if [ -n "$APP" ] && [ ! -f "$ENV_FILE" ]; then
   echo_red "The env file for the application does not exist!!"
   echo_red "Expected file here: $ENV_FILE"
   exit 1
 fi
 
 # Warn if code directory does not exist
-if [ ! -d "$PATH_TO_CODE" ]; then
+if [ "$COMMAND" != 'create' ] && [ ! -d "$PATH_TO_CODE" ]; then
   echo_yellow "No code for the application found!!"
   echo_yellow "Expected code here: $PATH_TO_CODE"
   echo_yellow "Try running the 'kit $APP create' command."
 fi
 
 # Make variables in the ENV_FILE accessible to the script
-set -a # automatically export all variables
-source "$ENV_FILE"
-set +a
+if [ -f "$ENV_FILE" ]; then
+  set -a # automatically export all variables
+  source "$ENV_FILE"
+  set +a
+fi
 
 # Helper function to run docker compose commands
 function run_docker_compose()
 {
-  set -o xtrace
+#  set -o xtrace
   docker compose -f "${APP_DIRECTORY}/docker-compose.yml" -f "${APP_DIRECTORY}/docker-compose.${ENV}.yml" --env-file "$ENV_FILE" "$@"
-  set +o xtrace
+#  set +o xtrace
 }
 
 # Handle the command

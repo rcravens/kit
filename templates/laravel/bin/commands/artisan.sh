@@ -6,7 +6,7 @@ function command_run {
        command_help_details
        return 1
     fi
-echo "xyz"
+
     run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan $ARGS
 }
 

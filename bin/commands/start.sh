@@ -7,22 +7,14 @@ function command_run {
        return 1
     fi
 
+#    echo "bin/commands/start.sh"
+#    echo "PATH_TO_CODE: $PATH_TO_CODE"
+#    echo "ENTRY_SERVICE: $ENTRY_SERVICE"
+#    echo "ARGS: $ARGS"
+#    ls -la $PATH_TO_CODE
+#    read -p "Pausing for user <ENTER>:" xxx
+
     run_docker_compose up -d "${ENTRY_SERVICE}"
-
-    # If not production...ensure php application is initialized
-    if [[ ! -d "${PATH_TO_CODE}/vendor"  && $ENV == 'dev' ]]; then
-        echo -e "Running composer install (missing directory: ${YELLOW}${PATH_TO_CODE}/vendor)${RESET}"
-        run_docker_compose exec -it "${ENTRY_SERVICE}" php /bin/composer.phar install
-        run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan key:generate
-        run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan migrate --force
-    fi
-
-    # If not production...ensure node application is initialized
-    if [[ ! -d "${PATH_TO_CODE}/node_modules" && $ENV == 'dev' ]]; then
-        echo -e "Running npm install & npm build (missing directory: ${YELLOW}${PATH_TO_CODE}/node_modules)${REST}"
-        run_docker_compose exec -it "${ENTRY_SERVICE}" npm install
-        run_docker_compose exec -it "${ENTRY_SERVICE}" npm run build
-    fi
 }
 
 function command_help() {

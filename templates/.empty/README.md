@@ -28,6 +28,8 @@ This allows you to differentiate Docker environments.
 
 Each template can provide additional commands to the kit platform. By following the `example.sh` format your commands will automatically be loaded for applications created from your template.
 
+If your project requires a build step (e.g., `composer install` or `npm install`) you can package the build commands into the `build.sh` example. This is currently setup for building a Laravel project, but can be adapted for your project. The `build.sh` command for the template is called when you call `kit new` for the template type.
+
 ## 💥 Environment Variables
 
 When a user runs a kit command for an application created by your template, the `set_env.sh` script is run early in the command life-cycle. This allows your template to define environment variables (or perform other initialization) that your commands will leverage. That allows you to factor our "common code" and place it in the `set_env.sh` script.

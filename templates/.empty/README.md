@@ -3,8 +3,8 @@
 To create your own template do the following:
 
 1. Create your Docker files.
-2. Create template kit commands.
-3. Set environment variables for your template.
+2. Create setup scripts for the application.
+3. Create template kit commands.
 
 ## 💥 Docker Files
 
@@ -24,12 +24,14 @@ Whe the kit calls docker command it will call it in the following format:
 
 This allows you to differentiate Docker environments.
 
+## 💥 Setup Scripts
+
+`bin/init.sh` - Initialize your application be collecting data, copying files, ...etc.
+`bin/create.sh` - If needed, create your application in the `../code/[APP_NAME]` directory. This should include git clone, and build steps.
+`bin/set_env.sh` - When a user runs a kit command for an application created by your template, this script is run early in the command life-cycle. This allows your template to define environment variables (or perform other initialization) that your commands will leverage. That allows you to factor our "common code" and place it in the `set_env.sh` script.
+
 ## 💥 Kit Commands
 
 Each template can provide additional commands to the kit platform. By following the `example.sh` format your commands will automatically be loaded for applications created from your template.
 
 If your project requires a build step (e.g., `composer install` or `npm install`) you can package the build commands into the `build.sh` example. This is currently setup for building a Laravel project, but can be adapted for your project. The `build.sh` command for the template is called when you call `kit new` for the template type.
-
-## 💥 Environment Variables
-
-When a user runs a kit command for an application created by your template, the `set_env.sh` script is run early in the command life-cycle. This allows your template to define environment variables (or perform other initialization) that your commands will leverage. That allows you to factor our "common code" and place it in the `set_env.sh` script.

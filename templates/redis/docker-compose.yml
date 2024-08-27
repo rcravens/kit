@@ -1,0 +1,7 @@
+services:
+  redis:
+    image: redis:${REDIS_VERSION}
+    container_name: ${APP_NAME}_redis_${APP_ENVIRONMENT}
+    ports:
+      - ${REDIS_ON_HOST}:6379
+

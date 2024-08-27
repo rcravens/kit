@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# CODE_REPO_URL
+read -p "${GREEN}Enter the Git repository URL [$TEMPLATE_TYPE default]: ${BLUE}" CODE_REPO_URL
+echo -e "${RESET}"
+export CODE_REPO_URL
+
 # Initialize a new Laravel application
 echo "laravel/new_init.sh"
 echo "APP_NAME: $APP_NAME"

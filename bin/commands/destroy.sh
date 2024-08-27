@@ -9,7 +9,7 @@ function command_run {
 
     echo_red "This action cannot be undone!!!"
     echo_red "You are about to delete the ${APP} app along with the local docker images, and code."
-    read -r -p "${1:-Are you sure? [y/N]} " response
+    read -r -p "Are you sure? [y/N]: " response
     case "$response" in
         [yY][eE][sS]|[yY])
             run_docker_compose down --rmi all -v --remove-orphans

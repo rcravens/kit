@@ -26,17 +26,12 @@ function command_run {
       read -p "${GREEN}Enter the application short name [aaa]: ${BLUE}" APP_NAME
       APP_NAME="${APP_NAME:-aaa}"
     fi
-
-    # CODE_REPO_URL
-    read -p "${GREEN}Enter the Git repository URL [$TEMPLATE_TYPE default]: ${BLUE}" CODE_REPO_URL
-    echo -e "${RESET}"
+    export APP_DIRECTORY="$APPS_DIRECTORY/$APP_NAME"
 
     # Validate the CODE_REPO_URL format
-    export APP_DIRECTORY="$APPS_DIRECTORY/$APP_NAME"
 #    echo "APP_NAME: $APP_NAME"
 #    echo "APP_DIRECTORY: $APP_DIRECTORY"
 #    echo "TEMPLATE_DIRECTORY: $TEMPLATE_DIRECTORY"
-#    echo "CODE_REPO_URL: $CODE_REPO_URL"
 
     # Force delete the existing application from the apps directory
     if [ -n "$1" ]; then
@@ -55,15 +50,19 @@ function command_run {
       exit 1
     fi
 
-    # Call the new_init.sh script for the template
-    if [ -f "$APP_DIRECTORY/bin/new_init.sh" ]; then
-      export CODE_REPO_URL
-     . "$APP_DIRECTORY/bin/new_init.sh"
+    # Call the init.sh script for the template to allow gathering of data an initializing the app
+    if [ -f "$APP_DIRECTORY/bin/init.sh" ]; then
+     . "$APP_DIRECTORY/bin/init.sh"
     fi
 
-    echo_green "Application '$APP_NAME' created successfully."
+    echo_green "Application '$APP_NAME' initialized."
 
-    eval "./kit ${APP_NAME} ${ENV} create"
+    if [ -f "$APP_DIRECTORY/bin/create.sh" ]; then
+      . "$APP_DIRECTORY/bin/create.sh"
+      #eval "./kit ${APP_NAME} ${ENV} create"
+    fi
+
+    echo_green "Application '$APP_NAME' started."
 }
 
 function command_help() {

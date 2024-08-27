@@ -90,10 +90,10 @@ function command_run {
 
     # Call the build.sh script for the template
     if [ -f "$APP_DIRECTORY/bin/commands/build.sh" ]; then
-      echo "Found a build file for this template."
+      echo_yellow "Found a build file for this template."
       eval "./kit ${APP} ${ENV} build"
     else
-      echo "No build file found for this template."
+      echo_yellow "No build file found for this template."
     fi
 
     echo_yellow "Opening browser tab"

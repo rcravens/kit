@@ -1,0 +1,16 @@
+services:
+
+  mysql:
+    #image: mariadb:${MARIADB_VERSION}
+    image: arm64v8/mysql:${MYSQL_VERSION}
+    container_name: ${APP_NAME}_mysql_${APP_ENVIRONMENT}
+    ports:
+      - ${MYSQL_ON_HOST}:3306
+    volumes:
+      - ./database/data/${APP_NAME}_data_${APP_ENVIRONMENT}:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}_${APP_ENVIRONMENT}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+

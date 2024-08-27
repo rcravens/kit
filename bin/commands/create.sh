@@ -74,11 +74,7 @@ function command_run {
     eval "./kit ${APP} ${ENV} stop"
     eval "./kit ${APP} ${ENV} start"
 
-    # Call the build.sh script for the template
-    if [ -f "$APP_DIRECTORY/bin/build.sh" ]; then
-     . "$APP_DIRECTORY/bin/build.sh"
-    fi
-
+    # Ensure host file has entry for this app
     if [ -f "/etc/hosts" ]; then
         echo_yellow "Ensuring domain exists in host file"
         matches_in_hosts="$(grep -n "${APP_DOMAIN}" /etc/hosts | cut -f1 -d:)"
@@ -90,6 +86,14 @@ function command_run {
         fi
     else
         echo_yellow "Host file not found. You may need to add the domain manually."
+    fi
+
+    # Call the build.sh script for the template
+    if [ -f "$APP_DIRECTORY/bin/commands/build.sh" ]; then
+      echo "Found a build file for this template."
+      eval "./kit ${APP} ${ENV} build"
+    else
+      echo "No build file found for this template."
     fi
 
     echo_yellow "Opening browser tab"

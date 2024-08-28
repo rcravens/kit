@@ -86,9 +86,9 @@ fi
 # Helper function to run docker compose commands
 function run_docker_compose()
 {
-#  set -o xtrace
+  set -o xtrace
   docker compose -f "${APP_DIRECTORY}/docker-compose.yml" -f "${APP_DIRECTORY}/docker-compose.${ENV}.yml" --env-file "$ENV_FILE" "$@"
-#  set +o xtrace
+  set +o xtrace
 }
 
 # Handle the command

@@ -7,7 +7,14 @@ function command_run {
        return 1
     fi
 
-    URL="https://${APP_DOMAIN}:${HTTPS_ON_HOST}"
+    echo "HTTPS_ON_HOST: ${HTTPS_ON_HOST}"
+    echo "HTTP_ON_HOST: ${HTTP_ON_HOST}"
+
+    if [ -n "${HTTPS_ON_HOST}" ]; then
+      URL="https://${APP_DOMAIN}:${HTTPS_ON_HOST}"
+    else
+      URL="http://${APP_DOMAIN}:${HTTP_ON_HOST}"
+    fi
     open "${URL}"
 }
 

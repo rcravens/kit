@@ -13,25 +13,17 @@ RUN apt-get install -y libgdal-dev
 
 RUN pip install --upgrade pip
 
-RUN pip install Django
+RUN pip install Django nano
+
+# CREATE CODE DIRECTORY
+RUN mkdir -p /app/code
 
 ############################## dev ##############################
 FROM base_image AS dev
-#RUN <<EOF
-#apk update
-#apk add git
-#EOF
-#
-#RUN <<EOF
-#addgroup -S docker
-#adduser -S --shell /bin/bash --ingroup docker vscode
-#EOF
-## install Docker tools (cli, buildx, compose)
-#COPY --from=gloursdocker/docker / /
 
-WORKDIR /app
-COPY ./entry_point.sh /app/entry_point.sh
-
+WORKDIR /app/code
+#ENTRYPOINT ["python3"]
+#CMD ["manage.py", "runserver", "0.0.0.0:8000"]
 ############################## stage ##############################
 FROM base_image AS stage
 

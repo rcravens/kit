@@ -17,8 +17,8 @@ function command_run {
       run_docker_compose exec -it "${ENTRY_SERVICE}" python manage.py migrate
 
       # collect static files
-      echo -e "Collecting static files"
-      run_docker_compose exec -it "${ENTRY_SERVICE}" python manage.py collectstatic --noinput
+      #echo -e "Collecting static files"
+      #run_docker_compose exec -it "${ENTRY_SERVICE}" python manage.py collectstatic --noinput
     fi
 }
 

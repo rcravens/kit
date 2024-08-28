@@ -10,19 +10,12 @@ if [ "$ENV" == "dev" ]; then
     fi
 fi
 
-echo_yellow "Starting the application"
-eval "./kit ${APP_NAME} ${ENV} start"
-# HACK: Don't understand why the original start fails to mount the volume
-#echo_yellow "Restarting the container to ensure the volume is mounted correctly....hackety hack..."
-#eval "./kit ${APP_NAME} ${ENV} stop"
-#eval "./kit ${APP_NAME} ${ENV} start"
-
 if [ "$ENV" == "dev" ]; then
     # Create initial code
     if [ -z "${CODE_REPO_URL}" ]; then
         # Create a new Django application
-        run_docker_compose django-admin startproject ${APP} ${PATH_TO_CODE}
-        run_docker_compose pip freeze > requirements.txt
+        run_docker_compose run --rm "${ENTRY_SERVICE}" django-admin startproject ${APP} .
+        run_docker_compose run --rm "${ENTRY_SERVICE}" bash -c "pip freeze > requirements.txt"
     else
         # Clone an existing application
         echo_yellow "Cloning Project From: ${CODE_REPO_URL}"
@@ -30,8 +23,16 @@ if [ "$ENV" == "dev" ]; then
     fi
 fi
 
+
+echo_yellow "Starting the application"
+eval "./kit ${APP_NAME} ${ENV} start"
+# HACK: Don't understand why the original start fails to mount the volume
+#echo_yellow "Restarting the container to ensure the volume is mounted correctly....hackety hack..."
+#eval "./kit ${APP_NAME} ${ENV} stop"
+#eval "./kit ${APP_NAME} ${ENV} start"
+
 # Ensure host file has entry for this app
-eval "./kit host ${APP_DOMAIN}"
+eval "./kit ${APP_NAME} ${ENV} host"
 
 # Call the build.sh script for the template
 if [ -f "$APP_DIRECTORY/bin/commands/build.sh" ]; then

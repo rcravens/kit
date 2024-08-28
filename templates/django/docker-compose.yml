@@ -3,8 +3,10 @@ services:
   web:
     build:
       context: .
+      dockerfile: Dockerfile
       target: prod
       args:
+        - APP_NAME=${APP_NAME}
         - PYTHON_VERSION=${PYTHON_VERSION}
         - CODE_REPO_URL=${CODE_REPO_URL}
     ports:

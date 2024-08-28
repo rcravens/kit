@@ -57,6 +57,15 @@ function command_run {
      . "$APP_DIRECTORY/bin/init.sh"
     fi
 
+    # Reload the env files now that they are set by the init.sh
+    unset HTTPS_ON_HOST # This prevents kit open from using stale data
+    export ENV_FILE="$APP_DIRECTORY/.env.${ENV}"
+    if [ -f "$ENV_FILE" ]; then
+      set -a # automatically export all variables
+      source "$ENV_FILE"
+      set +a
+    fi
+
     echo_green "Application '$APP_NAME' initialized."
 
     if [ -f "$APP_DIRECTORY/bin/create.sh" ]; then

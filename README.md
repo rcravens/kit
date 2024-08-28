@@ -5,6 +5,10 @@ This is an easy-to-use application starter kit. The workflows from creating a ne
 This kit uses "templates" to allow the kit to manage workflows for a number of technology stacks. Right now the following templates are supported out-of-the-box:
 
 - Laravel (`kit new laravel`) - Read the `templates/laravel/README.md` for more details about this template.
+- Django (`kit new django`) - Read the `templates/django/README.md` for more details about this template.
+- MySQL (`kit new mysql`) - Read the `templates/mysql/README.md` for more details about this template.
+- PostgreSsQL (`kit new postresql`) - Read the `templates/postresql/README.md` for more details about this template.
+- Redis (`kit new redis`) - Read the `templates/redis/README.md` for more details about this template.
 
 There is a `templates/.empty` example that you can use to create a new technology stack. Checkout the `templates/.empty/README.md` file for details on how to create your own.
 

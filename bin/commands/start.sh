@@ -15,6 +15,10 @@ function command_run {
 #    read -p "Pausing for user <ENTER>:" xxx
 
     run_docker_compose up -d "${ENTRY_SERVICE}"
+
+    if [ -n "$APP_DOMAIN" ]; then
+      echo_green "Hostname: $APP_DOMAIN"
+    fi
 }
 
 function command_help() {

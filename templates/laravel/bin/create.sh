@@ -61,18 +61,7 @@ eval "./kit ${APP} ${ENV} stop"
 eval "./kit ${APP} ${ENV} start"
 
 # Ensure host file has entry for this app
-if [ -f "/etc/hosts" ]; then
-    echo_yellow "Ensuring domain exists in host file"
-    matches_in_hosts="$(grep -n "${APP_DOMAIN}" /etc/hosts | cut -f1 -d:)"
-    if [ -n "${matches_in_hosts}" ]; then
-        echo_yellow "Domain exists already"
-    else
-        sudo -- sh -c -e "echo '127.0.0.1       ${APP_DOMAIN}' >> /etc/hosts"
-        echo_yellow "Domain added"
-    fi
-else
-    echo_yellow "Host file not found. You may need to add the domain manually."
-fi
+eval "./kit host ${APP_DOMAIN}"
 
 # Call the build.sh script for the template
 if [ -f "$APP_DIRECTORY/bin/commands/build.sh" ]; then

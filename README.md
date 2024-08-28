@@ -15,9 +15,9 @@ There is a `templates/.empty` example that you can use to create a new technolog
 
 > [!NOTE]
 > Why another Docker based workflow? Two reasons:
-> 1. Enhanced Environment - I had a need to integrate with SQL Server, Active Directory, and other services where it was easier to have full control over the containers.
-> 2. Architecture - I believe that the code for the CI/CD or DevOps tooling does not belong in the same git repo as your application code.
-> 3. Template Based - I want to be able to use the same kit for many different frameworks.
+> - 👉 Template Based - I want to be able to use the same kit for many different frameworks. So no matter if you are developing in **Laravel** or **Django** or just need to spin up a quick **MySQL** data server, there are templates to support your needs.
+> - 👉 Enhanced Environment - The template provides the initial infrastructure as code. If needed, you can modify the image to add new features. For example, I had a need to integrate with SQL Server, Active Directory, and other services, so a quick modification of the Dockerfile got me where I needed to be.
+> - 👉 Architecture - I believe that the code for the CI/CD or DevOps tooling does not belong in the same git repo as your application code.
 
 ## 💥 Quick Start (Laravel Example)
 

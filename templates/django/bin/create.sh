@@ -1,16 +1,45 @@
 #!/usr/bin/env bash
 
-# Here you can perform any steps that need to happen to create the
-# application in the ../code/[APP_NAME] directory
+if [ "$ENV" == "dev" ]; then
+    # Create code directory outside of image to share as a volume
+    if [ ! -d "${PATH_TO_CODE}" ]; then
+        echo_yellow "Creating directory ${PATH_TO_CODE}"
+        mkdir -p "${PATH_TO_CODE}"
+    else
+        echo_yellow "Code directory already exists at: ${PATH_TO_CODE}"
+    fi
+fi
 
-# Here are a few example:
-# 1. Create the directory
-# 2. Git clone the code into the directory
-# 3. Install dependencies (if any)
-# 4. Run any necessary setup scripts
-
-# Take a look at the other templates to get some ideas.
-
-# End the end you can use the following to call 'kit start' to start your application
 echo_yellow "Starting the application"
 eval "./kit ${APP_NAME} ${ENV} start"
+# HACK: Don't understand why the original start fails to mount the volume
+#echo_yellow "Restarting the container to ensure the volume is mounted correctly....hackety hack..."
+#eval "./kit ${APP_NAME} ${ENV} stop"
+#eval "./kit ${APP_NAME} ${ENV} start"
+
+if [ "$ENV" == "dev" ]; then
+    # Create initial code
+    if [ -z "${CODE_REPO_URL}" ]; then
+        # Create a new Django application
+        run_docker_compose django-admin startproject ${APP} ${PATH_TO_CODE}
+        run_docker_compose pip freeze > requirements.txt
+    else
+        # Clone an existing application
+        echo_yellow "Cloning Project From: ${CODE_REPO_URL}"
+        git clone "${CODE_REPO_URL}" "${PATH_TO_CODE}"
+    fi
+fi
+
+# Ensure host file has entry for this app
+eval "./kit host ${APP_DOMAIN}"
+
+# Call the build.sh script for the template
+if [ -f "$APP_DIRECTORY/bin/commands/build.sh" ]; then
+  echo_yellow "Found a build file for this template."
+  eval "./kit ${APP_NAME} ${ENV} build"
+else
+  echo_yellow "No build file found for this template."
+fi
+
+echo_yellow "Opening browser tab"
+eval "./kit ${APP_NAME} ${ENV} open"

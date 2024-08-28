@@ -50,6 +50,8 @@ function command_run {
       exit 1
     fi
 
+    export PATH_TO_CODE="$ROOT_DIRECTORY/../code/${APP_NAME}"
+
     # Call the init.sh script for the template to allow gathering of data an initializing the app
     if [ -f "$APP_DIRECTORY/bin/init.sh" ]; then
      . "$APP_DIRECTORY/bin/init.sh"

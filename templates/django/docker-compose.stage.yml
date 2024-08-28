@@ -3,11 +3,6 @@ services:
   web:
     build:
       target: stage
-    image: ${REGISTRY_REPO}:${REGISTRY_DEPLOYED_VERSION}
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
+    container_name: ${APP_NAME}_django_${APP_ENVIRONMENT}
+    volumes:
+      - ./../../../code/${APP_NAME}:/app

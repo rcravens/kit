@@ -1,14 +1,43 @@
 #!/usr/bin/env bash
 
-# This gets called shortly after calling 'kit new'. At this point
-# the template has been copied into the "apps" directory under the
-# application name.
+# CODE_REPO_URL
+read -p "${GREEN}Enter the Git repository URL [$TEMPLATE_TYPE default]: ${RESET}" CODE_REPO_URL
+export CODE_REPO_URL
 
-# Here is a good place for you to to initialization steps. Here are a
-# few examples:
-# 1. You could collect data (e.g., port numbers, names, ... etc)
-# that you will use in the create.sh file to create the application
-# 2. You could copy the '.env.example' and create the '.env.dev', 'env.stage', and '.env.prod'
-# files and customize them according to your needs.
+# HTTP_ON_HOST
+read -p "${GREEN}Enter the external port [default: 8000]: ${RESET}" HTTP_ON_HOST
+HTTP_ON_HOST=${HTTP_ON_HOST:-8000}
+export HTTP_ON_HOST
 
-# Take a look at some other templates to get some ideas
+
+# Initialize a new Laravel application
+#echo "django/new_init.sh"
+#echo "APP_NAME: $APP_NAME"
+#echo "CODE_REPO_URL: $CODE_REPO_URL"
+#echo "APP_DIRECTORY: $APP_DIRECTORY"
+#echo "HTTP_ON_HOST: $HTTP_ON_HOST"
+
+# COPY .env.example to .env.dev
+cp "${APP_DIRECTORY}/.env.example" "${APP_DIRECTORY}/.env.dev"
+sed -i .bak "s|APP_NAME=.*|APP_NAME=${APP_NAME}|" "${APP_DIRECTORY}/.env.dev"
+sed -i .bak "s|APP_ENVIRONMENT=.*|APP_ENVIRONMENT=dev|" "${APP_DIRECTORY}/.env.dev"
+sed -i .bak "s|CODE_REPO_URL=.*|CODE_REPO_URL=${CODE_REPO_URL}|" "${APP_DIRECTORY}/.env.dev"
+sed -i .bak "s|HTTP_ON_HOST=.*|HTTP_ON_HOST=${HTTP_ON_HOST}|" "${APP_DIRECTORY}/.env.dev"
+rm "${APP_DIRECTORY}/.env.dev.bak"
+
+# COPY .env.example to .env.stage
+cp "${APP_DIRECTORY}/.env.example" "${APP_DIRECTORY}/.env.stage"
+sed -i .bak "s|APP_NAME=.*|APP_NAME=${APP_NAME}|" "${APP_DIRECTORY}/.env.stage"
+sed -i .bak "s|APP_ENVIRONMENT=.*|APP_ENVIRONMENT=stage|" "${APP_DIRECTORY}/.env.stage"
+sed -i .bak "s|CODE_REPO_URL=.*|CODE_REPO_URL=${CODE_REPO_URL}|" "${APP_DIRECTORY}/.env.stage"
+sed -i .bak "s|HTTP_ON_HOST=.*|HTTP_ON_HOST=${HTTP_ON_HOST}|" "${APP_DIRECTORY}/.env.stage"
+rm "${APP_DIRECTORY}/.env.stage.bak"
+
+# COPY .env.example to .env.prod
+cp "${APP_DIRECTORY}/.env.example" "${APP_DIRECTORY}/.env.prod"
+sed -i .bak "s|APP_NAME=.*|APP_NAME=${APP_NAME}|" "${APP_DIRECTORY}/.env.prod"
+sed -i .bak "s|APP_ENVIRONMENT=.*|APP_ENVIRONMENT=prod|" "${APP_DIRECTORY}/.env.prod"
+sed -i .bak "s|CODE_REPO_URL=.*|CODE_REPO_URL=${CODE_REPO_URL}|" "${APP_DIRECTORY}/.env.prod"
+sed -i .bak "s|HTTP_ON_HOST=.*|HTTP_ON_HOST=${HTTP_ON_HOST}|" "${APP_DIRECTORY}/.env.prod"
+rm "${APP_DIRECTORY}/.env.prod.bak"
+

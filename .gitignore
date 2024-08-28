@@ -7,3 +7,4 @@ database/data
 deploy.yml
 _delete_me/*
 apps
+templates/django_old

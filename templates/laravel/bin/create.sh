@@ -54,22 +54,22 @@ if [ "$ENV" == "dev" ]; then
 fi
 
 echo_yellow "Starting the application"
-eval "./kit ${APP} ${ENV} start"
+eval "./kit ${APP_NAME} ${ENV} start"
 # HACK: Don't understand why the original start fails to mount the volume
 echo_yellow "Restarting the container to ensure the volume is mounted correctly....hackety hack..."
-eval "./kit ${APP} ${ENV} stop"
-eval "./kit ${APP} ${ENV} start"
+eval "./kit ${APP_NAME} ${ENV} stop"
+eval "./kit ${APP_NAME} ${ENV} start"
 
 # Ensure host file has entry for this app
-eval "./kit host ${APP_DOMAIN}"
+eval "./kit ${APP_NAME} ${ENV} host"
 
 # Call the build.sh script for the template
 if [ -f "$APP_DIRECTORY/bin/commands/build.sh" ]; then
   echo_yellow "Found a build file for this template."
-  eval "./kit ${APP} ${ENV} build"
+  eval "./kit ${APP_NAME} ${ENV} build"
 else
   echo_yellow "No build file found for this template."
 fi
 
 echo_yellow "Opening browser tab"
-eval "./kit ${APP} ${ENV} open"
+eval "./kit ${APP_NAME} ${ENV} open"

@@ -9,13 +9,13 @@ function command_run {
 
     if [ "$ENV" == "dev" ]; then
       # If not production...ensure php application is initialized
-      echo -e "Running composer install (missing directory: ${YELLOW}${PATH_TO_CODE}/vendor)${RESET}"
+      echo -e "Running composer install"
       run_docker_compose exec -it "${ENTRY_SERVICE}" php /bin/composer.phar install
       run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan key:generate
       run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan migrate --force
 
       # If not production...ensure node application is initialized
-      echo -e "Running npm install & npm build (missing directory: ${YELLOW}${PATH_TO_CODE}/node_modules)${RESET}"
+      echo -e "Running npm install & npm build"
       run_docker_compose exec -it "${ENTRY_SERVICE}" npm install
       run_docker_compose exec -it "${ENTRY_SERVICE}" npm run build
     fi

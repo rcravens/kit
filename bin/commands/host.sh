@@ -7,23 +7,16 @@ function command_run {
        exit 1
     fi
 
-    if [ -z "$1" ]; then
-      echo_red "Missing host_name"
-      command_help
-      command_help_details
-      exit 1
-    fi
-
-    host_name="$1"
+    echo "${APP_DOMAIN}"
 
     # Ensure host file has entry for this app
     if [ -f "/etc/hosts" ]; then
         echo_yellow "Ensuring domain exists in host file"
-        matches_in_hosts="$(grep -n "${host_name}" /etc/hosts | cut -f1 -d:)"
+        matches_in_hosts="$(grep -n "${APP_DOMAIN}" /etc/hosts | cut -f1 -d:)"
         if [ -n "${matches_in_hosts}" ]; then
             echo_blue "Domain exists already"
         else
-            sudo -- sh -c -e "echo '127.0.0.1       ${host_name}' >> /etc/hosts"
+            sudo -- sh -c -e "echo '127.0.0.1       ${APP_DOMAIN}' >> /etc/hosts"
             echo_blue "Domain added"
         fi
     else

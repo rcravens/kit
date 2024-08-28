@@ -4,43 +4,6 @@ services:
     build:
       target: dev
     container_name: ${APP_NAME}_django_${APP_ENVIRONMENT}
-    depends_on:
-      - postgres
-      - redis
     volumes:
-      - ./../../../code/${APP_NAME}:/app/code
-    networks:
-      - app_network
-
-  postgres:
-    image: kartoza/postgis:$POSTGRES_MAJOR_VERSION-$POSTGIS_MAJOR_VERSION.${POSTGIS_MINOR_RELEASE}
-    container_name: ${APP_NAME}_postgres_${APP_ENVIRONMENT}
-    volumes:
-      - ./database/data/${APP_NAME}_data_${APP_ENVIRONMENT}:/var/lib/postgresql
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASS=${POSTGRES_PASSWORD}
-      - ALLOW_IP_RANGE=0.0.0.0/0
-      - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting
-    ports:
-      - ${POSTGRES_ON_HOST}:5432
-    restart: on-failure
-    healthcheck:
-      test: "PGPASSWORD=$${POSTGRES_PASS} pg_isready -h 127.0.0.1 -U docker -d gis"
-    networks:
-      - app_network
-
-  redis:
-    restart: unless-stopped
-    image: redis:${REDIS_VERSION}
-    container_name: ${APP_NAME}_redis_${APP_ENVIRONMENT}
-    ports:
-      - ${REDIS_ON_HOST}:6379
-    networks:
-      - app_network
-
-networks:
-  app_network:
-    name: ${APP_NAME}_${APP_ENVIRONMENT}
-    driver: bridge
+      - ./../../../code/${APP_NAME}:/app
+    entrypoint: [ "bash", "/app/entry_point.sh" ]

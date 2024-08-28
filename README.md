@@ -2,6 +2,13 @@
 
 This is an easy-to-use application starter kit. The workflows from creating a new application, doing development, and managing dev, stage, and prod environments are included.
 
+> [!NOTE]
+> Why another Docker based workflow? Two reasons:
+> - 👉 Template Based - I want to be able to use the same kit for many different frameworks. So no matter if you are developing in **Laravel** or **Django** or just need to spin up a quick **MySQL** data server, there are templates to support your needs.
+> - 👉 Enhanced Environment - The template provides the initial infrastructure as code. If needed, you can modify the image to add new features. For example, I had a need to integrate with SQL Server, Active Directory, and other services, so a quick modification of the Dockerfile got me where I needed to be.
+> - 👉 Architecture - I believe that the code for the CI/CD or DevOps tooling does not belong in the same git repo as your application code.
+
+
 This kit uses "templates" to allow the kit to manage workflows for a number of technology stacks. Right now the following templates are supported out-of-the-box:
 
 - Laravel (`kit new laravel`) - Read the `templates/laravel/README.md` for more details about this template.
@@ -12,30 +19,29 @@ This kit uses "templates" to allow the kit to manage workflows for a number of t
 
 There is a `templates/.empty` example that you can use to create a new technology stack. Checkout the `templates/.empty/README.md` file for details on how to create your own.
 
+## 💥 Quick Start
 
-> [!NOTE]
-> Why another Docker based workflow? Two reasons:
-> - 👉 Template Based - I want to be able to use the same kit for many different frameworks. So no matter if you are developing in **Laravel** or **Django** or just need to spin up a quick **MySQL** data server, there are templates to support your needs.
-> - 👉 Enhanced Environment - The template provides the initial infrastructure as code. If needed, you can modify the image to add new features. For example, I had a need to integrate with SQL Server, Active Directory, and other services, so a quick modification of the Dockerfile got me where I needed to be.
-> - 👉 Architecture - I believe that the code for the CI/CD or DevOps tooling does not belong in the same git repo as your application code.
+### 👉 Docker Environment
 
-## 💥 Quick Start (Laravel Example)
+To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system.
 
-> [!TIP]
-> In the docs below you will see reference to commands like `./kit <COMMAND>`. To make this a bit easier I add the following alias `alias kit=./kit` so that the commands shorten to `kit <COMMAND>` Or run the `bin/install.sh` script to automate that process.
+### Install the kit
 
-1. Setup directory structure and clone this repo:
+Setup directory structure and clone this repo:
 
-- `mkdir project`
-- `cd projects`
-- `git clone https://github.com/rcravens/docker_starter_for_laravel.git docker`
-- `cd docker`
-- `./bin/install.sh` ‼️ this creates a `kit` alias that you can use ‼️
+1. `mkdir project`
+2. `cd projects`
+3. `git clone https://github.com/rcravens/docker_starter_for_laravel.git docker`
+4. `cd docker`
+5. `./bin/install.sh` ‼️ this creates a `kit` alias that you can use ‼️
+
+### Use a template to create an application
 
 2. Create a new Laravel application
 
-- `kit new laravel`
-- Provide the "application name" (e.g., app1) and "git repo url" (e.g., https://github.com/rcravens/laravel_demo.git).
+`kit new` will list out all the available templates. For example to create a Laravel application:
+
+1. `kit new laravel` and answer the on-screen questions....that's it!
 
 > [!IMPORTANT]
 > The `kit new laravel` command will do all the following automatically:
@@ -58,33 +64,7 @@ There is a `templates/.empty` example that you can use to create a new technolog
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qbdOO7pnJrU/0.jpg)](https://www.youtube.com/watch?v=qbdOO7pnJrU)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GwgwgoWCm8Q/0.jpg)](https://www.youtube.com/watch?v=GwgwgoWCm8Q)
 
-## 💥 Getting Started
-
-### 👉 Docker Environment
-
-To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system.
-
-When you create a new application from a template, the `.env.example` is copied automatically to `.env.dev`, `.env.stage`, `.env.prod` and reasonable initial values are set. Feel free to adjust the following variables for each environment:
-
-#### Application Settings
-
-- `APP_NAME=abc_app` Used in the docker-compose.yml file to namespace the services, domains, and code directories.
-- `APP_ENVIRONMENT=dev` Where `dev` could also be `stage` or `prod`. Combined with the `APP_NAME` in the docker-compose.yml file to namespace the services, domains, and code directories.
-- `APP_DOMAIN=${COMPOSE_PROJECT_NAME}.local` Used in the nginx service to automatically create a self-signed certificate for this domain.
-- `CODE_REPO_URL=` Git repo used with the `./kit create` command. If not specified, the Laravel Github repo is used.
-
-> [!NOTE]
-> There are a number of other variables in each `.env.XXX` file. These are used inside the template. For more information on these read the `README.md` file for the template.
-
-### 👉 Hosts File
-
-The host file should automatically be updated for you. In case, that fails for local development, update your Operating System's host file. For example, add the following line to resolve a domain to localhost:
-
-- `127.0.0.1     abc_app.local`
-
-## 💥 Usage
-
-### General Usage
+### General Information (WIP)
 
 Commands have the following format: `kit [app] [env] COMMAND [options] [arguments]`
 
@@ -108,13 +88,13 @@ There is an onboard help system that allows you to quickly get details about ava
 
 Here are a few examples showing a command and the production version:
 
-- `kit app1 build` and `kit app1 prod build`
+- `kit app1 image` and `kit app1 prod image`
 - `kit app1 start` and `kit app1 prod start`
 
 > [!NOTE]
 > In the following the `[app]` and `[env]` options will be removed for brevity, but all commands support that option.
 
-### Creating a Laravel Application
+### Creating a Application
 
 - `kit new [TEMPLATE] [--force]` will create a new application based on the specified template:
     - `--force`: the existing code directory will be deleted first
@@ -127,7 +107,7 @@ Next, open the .env file and update any settings (e.g., versions & exposed ports
 
 Then, navigate in your terminal to that directory, and spin up the containers for the full web server stack by running:
 
-- `kit build` to build the Docker images
+- `kit image` to build the Docker images
 - `kit start` to start the running the web application
 - `kit open`  to open the web application in the browser
 

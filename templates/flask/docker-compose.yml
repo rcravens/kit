@@ -1,0 +1,17 @@
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+      args:
+        - APP_NAME=${APP_NAME}
+        - PYTHON_VERSION=${PYTHON_VERSION}
+        - CODE_REPO_URL=${CODE_REPO_URL}
+    # flask requires SIGINT to stop gracefully
+    # (default stop signal from Compose is SIGTERM)
+    stop_signal: SIGINT
+    ports:
+      - "${HTTP_ON_HOST}:8080"
+

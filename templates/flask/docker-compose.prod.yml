@@ -1,0 +1,10 @@
+services:
+
+  web:
+    platform: linux/amd64
+    build:
+      target: prod
+    container_name: ${APP_NAME}_flask_${APP_ENVIRONMENT}
+    volumes:
+      - ./../../../code/${APP_NAME}:/code
+    command: python app.py

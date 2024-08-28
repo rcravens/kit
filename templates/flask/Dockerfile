@@ -9,26 +9,26 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update
 
-RUN apt-get install -y libgdal-dev
-
 RUN pip install --upgrade pip
 
-RUN pip install Django nano
+RUN pip install flask
 
 # CREATE CODE DIRECTORY
-RUN mkdir -p /app/code
+RUN mkdir -p /code
 
 ############################## dev ##############################
 FROM base_image AS dev
 
-WORKDIR /app/code
+WORKDIR /code
+
 
 ############################## stage ##############################
 FROM base_image AS stage
 
-WORKDIR /app/code
+WORKDIR /code
+
 
 ############################## prod ##############################
 FROM base_image AS prod
 
-WORKDIR /app/code
+WORKDIR /code

@@ -25,12 +25,12 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit host [host_name]" "Ensure host_name exists in local hosts file."
+  echo_command "kit host" "Ensure host_name exists in local hosts file."
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit host app1_dev" "Ensures ${RED}app1_dev${RESET} exists in the local hosts file."
+    echo_example "kit [app] [env] host" "Ensures ${RED}APP_DOMAIN${RESET} exists in the local hosts file for the application."
     echo_divider
 }

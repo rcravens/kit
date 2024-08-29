@@ -6,4 +6,4 @@ services:
     container_name: ${APP_NAME}_django_${APP_ENVIRONMENT}
     volumes:
       - ./../../../code/${APP_NAME}:/app
-    command: python manage.py runserver 0.0.0.0:8000
+    command: /entry_point.sh

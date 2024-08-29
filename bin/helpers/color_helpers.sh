@@ -50,7 +50,7 @@ function echo_command {
     if [ ! -z "$2" ]; then
       local description="$2"
       local num_command_chars=${#command}
-      local total_command_length=25
+      local total_command_length=35
       local num_spaces=`expr $total_command_length - $num_command_chars`
       local gap=`printf '%*s' "$num_spaces" | tr ' ' " "`
 
@@ -67,7 +67,7 @@ function echo_example {
     if [ ! -z "$2" ]; then
       local description="$2"
       local num_command_chars=${#example}
-      local total_command_length=25
+      local total_command_length=32
       local num_spaces=`expr $total_command_length - $num_command_chars`
       local gap=`printf '%*s' "$num_spaces" | tr ' ' " "`
       echo -e "${indent}${BLUE}$example${RESET}${gap}${description}"

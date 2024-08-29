@@ -23,8 +23,8 @@ function command_run {
     # Collect information for this template from the user
     # APP_NAME
     if [ -z "$APP_NAME" ]; then
-      read -p "${GREEN}Enter the application short name [aaa]: ${BLUE}" APP_NAME
-      APP_NAME="${APP_NAME:-aaa}"
+      read -p "${GREEN}Enter the application short name [${TEMPLATE_TYPE}]: ${BLUE}" APP_NAME
+      APP_NAME="${APP_NAME:-$TEMPLATE_TYPE}"
     fi
     export APP_DIRECTORY="$APPS_DIRECTORY/$APP_NAME"
 

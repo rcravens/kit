@@ -18,7 +18,7 @@ function display_banner {
     fi
 
     display_banner
-    echo -e "${BOLD}🚀 Laravel Starter Kit 🚀${RESET}"
+    echo -e "${BOLD}🚀 Application Starter Kit 🚀${RESET}"
     echo
     echo_yellow "Usage:"
     echo "  kit [app] [env] COMMAND [options] [arguments]"

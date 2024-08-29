@@ -69,12 +69,12 @@ if [ -n "$APP" ] && [ ! -f "$ENV_FILE" ]; then
   exit 1
 fi
 
-# Warn if code directory does not exist
-if [ "$COMMAND" != 'create' ] && [ ! -d "$PATH_TO_CODE" ]; then
-  echo_yellow "No code for the application found!!"
-  echo_yellow "Expected code here: $PATH_TO_CODE"
-  echo_yellow "Try running the 'kit $APP create' command."
-fi
+## Warn if code directory does not exist
+#if [ "$COMMAND" != 'create' ] && [ ! -d "$PATH_TO_CODE" ]; then
+#  echo_yellow "No code for the application found!!"
+#  echo_yellow "Expected code here: $PATH_TO_CODE"
+#  echo_yellow "Try running the 'kit $APP create' command."
+#fi
 
 # Make variables in the ENV_FILE accessible to the script
 if [ -f "$ENV_FILE" ]; then
@@ -86,9 +86,9 @@ fi
 # Helper function to run docker compose commands
 function run_docker_compose()
 {
-  set -o xtrace
+  #set -o xtrace
   docker compose -f "${APP_DIRECTORY}/docker-compose.yml" -f "${APP_DIRECTORY}/docker-compose.${ENV}.yml" --env-file "$ENV_FILE" "$@"
-  set +o xtrace
+  #set +o xtrace
 }
 
 # Handle the command

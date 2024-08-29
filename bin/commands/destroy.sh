@@ -12,7 +12,7 @@ function command_run {
     read -r -p "Are you sure? [y/N]: " response
     case "$response" in
         [yY][eE][sS]|[yY])
-            run_docker_compose down --rmi all -v --remove-orphans
+            run_docker_compose down --rmi local -v --remove-orphans
             if [ -d "$APP_DIRECTORY" ]; then
               rm -rf "$APP_DIRECTORY";
             fi

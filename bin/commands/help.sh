@@ -36,20 +36,26 @@ function display_banner {
       command_help
     done
 
-    echo_divider
-    echo -e "${BOLD} 👉 Application Specific Commands ${RESET}"
-    for APP_DIR in $APPS_DIRECTORY/*
-    do
-      APP=$(basename "$APP_DIR")
-      echo "Application Specific Commands: $APP"
-      echo_example "kit $APP [env] [command] [args]"
-      for COMMAND_FILE in $APP_DIR/bin/commands/*.sh
-      do
-        source "$COMMAND_FILE"
-        command_help
-      done
+    if [ -n "$(find $APPS_DIRECTORY -type f -maxdepth 1 2>/dev/null)" ]; then
       echo_divider
-    done
+      echo -e "${BOLD} 👉 Application Specific Commands ${RESET}"
+      for APP_DIR in $APPS_DIRECTORY/*
+      do
+        APP=$(basename "$APP_DIR")
+        echo "Application Specific Commands: $APP"
+        echo_example "kit $APP [env] [command] [args]"
+        if [ -n "$(find $APP_DIR/bin/commands -type f -maxdepth 1 2>/dev/null)" ]; then
+          for COMMAND_FILE in $APP_DIR/bin/commands/*.sh
+          do
+            source "$COMMAND_FILE"
+            command_help
+          done
+        else
+          echo_yellow "No specific commands found."
+        fi
+        echo_divider
+      done
+    fi
 
     echo
     exit 1

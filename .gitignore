@@ -2,6 +2,7 @@
 .env.prod
 .env.stage
 .env.dev
+.DS_Store
 database/data
 .idea
 deploy.yml

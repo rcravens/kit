@@ -9,19 +9,25 @@ This is an easy-to-use application starter kit. The workflows from creating a ne
 > - 👉 Architecture - I believe that the code for the CI/CD or DevOps tooling does not belong in the same git repo as your application code.
 
 
-This kit uses "templates" to allow the kit to manage workflows for a number of technology stacks. Right now the following templates are supported out-of-the-box:
+This kit uses "templates" to allow the kit to manage workflows for a number of technology stacks.
 
-- Laravel (`kit new laravel`) - Read the `templates/laravel/README.md` for more details about this template.
+`kit new` - Will list out the currently available templates.
+
+Right now the following templates are supported out-of-the-box:
+
 - Django (`kit new django`) - Read the `templates/django/README.md` for more details about this template.
+- FastApi (`kit new fastapi`) - Read the `templates/fastapi/README.md` for more details about this template.
+- Flask (`kit new flask`) - Read the `templates/flask/README.md` for more details about this template.
+- Laravel (`kit new laravel`) - Read the `templates/laravel/README.md` for more details about this template.
 - MySQL (`kit new mysql`) - Read the `templates/mysql/README.md` for more details about this template.
-- PostgreSsQL (`kit new postresql`) - Read the `templates/postresql/README.md` for more details about this template.
+- PostgreSQL (`kit new postresql`) - Read the `templates/postresql/README.md` for more details about this template.
 - Redis (`kit new redis`) - Read the `templates/redis/README.md` for more details about this template.
 
 There is a `templates/.empty` example that you can use to create a new technology stack. Checkout the `templates/.empty/README.md` file for details on how to create your own.
 
 ## 💥 Quick Start
 
-### 👉 Docker Environment
+### Docker Environment
 
 To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system.
 
@@ -56,6 +62,18 @@ Setup directory structure and clone this repo:
 > 9. `npm run build` to build the front-end assets
 > 10. Insert domain in /etc/hosts file
 > 11. `kit open` to open up a browser tab to the application
+
+## 💥 Directory Structure
+
+If you followed the Quick Start above you will find the following directory structure (skipping some details for clarity):
+
+- `projects`: This is the main directory that holds all the files
+    - `code`: This is the code directory where application code will exist. This is where you go and edit your code. Each application will be in its own subdirectory.
+    - `docker`: This directory holds all the "kit code and templates"
+        - `apps`: When you create a new app, the template is copied into here. One subdirectory per application. This allows you to alter or fine tune the infrastructure code.
+        - `bin`: Kit shells scripts. You should not change these. Changes will be lost when you git pull.
+        - `templates`: Kit templates. You should not change these. You are welcome to creat your own and submit pull requests. Would love to build the ecosystem.
+        - `kit`: This is the main kit shell script. Entry point for all kit commands.
 
 ## 💥 Videos
 

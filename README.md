@@ -37,17 +37,15 @@ Setup directory structure and clone this repo:
 
 1. `mkdir project`
 2. `cd projects`
-3. `git clone https://github.com/rcravens/docker_starter_for_laravel.git docker`
-4. `cd docker`
+3. `git clone https://github.com/rcravens/kit.git infra`
+4. `cd infra`
 5. `./bin/install.sh` ‼️ this creates a `kit` alias that you can use ‼️
 
 ### Use a template to create an application
 
-2. Create a new Laravel application
-
 `kit new` will list out all the available templates. For example to create a Laravel application:
 
-1. `kit new laravel` and answer the on-screen questions....that's it!
+- `kit new laravel` and answer the on-screen questions....that's it!
 
 > [!IMPORTANT]
 > The `kit new laravel` command will do all the following automatically:
@@ -112,7 +110,7 @@ Here are a few examples showing a command and the production version:
 > [!NOTE]
 > In the following the `[app]` and `[env]` options will be removed for brevity, but all commands support that option.
 
-### Creating a Application
+### Creating an Application
 
 - `kit new [TEMPLATE] [--force]` will create a new application based on the specified template:
     - `--force`: the existing code directory will be deleted first

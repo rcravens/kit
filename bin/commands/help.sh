@@ -36,7 +36,7 @@ function display_banner {
       command_help
     done
 
-    if [ -n "$(find $APPS_DIRECTORY -type f -maxdepth 1 2>/dev/null)" ]; then
+    if [ -n "$(find $APPS_DIRECTORY/ -type d -maxdepth 1 2>/dev/null)" ]; then
       echo_divider
       echo -e "${BOLD} 👉 Application Specific Commands ${RESET}"
       for APP_DIR in $APPS_DIRECTORY/*

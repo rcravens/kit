@@ -1,4 +1,4 @@
-# 🚀 Docker Kit 🚀
+# 🚀 Application Development Kit 🚀
 
 This is an easy-to-use application starter kit. The workflows from creating a new application, doing development, and managing dev, stage, and prod environments are included.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function command_run {
-    if [ -z "$1" ] || [ "$ARG" == "help" ]; then
+    if [ -n "$1" ] || [ "$1" == "help" ]; then
        command_help
        command_help_details
        exit 1

@@ -10,12 +10,15 @@ function command_run {
 #    exit 1
 
     SERVER=$ARGS
-    INVENTORY_FILE="${ROOT_DIRECTORY}/servers/${SERVER}/inventory.yml"
-    SSH_DIR="${ROOT_DIRECTORY}/servers/${SERVER}/.ssh"
+    SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
+    INVENTORY_FILE="${SERVER_DIRECTORY}/inventory.yml"
+    DEPLOY_SETTINGS_FILE="${SERVER_DIRECTORY}/deploy_settings.yml"
+    SSH_DIR="${SERVER_DIRECTORY}/.ssh"
     STACK_FILE="${APP_DIRECTORY}/deploy.yml"
     echo "ROOT_DIRECTORY: ${ROOT_DIRECTORY}"
     echo "SERVER: ${SERVER}"
     echo "INVENTORY_FILE: ${INVENTORY_FILE}"
+    echo "DEPLOY_SETTINGS_FILE: ${DEPLOY_SETTINGS_FILE}"
     echo "SSH_DIR: ${SSH_DIR}"
     echo "STACK_FILE: ${STACK_FILE}"
     echo "APPLICATION: ${APP}"
@@ -37,6 +40,7 @@ function command_run {
 
 #    docker run --rm --pull=always -it \
 #      -v "$INVENTORY_FILE":/ansible/inventory.yml \
+#      -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
 #      -v "$SSH_DIR":/root/.ssh \
 #      -v "$STACK_FILE":/ansible/playbooks/swarm/stacks/"$APP".yml \
 #      -v ~/.aws:/root/.aws \
@@ -52,10 +56,11 @@ function command_run {
 
     docker run --rm --pull=always -it \
       -v "$INVENTORY_FILE":/ansible/inventory.yml \
+      -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
       -v "$SSH_DIR":/root/.ssh \
       -v "$STACK_FILE":/ansible/playbooks/swarm/stacks/"$APP".yml \
       -v ~/.aws:/root/.aws \
-      rcravens/ansible ansible-playbook playbooks/deploy.yml
+      rcravens/ansible ansible-playbook playbooks/swarm/deploy_"$SERVER".yml
 }
 
 function command_help() {

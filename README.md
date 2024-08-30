@@ -39,7 +39,7 @@ Setup directory structure and clone this repo:
 2. `cd projects`
 3. `git clone https://github.com/rcravens/kit.git infra`
 4. `cd infra`
-5. `./bin/install.sh` ‼️ this creates a `kit` alias that you can use ‼️
+5. `./.code/bin/install.sh` ‼️ this creates a `kit` alias that you can use ‼️
 
 ### Use a template to create an application
 
@@ -67,10 +67,11 @@ If you followed the Quick Start above you will find the following directory stru
 
 - `projects`: This is the main directory that holds all the files
     - `code`: This is the code directory where application code will exist. This is where you go and edit your code. Each application will be in its own subdirectory.
-    - `docker`: This directory holds all the "kit code and templates"
+    - `infra`: This directory holds all the "kit code and templates"
+        - `.code`: Kit code. You should not change any files in this directory. Changes will be lost when you git pull.
+        - `.code/bin`: Kit shells scripts. You should not change these. Changes will be lost when you git pull.
+        - `.code/templates`: Kit templates. You should not change these. You are welcome to create your own and submit pull requests. Would love to build the ecosystem.
         - `apps`: When you create a new app, the template is copied into here. One subdirectory per application. This allows you to alter or fine tune the infrastructure code.
-        - `bin`: Kit shells scripts. You should not change these. Changes will be lost when you git pull.
-        - `templates`: Kit templates. You should not change these. You are welcome to creat your own and submit pull requests. Would love to build the ecosystem.
         - `kit`: This is the main kit shell script. Entry point for all kit commands.
 
 ## 💥 Videos

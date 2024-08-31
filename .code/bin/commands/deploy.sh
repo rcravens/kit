@@ -67,8 +67,9 @@ function command_run {
 
 #    docker run --rm --pull=always -it \
 #      -v "$INVENTORY_FILE":/ansible/inventory.yml \
-#      -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
+#      -v "$SERVER_SETTINGS":/ansible/server_settings.yml \
 #      -v "$SSH_DIR":/root/.ssh \
+#      -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
 #      -v "$STACK_FILE":/ansible/playbooks/swarm/stacks/"$APP".yml \
 #      -v ~/.aws:/root/.aws \
 #      rcravens/ansible /bin/sh

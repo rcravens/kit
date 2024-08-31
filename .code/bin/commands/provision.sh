@@ -10,13 +10,13 @@ function command_run {
     SERVER=$ARGS
     SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
     INVENTORY_FILE="${SERVER_DIRECTORY}/inventory.yml"
-    DEPLOY_SETTINGS_FILE="${SERVER_DIRECTORY}/deploy_settings.yml"
+    SERVER_SETTINGS_FILE="${SERVER_DIRECTORY}/server_settings.yml"
     SSH_DIR="${SERVER_DIRECTORY}/.ssh"
 
     echo "ROOT_DIRECTORY: ${ROOT_DIRECTORY}"
     echo "SERVER: ${SERVER}"
     echo "INVENTORY_FILE: ${INVENTORY_FILE}"
-    echo "DEPLOY_SETTINGS_FILE: ${DEPLOY_SETTINGS_FILE}"
+    echo "SERVER_SETTINGS_FILE: ${SERVER_SETTINGS_FILE}"
     echo "SSH_DIR: ${SSH_DIR}"
 
     if [ ! -f "$INVENTORY_FILE" ]; then
@@ -31,7 +31,7 @@ function command_run {
 
 #    docker run --rm --pull=always -it \
 #      -v "$INVENTORY_FILE":/ansible/inventory.yml \
-#      -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
+#      -v "$SERVER_SETTINGS_FILE":/ansible/server_settings.yml \
 #      -v "$SSH_DIR":/root/.ssh \
 #      -v ~/.aws:/root/.aws \
 #      rcravens/ansible /bin/sh
@@ -39,7 +39,7 @@ function command_run {
 
     docker run --rm --pull=always -it \
       -v "$INVENTORY_FILE":/ansible/inventory.yml \
-      -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
+      -v "$SERVER_SETTINGS_FILE":/ansible/server_settings.yml \
       -v "$SSH_DIR":/root/.ssh \
       -v ~/.aws:/root/.aws \
       rcravens/ansible ansible-playbook playbooks/configure.yml

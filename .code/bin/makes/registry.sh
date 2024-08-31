@@ -98,14 +98,16 @@ function make_run {
   DS_AWS_ACCOUNT_ID=""
   # Check if deploying from Amazon ECR
   if [ "$REGISTRY_TYPE" == "aws" ]; then
+    echo "INSIDE"
     IS_ECR_LOGIN_NEEDED="true"
     DS_AWS_REGION=${REGISTRY_REGION}
     DS_AWS_ACCOUNT_ID=${ACCOUNT_ID}
   fi
+  echo "DS_AWS_REGION: ${DS_AWS_REGION}"
   DEPLOY_SETTINGS_FILE="${APP_DIRECTORY}/deploy_settings.yml"
   sed -i .bak "s|is_ecr_login_needed: .*|is_ecr_login_needed: ${IS_ECR_LOGIN_NEEDED}|" "${DEPLOY_SETTINGS_FILE}"
-  sed -i .bak "s|aws_region: .*|aws_region: ${DS_AWS_REGION}|" "${DEPLOY_SETTINGS_FILE}"
-  sed -i .bak "s|aws_account_id: .*|aws_account_id: ${DS_AWS_ACCOUNT_ID}|" "${DEPLOY_SETTINGS_FILE}"
+  sed -i .bak "s|aws_region:.*|aws_region: ${DS_AWS_REGION}|" "${DEPLOY_SETTINGS_FILE}"
+  sed -i .bak "s|aws_account_id:.*|aws_account_id: '${DS_AWS_ACCOUNT_ID}'"|" "${DEPLOY_SETTINGS_FILE}"
   rm "${DEPLOY_SETTINGS_FILE}.bak"
 
 

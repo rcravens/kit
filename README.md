@@ -7,6 +7,7 @@ This is an easy-to-use application starter kit. The workflows from creating a ne
 > - 👉 Template Based - I want to be able to use the same kit for many different frameworks. So no matter if you are developing in **Laravel** or **Django** or just need to spin up a quick **MySQL** data server, there are templates to support your needs.
 > - 👉 Enhanced Environment - The template provides the initial infrastructure as code. If needed, you can modify the image to add new features. For example, I had a need to integrate with SQL Server, Active Directory, and other services, so a quick modification of the Dockerfile got me where I needed to be.
 > - 👉 Architecture - I believe that the code for the CI/CD or DevOps tooling does not belong in the same git repo as your application code.
+> - 👉 Deployments - The deployment pipeline should leverage infrastructure as code and be easy. This kit makes it easy to deploy your changes to any number of servers.
 
 
 This kit uses "templates" to allow the kit to manage workflows for a number of technology stacks.

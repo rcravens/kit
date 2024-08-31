@@ -109,12 +109,12 @@ function make_run {
   rm "${DEPLOY_SETTINGS_FILE}.bak"
 
 
-  echo_green "Deployment settings updated. Changes were made to the following files:"
+  echo_green "Container registry settings updated. Changes were made to the following files:"
   echo_yellow "${PROD_ENV_FILE}"
   echo_yellow "${DEPLOY_SETTINGS_FILE}"
   echo_blue "Please inspect those files to double check changes."
 }
 
 function make_help() {
-  echo_command "kit <APP> make deployment" "Configure the deployment settings."
+  echo_command "kit <APP> make registry" "Configure the deployment container registry."
 }

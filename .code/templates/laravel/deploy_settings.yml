@@ -1,0 +1,5 @@
+---
+# Needed if deploying images from Amazon ECR
+is_ecr_login_needed: false
+aws_region:
+aws_account_id:

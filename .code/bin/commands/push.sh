@@ -19,6 +19,10 @@ function command_run {
         aws ecr get-login-password --region "${REGISTRY_REGION}" | docker login --username "${REGISTRY_USERNAME}" --password-stdin "${REGISTRY_URL}"
         docker tag "${REGISTRY_URL}/${REGISTRY_REPO}:${REGISTRY_DEPLOYED_VERSION}" "${REGISTRY_URL}/${REGISTRY_REPO}:${TAG}"
         docker push "${REGISTRY_URL}/${REGISTRY_REPO}:${TAG}"
+    elif [ "${REGISTRY_TYPE}" == "docker" ] || [ "${REGISTRY_TYPE}" == "DOCKER" ]; then
+        echo "Found Docker Hub Registry."
+        docker tag "${REGISTRY_URL}/${REGISTRY_REPO}:${REGISTRY_DEPLOYED_VERSION}" "${REGISTRY_URL}/${REGISTRY_REPO}:${TAG}"
+        docker push "${REGISTRY_URL}/${REGISTRY_REPO}:${TAG}"
     else
         echo "No container registry found."
     fi

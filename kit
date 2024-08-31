@@ -9,16 +9,13 @@ source "$BIN_DIRECTORY/helpers/color_helpers.sh"
 source "$BIN_DIRECTORY/helpers/functions.sh"
 
 # GENERAL COMMAND FORMAT
-# kit [app] [env] [command] [args]
+# kit [app] [command] [args]
 #   [app] in subdirectory of ./apps directory
-#   [env] in (dev, prod)
 # SHORTENED VERSIONS
-# kit [env] [command] [args]  same as kit first_app [env] [command] [args]
-# kit [command] [args]        same as kt first_app dev [command] [args]
+# kit [command] [args]        same as kt first_app [command] [args]
 
 export APP="$1"
-export ENV="$2"
-export COMMAND="$3"
+export COMMAND="$2"
 
 if [ -d "${APPS_DIRECTORY}/${APP}" ]; then
   # Found a valid app. Shift arguments to prepare for ARGS="$@" line below
@@ -28,16 +25,6 @@ else
   APP_DIR=$(ls -d "$APPS_DIRECTORY"/* | head -1)
   echo "APP_DIR: $APP_DIR"
   APP=$(basename "$APP_DIR")
-  ENV="$1"
-  COMMAND="$2"
-fi
-
-if [ "$ENV" == "dev" ] || [ "$ENV" == "prod" ] || [ "$ENV" == "stage" ]; then
-  # Found a valid env. Shift arguments to prepare for ARGS="$@" line below
-  shift 1
-else
-  # Did not find a valid env. Default to 'dev' and shift the command
-  ENV="dev"
   COMMAND="$1"
 fi
 
@@ -46,8 +33,18 @@ shift 1
 ARGS=$@
 
 export APP_DIRECTORY="${APPS_DIRECTORY}/${APP}"
-export ENV_FILE="$APP_DIRECTORY/.env.${ENV}"
 export PATH_TO_CODE="$ROOT_DIRECTORY/../code/${APP}"
+
+# Use the prod environment for production commands
+case "$COMMAND" in
+  "image" | "push" | "deploy")
+    export ENV="prod"
+    ;;
+  *)
+    export ENV="dev"
+    ;;
+esac
+export ENV_FILE="$APP_DIRECTORY/.env.${ENV}"
 
 # TEMPLATE - allow the application template to set environment variables
 if [ -f "$APP_DIRECTORY/bin/set_env.sh" ]; then
@@ -69,13 +66,6 @@ if [ -n "$APP" ] && [ ! -f "$ENV_FILE" ]; then
   exit 1
 fi
 
-## Warn if code directory does not exist
-#if [ "$COMMAND" != 'create' ] && [ ! -d "$PATH_TO_CODE" ]; then
-#  echo_yellow "No code for the application found!!"
-#  echo_yellow "Expected code here: $PATH_TO_CODE"
-#  echo_yellow "Try running the 'kit $APP create' command."
-#fi
-
 # Make variables in the ENV_FILE accessible to the script
 if [ -f "$ENV_FILE" ]; then
   set -a # automatically export all variables
@@ -86,9 +76,9 @@ fi
 # Helper function to run docker compose commands
 function run_docker_compose()
 {
-  #set -o xtrace
+  set -o xtrace
   docker compose -f "${APP_DIRECTORY}/docker-compose.yml" -f "${APP_DIRECTORY}/docker-compose.${ENV}.yml" --env-file "$ENV_FILE" "$@"
-  #set +o xtrace
+  set +o xtrace
 }
 
 # Handle the command

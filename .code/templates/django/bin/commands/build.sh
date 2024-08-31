@@ -7,19 +7,17 @@ function command_run {
        return 1
     fi
 
-    if [ "$ENV" == "dev" ]; then
-      # If not production...ensure php application is initialized
-      echo -e "Running pip install"
-      run_docker_compose exec -it "${ENTRY_SERVICE}" pip install --no-cache-dir -r requirements.txt
+    # If not production...ensure php application is initialized
+    echo -e "Running pip install"
+    run_docker_compose exec -it "${ENTRY_SERVICE}" pip install --no-cache-dir -r requirements.txt
 
-      # perform django db migrations
-      echo -e "Performing migrations"
-      run_docker_compose exec -it "${ENTRY_SERVICE}" python manage.py migrate
+    # perform django db migrations
+    echo -e "Performing migrations"
+    run_docker_compose exec -it "${ENTRY_SERVICE}" python manage.py migrate
 
-      # collect static files
-      #echo -e "Collecting static files"
-      #run_docker_compose exec -it "${ENTRY_SERVICE}" python manage.py collectstatic --noinput
-    fi
+    # collect static files
+    #echo -e "Collecting static files"
+    #run_docker_compose exec -it "${ENTRY_SERVICE}" python manage.py collectstatic --noinput
 }
 
 function command_help() {

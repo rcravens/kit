@@ -13,4 +13,4 @@
 
 # End the end you can use the following to call 'kit start' to start your application
 echo_yellow "Starting the application"
-eval "./kit ${APP_NAME} ${ENV} start"
+eval "./kit ${APP_NAME} start"

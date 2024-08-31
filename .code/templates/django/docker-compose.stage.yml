@@ -1,9 +1,0 @@
-services:
-
-  web:
-    build:
-      target: stage
-    container_name: ${APP_NAME}_django_${APP_ENVIRONMENT}
-    volumes:
-      - ./../../../code/${APP_NAME}:/app
-    command: /entry_point.sh

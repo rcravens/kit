@@ -59,7 +59,8 @@ function command_run {
 
     # Reload the env files now that they are set by the init.sh
     unset HTTPS_ON_HOST # This prevents kit open from using stale data
-    export ENV_FILE="$APP_DIRECTORY/.env.${ENV}"
+    export ENV="dev"
+    export ENV_FILE="$APP_DIRECTORY/.env.dev"
     if [ -f "$ENV_FILE" ]; then
       set -a # automatically export all variables
       source "$ENV_FILE"

@@ -7,11 +7,9 @@ function command_run {
        return 1
     fi
 
-    if [ "$ENV" == "dev" ]; then
-      # If not production...ensure php application is initialized
-      echo -e "Running pip install"
-      run_docker_compose exec -it "${ENTRY_SERVICE}" pip install --no-cache-dir -r requirements.txt
-    fi
+    # If not production...ensure php application is initialized
+    echo -e "Running pip install"
+    run_docker_compose exec -it "${ENTRY_SERVICE}" pip install --no-cache-dir -r requirements.txt
 }
 
 function command_help() {

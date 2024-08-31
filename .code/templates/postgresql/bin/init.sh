@@ -39,16 +39,6 @@ sed -i .bak "s|POSTGRES_USER=.*|POSTGRES_USER=${POSTGRES_USER}|" "${APP_DIRECTOR
 sed -i .bak "s|POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=${POSTGRES_PASSWORD}|" "${APP_DIRECTORY}/.env.dev"
 rm "${APP_DIRECTORY}/.env.dev.bak"
 
-# COPY .env.example to .env.stage
-cp "${APP_DIRECTORY}/.env.example" "${APP_DIRECTORY}/.env.stage"
-sed -i .bak "s|APP_NAME=.*|APP_NAME=${APP_NAME}|" "${APP_DIRECTORY}/.env.stage"
-sed -i .bak "s|APP_ENVIRONMENT=.*|APP_ENVIRONMENT=stage|" "${APP_DIRECTORY}/.env.stage"
-sed -i .bak "s|POSTGRES_ON_HOST=.*|POSTGRES_ON_HOST=${POSTGRES_ON_HOST}|" "${APP_DIRECTORY}/.env.stage"
-sed -i .bak "s|POSTGRES_DB=.*|POSTGRES_DB=${POSTGRES_DB}|" "${APP_DIRECTORY}/.env.stage"
-sed -i .bak "s|POSTGRES_USER=.*|POSTGRES_USER=${POSTGRES_USER}|" "${APP_DIRECTORY}/.env.stage"
-sed -i .bak "s|POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=${POSTGRES_PASSWORD}|" "${APP_DIRECTORY}/.env.stage"
-rm "${APP_DIRECTORY}/.env.stage.bak"
-
 # COPY .env.example to .env.prod
 cp "${APP_DIRECTORY}/.env.example" "${APP_DIRECTORY}/.env.prod"
 sed -i .bak "s|APP_NAME=.*|APP_NAME=${APP_NAME}|" "${APP_DIRECTORY}/.env.prod"

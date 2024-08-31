@@ -7,7 +7,7 @@ function command_run {
        return 1
     fi
 
-    eval "./kit ${APP} ${ENV} start ${ARGS}"
+    eval "./kit ${APP} start ${ARGS}"
 }
 
 function command_help() {

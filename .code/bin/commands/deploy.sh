@@ -6,11 +6,15 @@ function command_run {
        command_help_details
        return 1
     fi
-#    echo_red "Coming Soon"
-#    exit 1
 
     SERVER=$ARGS
     SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
+    if [ -z "$SERVER" ] || [ ! -d "$SERVER_DIRECTORY" ]; then
+      echo "Unexpected server: $SERVER"
+      echo_example "kit [app] deploy [server]"
+      exit 1
+    fi
+
     INVENTORY_FILE="${SERVER_DIRECTORY}/inventory.yml"
     DEPLOY_SETTINGS_FILE="${SERVER_DIRECTORY}/deploy_settings.yml"
     SSH_DIR="${SERVER_DIRECTORY}/.ssh"
@@ -52,15 +56,13 @@ function command_run {
 #
 #    sed -i '' '/platform: linux\/amd64/d' "${STACK_FILE}"
 
-
-
     docker run --rm --pull=always -it \
       -v "$INVENTORY_FILE":/ansible/inventory.yml \
       -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
       -v "$SSH_DIR":/root/.ssh \
       -v "$STACK_FILE":/ansible/playbooks/swarm/stacks/"$APP".yml \
       -v ~/.aws:/root/.aws \
-      rcravens/ansible ansible-playbook playbooks/swarm/deploy_"$SERVER".yml
+      rcravens/ansible ansible-playbook playbooks/swarm/deploy.yml
 }
 
 function command_help() {

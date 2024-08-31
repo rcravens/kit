@@ -1,9 +1,0 @@
-services:
-
-  web:
-    build:
-      target: stage
-    container_name: ${APP_NAME}_fastapi_${APP_ENVIRONMENT}
-    volumes:
-      - ./../../../code/${APP_NAME}:/code
-    command: fastapi run app.py --port 8090

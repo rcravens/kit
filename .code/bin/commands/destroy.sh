@@ -29,12 +29,12 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit destroy" "Stop the application and delete all images"
+  echo_command "kit <app> destroy" "Stop the application and delete all images"
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit destroy"
+    echo_example "kit laravel destroy" "Destroys the ${RED}laravel${RESET} application and deletes images, infrastructure code, and application code."
     echo_divider
 }

@@ -8,7 +8,7 @@ function command_run {
     fi
 
     if [ -z "$1" ]; then
-        TAG="latest"
+        TAG="${REGISTRY_DEPLOYED_VERSION}"
     else
         TAG="$1"
     fi

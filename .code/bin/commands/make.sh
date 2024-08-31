@@ -25,7 +25,7 @@ function command_run {
 
 function command_help() {
   echo_command "kit make help" "List all the make commands"
-  echo_command "kit <APP> make <OBJ>" "Create a new <OBJ> for the <APP> application"
+  echo_command "kit <app> make <obj>" "Create a new features for the application"
 }
 
 function command_help_details() {

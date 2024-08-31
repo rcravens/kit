@@ -78,7 +78,7 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit new [TEMPLATE] [APP NAME]" "Creates a new application from a template"
+  echo_command "kit new <template> <app name>" "Creates a new application from a template"
 }
 
 function command_help_details() {
@@ -87,7 +87,7 @@ function command_help_details() {
     for TEMP_DIR in $TEMPLATES_DIRECTORY/*
     do
       TEMPLATE=$(basename "$TEMP_DIR")
-      echo_example "kit new $TEMPLATE [APP NAME]"
+      echo_example "kit new $TEMPLATE <app name>"
     done
     echo_divider
 }

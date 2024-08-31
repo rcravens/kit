@@ -15,14 +15,12 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit image" "Build the Docker image for this application"
+  echo_command "kit <app> image" "Build the Docker image for this application"
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit image" "Builds the ${RED}development${RESET} Docker images"
-    echo_example "kit image php" "Builds the ${RED}development${RESET} Docker image for the ${BLUE}php${RESET} service"
-    echo_example "kit image prod" "Builds the ${RED}production${RESET} Docker images"
+    echo_example "kit laravel image" "Builds the ${RED}production${RESET} Docker images for the ${RED}laravel${RESET} application"
     echo_divider
 }

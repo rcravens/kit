@@ -91,13 +91,14 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit deploy" "Deploy application to Docker Swarm in AWS"
+  echo_command "kit <app> deploy <dest>" "Deploy application to Docker Swarm destination"
 }
 
 function command_help_details() {
     echo_divider
     echo_red "Before running this command be sure to copy 'deploy-example.yml' to 'deploy.yml' and update deployment data."
     echo "Examples:"
-    echo_example "kit deploy"
+    echo_example "kit laravel deploy test" "Deploy the ${RED}laravel${RESET} application to the ${RED}test${RESET} servers"
+    echo_example "kit laravel deploy prod" "Deploy the ${RED}laravel${RESET} application to the ${RED}prod${RESET} servers."
     echo_divider
 }

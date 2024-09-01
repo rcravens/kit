@@ -11,12 +11,12 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit stop" "Stop the application"
+  echo_command "kit <app> stop" "Stop the application"
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit stop"
+    echo_example "kit laravel stop" "Stop the ${RED}laravel${RESET} application"
     echo_divider
 }

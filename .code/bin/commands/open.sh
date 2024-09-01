@@ -19,12 +19,12 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit open" "Opens browser tab to application"
+  echo_command "kit <app> open" "Opens browser tab to application"
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit open"
+    echo_example "kit laravel open" "Opens a browser tab for the ${RED}laravel${RESET} application"
     echo_divider
 }

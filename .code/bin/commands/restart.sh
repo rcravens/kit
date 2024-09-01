@@ -12,12 +12,12 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit restart" "Stop and start the application"
+  echo_command "kit <app> restart" "Stop and start the application"
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit restart"
+    echo_example "kit laravel restart" "Stop and restart the ${RED}laravel${RESET} application"
     echo_divider
 }

@@ -29,14 +29,13 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit push" "Tag with 'latest' and push docker image to registry defined in .env"
-  echo_command "kit push <TAG>" "Tag with custom tag and push docker image to registry defined in .env"
+  echo_command "kit <app> push <tag>" "Tag the latest build and push docker image to container registry configured for the application."
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit push"
-    echo_example "kit push v1.0.0"
+    echo_example "kit laravel push latest" "Tag the latest build for the ${RED}laravel${RESET} application with the ${RED}latest${RESET} and push to the container registry."
+    echo_example "kit laravel make registry" "Configure a container registry for the ${RED}laravel${RESET} application."
     echo_divider
 }

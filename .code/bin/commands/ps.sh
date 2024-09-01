@@ -11,12 +11,12 @@ function command_run {
 }
 
 function command_help() {
-    echo_command "kit ps" "Display the status of all containers"
+    echo_command "kit <app> ps" "Display the status of all containers"
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit ps"
+    echo_example "kit laravel ps" "Display the status of all the containers for the ${RED}laravel${RESET}."
     echo_divider
 }

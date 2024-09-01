@@ -11,13 +11,12 @@ function command_run {
 }
 
 function command_help() {
-    echo_command "kit ssh <SERVICE>" "Opens shell access to container"
+    echo_command "kit <app> ssh" "Opens shell access to the application container"
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit ssh nginx"
-    echo_example "kit ssh php"
+    echo_example "kit laravel ssh" "Opens shell access to the ${RED}laravel${RESET} application."
     echo_divider
 }

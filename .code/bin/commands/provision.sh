@@ -46,13 +46,14 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit provision" "Provision Docker Swarm in AWS"
+  echo_command "kit provision <dest>" "Install necessary packages, configure Docker, and create a Docker Swarm."
 }
 
 function command_help_details() {
     echo_divider
     echo_red "Before running this command be sure to copy 'deploy-example.yml' to 'deploy.yml' and update deployment data."
     echo "Examples:"
-    echo_example "kit provision"
+    echo_example "kit provision prod" "Provision the ${RED}prod${RESET} servers."
+    echo_example "kit make server prod" "Scaffold in the files to create the ${RED}prod${RESET} servers."
     echo_divider
 }

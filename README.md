@@ -42,9 +42,9 @@ Setup directory structure and clone this repo:
 4. `cd infra`
 5. `./.code/bin/install.sh` ‼️ this creates a `kit` alias that you can use ‼️
 
-### Use a template to create an application
+### Create an application
 
-`kit new` will list out all the available templates. For example to create a Laravel application:
+Application are created using a template to scaffold both infrastructure code and application code. `kit new` will list out all the available templates. For example to create a Laravel application:
 
 - `kit new laravel` and answer the on-screen questions....that's it!
 
@@ -61,6 +61,30 @@ Setup directory structure and clone this repo:
 > 9. `npm run build` to build the front-end assets
 > 10. Insert domain in /etc/hosts file
 > 11. `kit open` to open up a browser tab to the application
+
+## ⚙️ Provision Servers
+Using `kit new <template>` will quickly create a development environment on your local machine. There you can make changes to the application code or changes to the infrastructure code.
+
+At some point, you will want to deploy your code to other servers for testing and/or production. This kit uses Docker Swarm to host your application in a container. Once the servers are set up, you can easily scale or rollout a new version.
+
+Follow these steps to create a server environment:
+1. Manually create the desired number of linux boxes you want in your Docker Swarm. Future versions will automate this step, but for now you just need to have the new instances running with public / private ip addresses.
+2. Run `kit make server <name>` where `<name>` is the destination name (e.g., prod, stage, test). This will scaffold in the files needed to configure the Docker Swarm server.
+3. Add the ssh key pair to the `.ssh` directory that was created.
+4. Update the `inventory.yml` file with the IP addresses and key pairs for the manager and worker nodes.
+5. Update the `server_settings.yml` file.
+6. Run `kit provision <name>` command. This runs an Ansible playbook that provisions and configures your nodes.
+
+After the above completes, you should have a destination where you can deploy your application. Repeat the above steps to create destinations for all your desired environments (e.g., test, stage, prod).
+
+## 🦄 Deployments
+First we need to configure a Docker container registry for our application.
+1. Run `kit <app> make registry` answer the on-screen questions and you are done!
+
+Now the deployment process is super easy:
+1. Run `kit <app> image` to build a new production ready Docker image.
+2. Run `kit <app> push <tag>` to tag and push the image to the configured container registry.
+3. Run `kit <app> deploy <dest>` where `<dest>` is one of the servers you set up. This will deploy your application to that server.
 
 ## 💥 Directory Structure
 
@@ -87,12 +111,11 @@ If you followed the Quick Start above you will find the following directory stru
 Commands have the following format: `kit [app] [env] COMMAND [options] [arguments]`
 
 - `[app]` is the application name. This kit allows you to create many apps under one directory. Defaults to the app corresponding to the first child directory in `./apps`.
-- `[env]` valid values are `dev`, `stage`, or `prod`. Defaults to `dev`. This is a flag to specify environment. Then the following files are used when running Docker commands:
+- `[env]` valid values are `dev` or `prod`. Defaults to `dev`. This is a flag to specify environment. Then the following files are used when running Docker commands:
 
 | env     | files                                                             |
 |---------|-------------------------------------------------------------------|
 | `dev`   | `docker-compose.yml`, `docker-compose.dev.yml` and `.env.dev`     |
-| `stage` | `docker-compose.yml`, `docker-compose.stage.yml` and `.env.stage` |
 | `prod`  | `docker-compose.yml`, `docker-compose.prod.yml` and `.env.prod`   |
 
 - `COMMAND` the command to run

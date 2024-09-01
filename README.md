@@ -9,24 +9,9 @@ This is an easy-to-use application starter kit. The workflows from creating a ne
 > - 👉 Architecture - I believe that the code for the CI/CD or DevOps tooling does not belong in the same git repo as your application code.
 > - 👉 Deployments - The deployment pipeline should leverage infrastructure as code and be easy. This kit makes it easy to deploy your changes to any number of servers.
 
+# ‼️ Getting Started
 
-This kit uses "templates" to allow the kit to manage workflows for a number of technology stacks.
-
-`kit new` - Will list out the currently available templates.
-
-Right now the following templates are supported out-of-the-box:
-
-- Django (`kit new django`) - Read the `templates/django/README.md` for more details about this template.
-- FastApi (`kit new fastapi`) - Read the `templates/fastapi/README.md` for more details about this template.
-- Flask (`kit new flask`) - Read the `templates/flask/README.md` for more details about this template.
-- Laravel (`kit new laravel`) - Read the `templates/laravel/README.md` for more details about this template.
-- MySQL (`kit new mysql`) - Read the `templates/mysql/README.md` for more details about this template.
-- PostgreSQL (`kit new postresql`) - Read the `templates/postresql/README.md` for more details about this template.
-- Redis (`kit new redis`) - Read the `templates/redis/README.md` for more details about this template.
-
-There is a `templates/.empty` example that you can use to create a new technology stack. Checkout the `templates/.empty/README.md` file for details on how to create your own.
-
-## 💥 Quick Start
+## 1️⃣ Installation
 
 ### Docker Environment
 
@@ -42,9 +27,9 @@ Setup directory structure and clone this repo:
 4. `cd infra`
 5. `./.code/bin/install.sh` ‼️ this creates a `kit` alias that you can use ‼️
 
-### Create an application
+## 2️⃣ ️Create Development Environment
 
-Application are created using a template to scaffold both infrastructure code and application code. `kit new` will list out all the available templates. For example to create a Laravel application:
+Development environments are created using a template to scaffold both infrastructure code and application code. `kit new` will list out all the available templates. For example to create a Laravel development environment:
 
 - `kit new laravel` and answer the on-screen questions....that's it!
 
@@ -62,10 +47,30 @@ Application are created using a template to scaffold both infrastructure code an
 > 10. Insert domain in /etc/hosts file
 > 11. `kit open` to open up a browser tab to the application
 
-## ⚙️ Provision Servers
 Using `kit new <template>` will quickly create a development environment on your local machine. There you can make changes to the application code or changes to the infrastructure code.
 
-At some point, you will want to deploy your code to other servers for testing and/or production. This kit uses Docker Swarm to host your application in a container. Once the servers are set up, you can easily scale or rollout a new version.
+`kit new` - Will list out the currently available templates. Here are a few of the supported technology stacks:
+
+- Django (`kit new django`) - Read the `templates/django/README.md` for more details about this template.
+- FastApi (`kit new fastapi`) - Read the `templates/fastapi/README.md` for more details about this template.
+- Flask (`kit new flask`) - Read the `templates/flask/README.md` for more details about this template.
+- Laravel (`kit new laravel`) - Read the `templates/laravel/README.md` for more details about this template.
+- MySQL (`kit new mysql`) - Read the `templates/mysql/README.md` for more details about this template.
+- PostgreSQL (`kit new postresql`) - Read the `templates/postresql/README.md` for more details about this template.
+- Redis (`kit new redis`) - Read the `templates/redis/README.md` for more details about this template.
+
+Not seeing what you want? There is a `templates/.empty` example that you can use to create a new technology stack. Checkout the `templates/.empty/README.md` file for details on how to create your own.
+
+## 3️⃣ Provision Servers
+Provisioning infrastructure for deployments should be easy and repeatable. The templates provide "infrastructure as code" that you can use to provision servers.
+
+Need multiple environments? No problem! Just repeat the process below for your stage, test, prod, or other environments.
+
+> [!NOTE]
+> Under the hood, this kit use the following technologies:
+> - **Docker** to containerize your application. Each application uses a multi-stage build so that both the `dev` and `prod` environments sit on the same "base image".
+> - **Docker Swarm** to deploy your application across a number of nodes. This makes for easy zero-downtime deployments that you can scale to meet demand.
+> - **Ansible** as a configuration management tool to ensure your nodes have the right packages and configurations required.
 
 Follow these steps to create a server environment:
 1. Manually create the desired number of linux boxes you want in your Docker Swarm. Future versions will automate this step, but for now you just need to have the new instances running with public / private ip addresses.
@@ -77,7 +82,7 @@ Follow these steps to create a server environment:
 
 After the above completes, you should have a destination where you can deploy your application. Repeat the above steps to create destinations for all your desired environments (e.g., test, stage, prod).
 
-## 🦄 Deployments
+## 4️⃣ Deployments
 First we need to configure a Docker container registry for our application.
 1. Run `kit <app> make registry` answer the on-screen questions and you are done!
 
@@ -86,97 +91,72 @@ Now the deployment process is super easy:
 2. Run `kit <app> push <tag>` to tag and push the image to the configured container registry.
 3. Run `kit <app> deploy <dest>` where `<dest>` is one of the servers you set up. This will deploy your application to that server.
 
-## 💥 Directory Structure
+# General Information (WIP)
+
+## 📁 Directory Structure
 
 If you followed the Quick Start above you will find the following directory structure (skipping some details for clarity):
 
 - `projects`: This is the main directory that holds all the files
-    - `code`: This is the code directory where application code will exist. This is where you go and edit your code. Each application will be in its own subdirectory.
+    - `code`: When you `kit new <template>` the application code is created here. This is where you go and edit your code. Each application will be in its own subdirectory.
     - `infra`: This directory holds all the "kit code and templates"
         - `.code`: Kit code. You should not change any files in this directory. Changes will be lost when you git pull.
         - `.code/bin`: Kit shells scripts. You should not change these. Changes will be lost when you git pull.
         - `.code/templates`: Kit templates. You should not change these. You are welcome to create your own and submit pull requests. Would love to build the ecosystem.
-        - `apps`: When you create a new app, the template is copied into here. One subdirectory per application. This allows you to alter or fine tune the infrastructure code.
+        - `apps`: When you `kit new <template>`, the infrastructure code is copied into here. One subdirectory per application. This allows you to alter or fine tune the infrastructure code.
+        - `servers`: When you `kit make server <name>` your new server environment will be created here.
         - `kit`: This is the main kit shell script. Entry point for all kit commands.
 
-## 💥 Videos
+## 💥 Commands
+Commands have the following format: `kit <app> <command> <arguments>`
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/nrG0O_qqMkk/0.jpg)](https://www.youtube.com/watch?v=nrG0O_qqMkk)
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Q8wrgqlpVY4/0.jpg)](https://www.youtube.com/watch?v=Q8wrgqlpVY4)
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qbdOO7pnJrU/0.jpg)](https://www.youtube.com/watch?v=qbdOO7pnJrU)
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GwgwgoWCm8Q/0.jpg)](https://www.youtube.com/watch?v=GwgwgoWCm8Q)
-
-### General Information (WIP)
-
-Commands have the following format: `kit [app] [env] COMMAND [options] [arguments]`
-
-- `[app]` is the application name. This kit allows you to create many apps under one directory. Defaults to the app corresponding to the first child directory in `./apps`.
-- `[env]` valid values are `dev` or `prod`. Defaults to `dev`. This is a flag to specify environment. Then the following files are used when running Docker commands:
+- `<app>` is the application name. This kit allows you to create many apps under one directory. Defaults to the app corresponding to the first child directory in `./apps`.
+- `<command>` is the command to be run. This kit has a number of "base" commands (e.g., `deploy`, `destroy`, `down`,...) that provide base functionality. Once you create an application using the `kit new <template>` command, then each application can provide additional commands (e.g., laravel applications have `artisan` add-on commands).
+- Depending on the `<command>`, actions will be taken either on the `dev` or `prod` environments. The following files are used automatically when running commands that envoke Docker:
 
 | env     | files                                                             |
 |---------|-------------------------------------------------------------------|
 | `dev`   | `docker-compose.yml`, `docker-compose.dev.yml` and `.env.dev`     |
 | `prod`  | `docker-compose.yml`, `docker-compose.prod.yml` and `.env.prod`   |
 
-- `COMMAND` the command to run
-- `[options]` any options supported by the command
-- `[arguments]` arguments expected by the command
-
-There is an onboard help system that allows you to quickly get details about available commands:
-
-- `kit` or `kit help` will list all the available commands
-- `kit COMMAND help` (e.g., `kit artisan help` or `kit build help`) will provide additional details and examples for a command
-
-Here are a few examples showing a command and the production version:
-
-- `kit app1 image` and `kit app1 prod image`
-- `kit app1 start` and `kit app1 prod start`
-
 > [!NOTE]
-> In the following the `[app]` and `[env]` options will be removed for brevity, but all commands support that option.
+> The biggest difference between the `dev` and `prod` environments is where the application code exits:
+> - `dev` environments have the code mounted into the image using a `volume`. This allows you to make code changes and those dynamically appear in the browser.
+> - `prod` environments have the code "baked into the image" using a `add` statement. This creates a fully functioning containerized environment that can be pushed to a container registry and deployed to production or other servers.
 
-### Creating an Application
+- `<arguments>` are arguments expected by the command. For example, `kit new laravel` the `new` command takes as an argument the template name, this case `laravel`.
 
-- `kit new [TEMPLATE] [--force]` will create a new application based on the specified template:
-    - `--force`: the existing code directory will be deleted first
+## 💡 Templates
 
-### Starting / Stopping Application
+### Template Structure
+Each technology stack is created using the `kit new <template>` command. Each template has all the files necessary to create both the initial application code (based on a repo or a default starter project) and the infrastructure code.
+Templates require the following files:
+- `.env.example` gets transformed by `bin/init.sh` into `.env.dev` and `.env.prod`
+- `docker-compose.yml` the base compose file used by Docker
+- `docker-compose.dev.yml` and `docker-compose.prod.yml` the override files for the `dev` and `prod` environments
+- `Dockerfile` a multi-stage build that allows a `dev` and `prod` target
+- `bin/init.sh` a custom initialization script that is run early in the `kit new` command. This allows the template to gather data and create the `env.dev` and `env.prod` environments.
+- `bin/create.sh` a custom creations script that is run later in the `kit new` command. This allows the creation of the initial application code.
+- `bin/set_env.sh` this is a script that sets any custom environment variables. it is run when any commands are executed for applications created with this template.
+- `bin/commands/build.sh` a custom build script for the application code. What ever your application requires when it needs to be build can be put in here.
+- `other files` any other files that your template needs.
 
-To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system, and then copy this directory to a desired location on your development machine.
+### Create Your Own Template?
 
-Next, open the .env file and update any settings (e.g., versions & exposed ports) to match your desired development environment.
+Yes, please! Would love to integrate additional templates for the community to use with this kit platform.
 
-Then, navigate in your terminal to that directory, and spin up the containers for the full web server stack by running:
-
-- `kit image` to build the Docker images
-- `kit start` to start the running the web application
-- `kit open`  to open the web application in the browser
-
-Once running you can do one of the following:
-
-- `kit stop`    to stop the web application
-- `kit restart` to restart the running the web application (equivalent to stop and the start)
-- `kit destroy` to stop the web application and delete the associated data (i.e., Docker images, app and code directories)
-
-### Shell Access
-
-You can create an interactive shell by doing one of the following:
-
-- `kit ssh <SERVICE>` for example `kit ssh nginx` to access a shell command inside the nginx container.
-
-### Template Specific Commands
-
-Each template can inject additional commands into the kit platform. You can find out more details about template specific commands on the `README.MD` file for each template. Here are a few examples from the Laravel template:
-
-- `kit composer <COMMAND>` runs a composer command (e.g., `kit composer install`)
-- `kit artisan <COMMAND>`  runs an artisan command (e.g., `kit artisan db:seed`)
-- `kit npm <COMMAND>`      runs a npm command (e.g., `kit npm install`)
-- `kit migrate` equivalent to `kit artisan migrate`
-
-# Create Your Own Template?
-
-Yes, please! Would love to integrate additional templates for the community to use with this kit platform. Just follow the instructions in the `templates/.empty/README.md` file to create your own template.
+Just follow the instructions in the `templates/.empty/README.md` file to create your own template.
 
 Let me know if you have any issues!
 
 Once you have a working template, create a pull request and I can merge it in!
+
+
+
+## 💥 Older Videos
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/nrG0O_qqMkk/0.jpg)](https://www.youtube.com/watch?v=nrG0O_qqMkk)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Q8wrgqlpVY4/0.jpg)](https://www.youtube.com/watch?v=Q8wrgqlpVY4)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qbdOO7pnJrU/0.jpg)](https://www.youtube.com/watch?v=qbdOO7pnJrU)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GwgwgoWCm8Q/0.jpg)](https://www.youtube.com/watch?v=GwgwgoWCm8Q)
+

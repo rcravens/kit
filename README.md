@@ -69,11 +69,11 @@ At some point, you will want to deploy your code to other servers for testing an
 
 Follow these steps to create a server environment:
 1. Manually create the desired number of linux boxes you want in your Docker Swarm. Future versions will automate this step, but for now you just need to have the new instances running with public / private ip addresses.
-2. Run `kit make server <name>` where `<name>` is the destination name (e.g., prod, stage, test). This will scaffold in the files needed to configure the Docker Swarm server.
-3. Add the ssh key pair to the `.ssh` directory that was created.
-4. Update the `inventory.yml` file with the IP addresses and key pairs for the manager and worker nodes.
-5. Update the `server_settings.yml` file.
-6. Run `kit provision <name>` command. This runs an Ansible playbook that provisions and configures your nodes.
+2. Run `kit make server <name>` where `<name>` is the destination name (e.g., prod, stage, test). This will scaffold in the files needed to configure the Docker Swarm server. In the resulting directory:
+   1. Add the ssh key pair to the `.ssh` directory that was created.
+   2. Update the `inventory.yml` file with the IP addresses and key pairs for the manager and worker nodes.
+   3. Update the `server_settings.yml` file.
+3. Run `kit provision <name>` command. This runs an Ansible playbook that provisions and configures your nodes.
 
 After the above completes, you should have a destination where you can deploy your application. Repeat the above steps to create destinations for all your desired environments (e.g., test, stage, prod).
 

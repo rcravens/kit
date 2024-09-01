@@ -155,6 +155,9 @@ Once you have a working template, create a pull request and I can merge it in!
 
 ## 💥 Older Videos
 
+> [!NOTE]
+> I am keeping these here as they may still be useful. This kit has morphed from being a "dedicated" laravel kit, to leveraging templates to support any technology stack. It has also evolved from just supporting a local development environment to providing a more complete workflow that includes deployment. So the following videos may provide some additional value, the exact commands shown might not match the current kit.
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/nrG0O_qqMkk/0.jpg)](https://www.youtube.com/watch?v=nrG0O_qqMkk)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Q8wrgqlpVY4/0.jpg)](https://www.youtube.com/watch?v=Q8wrgqlpVY4)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qbdOO7pnJrU/0.jpg)](https://www.youtube.com/watch?v=qbdOO7pnJrU)

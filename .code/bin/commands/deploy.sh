@@ -15,19 +15,31 @@ function command_run {
       exit 1
     fi
 
-    # Regenerate the stack file
-    STACK_FILE="${APP_DIRECTORY}/deploy_stack.yml"
-    rm -rf "${STACK_FILE}"
-    if [ ! -f "${STACK_FILE}" ]; then
-      run_docker_compose config -o "${STACK_FILE}"
-      sed -i .bak "/platform: linux\/amd64/d" "${STACK_FILE}"
-      sed -i .bak "/name: laravel/d" "${STACK_FILE}"
-      sed -i .bak "s|published: \"${HTTP_ON_HOST}\"|published: ${HTTP_ON_HOST}|" "${STACK_FILE}"
-      sed -i .bak "s|published: \"${HTTPS_ON_HOST}\"|published: ${HTTPS_ON_HOST}|" "${STACK_FILE}"
-      rm -rf "${STACK_FILE}.bak"
+    if [ -f "${CODE_DIRECTORY}/stacks/${APP}.yml" ]; then
+      # Deploying a stack file
+      STACK_FILE="${CODE_DIRECTORY}/stacks/${APP}.yml"
+      DEPLOY_SETTINGS_FILE="${CODE_DIRECTORY}/stacks/deploy_settings.yml"
+    else
+      # Deploying an application, regenerate the stack file
+      STACK_FILE="${APP_DIRECTORY}/deploy_stack.yml"
+      DEPLOY_SETTINGS_FILE="${APP_DIRECTORY}/deploy_settings.yml"
+      rm -rf "${STACK_FILE}"
+      if [ ! -f "${STACK_FILE}" ]; then
+        run_docker_compose config -o "${STACK_FILE}"
+
+        # Delete the first line of the resulting file (name: XXX)
+        tail -n +2 "${STACK_FILE}" > "${STACK_FILE}.tmp" && mv "${STACK_FILE}.tmp" "${STACK_FILE}"
+
+        # Delete lines that are not allows or fix formatting
+        sed -i .bak "/platform: linux\/amd64/d" "${STACK_FILE}"
+#        sed -i .bak "/name: laravel/d" "${STACK_FILE}"
+        sed -i .bak "s|published: \"${HTTP_ON_HOST}\"|published: ${HTTP_ON_HOST}|" "${STACK_FILE}"
+        sed -i .bak "s|published: \"${HTTPS_ON_HOST}\"|published: ${HTTPS_ON_HOST}|" "${STACK_FILE}"
+        sed -i .bak "s|published: \"${MYSQL_ON_HOST}\"|published: ${MYSQL_ON_HOST}|g" "${STACK_FILE}"
+        rm -rf "${STACK_FILE}.bak"
+      fi
     fi
 
-    DEPLOY_SETTINGS_FILE="${APP_DIRECTORY}/deploy_settings.yml"
     SERVER_SETTINGS="${SERVER_DIRECTORY}/server_settings.yml"
     INVENTORY_FILE="${SERVER_DIRECTORY}/inventory.yml"
     SSH_DIR="${SERVER_DIRECTORY}/.ssh"

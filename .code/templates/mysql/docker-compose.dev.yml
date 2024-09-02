@@ -1,2 +1,4 @@
 services:
   mysql:
+    volumes:
+      - ./database/data/${APP_NAME}_data_${APP_ENVIRONMENT}:/var/lib/mysql

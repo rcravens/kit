@@ -62,8 +62,7 @@ Using `kit new <template>` will quickly create a development environment on your
 Not seeing what you want? There is a `templates/.empty` example that you can use to create a new technology stack. Checkout the `templates/.empty/README.md` file for details on how to create your own.
 
 ## 3️⃣ Provision Servers
-Provisioning infrastructure for deployments should be easy and repeatable. The templates provide "infrastructure as code" that you can use to provision servers.
-
+Provisioning infrastructure for deployments should be easy and repeatable. The templates provide "infrastructure as code" that you can use to provision servers. 
 Need multiple environments? No problem! Just repeat the process below for your stage, test, prod, or other environments.
 
 > [!NOTE]

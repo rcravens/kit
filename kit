@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 
-export ROOT_DIRECTORY="$PWD"
-export CODE_DIRECTORY="$PWD/.code"
-export BIN_DIRECTORY="$PWD/.code/bin"
-export APPS_DIRECTORY="$PWD/apps"
-export TEMPLATES_DIRECTORY="$PWD/.code/templates"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+export ROOT_DIRECTORY="$SCRIPT_DIR"
+export CODE_DIRECTORY="$ROOT_DIRECTORY/.code"
+export BIN_DIRECTORY="$CODE_DIRECTORY/bin"
+export APPS_DIRECTORY="$ROOT_DIRECTORY/apps"
+export TEMPLATES_DIRECTORY="$CODE_DIRECTORY/templates"
+export PATH_TO_CODE_ROOT="$ROOT_DIRECTORY/../code"
 
 source "$BIN_DIRECTORY/helpers/color_helpers.sh"
 source "$BIN_DIRECTORY/helpers/functions.sh"
+
+if [ ! -d "$APPS_DIRECTORY" ]; then
+  mkdir -p "$APPS_DIRECTORY"
+fi
+
+if [ ! -d "$PATH_TO_CODE_ROOT" ]; then
+  mkdir -p "$PATH_TO_CODE_ROOT"
+fi
 
 # GENERAL COMMAND FORMAT
 # kit [app] [command] [args]

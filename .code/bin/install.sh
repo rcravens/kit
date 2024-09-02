@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-BIN_DIRECTORY="./bin"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+BIN_DIRECTORY="$SCRIPT_DIR"
 
 source "$BIN_DIRECTORY/helpers/color_helpers.sh"
 source "$BIN_DIRECTORY/helpers/functions.sh"
-
 source "$BIN_DIRECTORY/commands/help.sh"
 
 display_banner
 
-echo -e "${BOLD}🚀 Laravel Starter Kit 🚀${RESET}"
+echo -e "${BOLD}🚀 Application Starter Kit 🚀${RESET}"
 
 echo "Installing the 'kit' alias"
 BASH_FILE=$(bash_file)

@@ -11,6 +11,8 @@ This is an easy-to-use application starter kit. The workflows from creating a ne
 
 # ‼️ Getting Started
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/hKDQyOWAgtc/0.jpg)](https://www.youtube.com/watch?v=hKDQyOWAgtc)
+
 ## 1️⃣ Installation
 
 ### Docker Environment

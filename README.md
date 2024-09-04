@@ -25,7 +25,7 @@ Setup directory structure and clone this repo:
 
 1. `mkdir project`
 2. `cd projects`
-3. `git clone https://github.com/rcravens/kit.git infra`
+3. `git clone https://github.com/rcravens/kit.git --config core.autocrlf=false infra`
 4. `cd infra`
 5. `./.code/bin/install.sh` ‼️ this creates a `kit` alias that you can use ‼️
 

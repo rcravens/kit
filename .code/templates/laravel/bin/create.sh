@@ -26,20 +26,20 @@ if [ ! -d "${PATH_TO_CODE}" ]; then
             if [ -f "${PATH_TO_CODE}/.env.example" ]; then
                 echo_yellow "Creating the .env file from .env.example"
                 cp "${PATH_TO_CODE}"/.env.example "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|APP_NAME=Laravel|APP_NAME=${APP_NAME}|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|APP_URL=.*|APP_URL=https://${APP_DOMAIN}:${HTTPS_ON_HOST}|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|DB_CONNECTION=.*|DB_CONNECTION=mysql|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|.*DB_HOST=.*|DB_HOST=mysql|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|.*DB_HOST_READ=.*|DB_HOST_READ=mysql|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|.*DB_HOST_WRITE=.*|DB_HOST_WRITE=mysql|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|.*DB_PORT=.*|DB_PORT=3306|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|.*DB_DATABASE=.*|DB_DATABASE=${MYSQL_DATABASE}|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|.*DB_USERNAME=.*|DB_USERNAME=${MYSQL_USER}|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|.*DB_PASSWORD=.*|DB_PASSWORD=${MYSQL_PASSWORD}|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|SESSION_DRIVER=.*|SESSION_DRIVER=redis|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|QUEUE_CONNECTION=.*|QUEUE_CONNECTION=redis|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|CACHE_STORE=.*|CACHE_STORE=redis|" "${PATH_TO_CODE}"/.env
-                sed -i .bak "s|REDIS_HOST=.*|REDIS_HOST=redis|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|APP_NAME=Laravel|APP_NAME=${APP_NAME}|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|APP_URL=.*|APP_URL=https://${APP_DOMAIN}:${HTTPS_ON_HOST}|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|DB_CONNECTION=.*|DB_CONNECTION=mysql|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|.*DB_HOST=.*|DB_HOST=mysql|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|.*DB_HOST_READ=.*|DB_HOST_READ=mysql|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|.*DB_HOST_WRITE=.*|DB_HOST_WRITE=mysql|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|.*DB_PORT=.*|DB_PORT=3306|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|.*DB_DATABASE=.*|DB_DATABASE=${MYSQL_DATABASE}|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|.*DB_USERNAME=.*|DB_USERNAME=${MYSQL_USER}|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|.*DB_PASSWORD=.*|DB_PASSWORD=${MYSQL_PASSWORD}|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|SESSION_DRIVER=.*|SESSION_DRIVER=redis|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|QUEUE_CONNECTION=.*|QUEUE_CONNECTION=redis|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|CACHE_STORE=.*|CACHE_STORE=redis|" "${PATH_TO_CODE}"/.env
+                sed -i.bak "s|REDIS_HOST=.*|REDIS_HOST=redis|" "${PATH_TO_CODE}"/.env
                 rm "${PATH_TO_CODE}"/.env.bak
             fi
         fi

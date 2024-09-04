@@ -84,13 +84,13 @@ function make_run {
   echo "REGISTRY_REGION: ${REGISTRY_REGION}"
   echo "REGISTRY_USERNAME: ${REGISTRY_USERNAME}"
 
-  sed -i .bak "s|REGISTRY_TYPE=.*|REGISTRY_TYPE=${REGISTRY_TYPE}|" "${PROD_ENV_FILE}"
-  sed -i .bak "s|REGISTRY_URL=.*|REGISTRY_URL=${REGISTRY_URL}|" "${PROD_ENV_FILE}"
-  sed -i .bak "s|REGISTRY_REPO=.*|REGISTRY_REPO=${REGISTRY_REPO}|" "${PROD_ENV_FILE}"
-  sed -i .bak "s|REGISTRY_DEPLOYED_VERSION=.*|REGISTRY_DEPLOYED_VERSION=${REGISTRY_DEPLOYED_VERSION}|" "${PROD_ENV_FILE}"
-  sed -i .bak "s|REGISTRY_REGION=.*|REGISTRY_REGION=${REGISTRY_REGION}|" "${PROD_ENV_FILE}"
-  sed -i .bak "s|REGISTRY_USERNAME=.*|REGISTRY_USERNAME=${REGISTRY_USERNAME}|" "${PROD_ENV_FILE}"
-  sed -i .bak "s|REGISTRY_USERNAME=.*|REGISTRY_USERNAME=${REGISTRY_USERNAME}|" "${PROD_ENV_FILE}"
+  sed -i.bak "s|REGISTRY_TYPE=.*|REGISTRY_TYPE=${REGISTRY_TYPE}|" "${PROD_ENV_FILE}"
+  sed -i.bak "s|REGISTRY_URL=.*|REGISTRY_URL=${REGISTRY_URL}|" "${PROD_ENV_FILE}"
+  sed -i.bak "s|REGISTRY_REPO=.*|REGISTRY_REPO=${REGISTRY_REPO}|" "${PROD_ENV_FILE}"
+  sed -i.bak "s|REGISTRY_DEPLOYED_VERSION=.*|REGISTRY_DEPLOYED_VERSION=${REGISTRY_DEPLOYED_VERSION}|" "${PROD_ENV_FILE}"
+  sed -i.bak "s|REGISTRY_REGION=.*|REGISTRY_REGION=${REGISTRY_REGION}|" "${PROD_ENV_FILE}"
+  sed -i.bak "s|REGISTRY_USERNAME=.*|REGISTRY_USERNAME=${REGISTRY_USERNAME}|" "${PROD_ENV_FILE}"
+  sed -i.bak "s|REGISTRY_USERNAME=.*|REGISTRY_USERNAME=${REGISTRY_USERNAME}|" "${PROD_ENV_FILE}"
   rm "${PROD_ENV_FILE}.bak"
 
   IS_ECR_LOGIN_NEEDED="false"
@@ -105,9 +105,9 @@ function make_run {
   fi
   echo "DS_AWS_REGION: ${DS_AWS_REGION}"
   DEPLOY_SETTINGS_FILE="${APP_DIRECTORY}/deploy_settings.yml"
-  sed -i .bak "s|is_ecr_login_needed: .*|is_ecr_login_needed: ${IS_ECR_LOGIN_NEEDED}|" "${DEPLOY_SETTINGS_FILE}"
-  sed -i .bak "s|aws_region:.*|aws_region: ${DS_AWS_REGION}|" "${DEPLOY_SETTINGS_FILE}"
-  sed -i .bak "s|aws_account_id:.*|aws_account_id: '${DS_AWS_ACCOUNT_ID}'|" "${DEPLOY_SETTINGS_FILE}"
+  sed -i.bak "s|is_ecr_login_needed: .*|is_ecr_login_needed: ${IS_ECR_LOGIN_NEEDED}|" "${DEPLOY_SETTINGS_FILE}"
+  sed -i.bak "s|aws_region:.*|aws_region: ${DS_AWS_REGION}|" "${DEPLOY_SETTINGS_FILE}"
+  sed -i.bak "s|aws_account_id:.*|aws_account_id: '${DS_AWS_ACCOUNT_ID}'|" "${DEPLOY_SETTINGS_FILE}"
   rm "${DEPLOY_SETTINGS_FILE}.bak"
 
 

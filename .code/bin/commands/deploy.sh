@@ -31,11 +31,11 @@ function command_run {
         tail -n +2 "${STACK_FILE}" > "${STACK_FILE}.tmp" && mv "${STACK_FILE}.tmp" "${STACK_FILE}"
 
         # Delete lines that are not allows or fix formatting
-        sed -i .bak "/platform: linux\/amd64/d" "${STACK_FILE}"
-#        sed -i .bak "/name: laravel/d" "${STACK_FILE}"
-        sed -i .bak "s|published: \"${HTTP_ON_HOST}\"|published: ${HTTP_ON_HOST}|" "${STACK_FILE}"
-        sed -i .bak "s|published: \"${HTTPS_ON_HOST}\"|published: ${HTTPS_ON_HOST}|" "${STACK_FILE}"
-        sed -i .bak "s|published: \"${MYSQL_ON_HOST}\"|published: ${MYSQL_ON_HOST}|g" "${STACK_FILE}"
+        sed -i.bak "/platform: linux\/amd64/d" "${STACK_FILE}"
+#        sed -i.bak "/name: laravel/d" "${STACK_FILE}"
+        sed -i.bak "s|published: \"${HTTP_ON_HOST}\"|published: ${HTTP_ON_HOST}|" "${STACK_FILE}"
+        sed -i.bak "s|published: \"${HTTPS_ON_HOST}\"|published: ${HTTPS_ON_HOST}|" "${STACK_FILE}"
+        sed -i.bak "s|published: \"${MYSQL_ON_HOST}\"|published: ${MYSQL_ON_HOST}|g" "${STACK_FILE}"
         rm -rf "${STACK_FILE}.bak"
       fi
     fi

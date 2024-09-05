@@ -43,20 +43,35 @@ set_value_in_file() {
 # e.g., BASH_FILE=$(bash_file)
 #
 bash_file() {
-  	SHELL_TYPE=$(basename "$SHELL")
-  	case "$SHELL_TYPE" in
-  		bash)
-  			echo ~/.bash_profile
-  			return 0
-  			;;
-  		zsh)
-  			echo ~/.zshrc
-  			return 0
-  			;;
-  		*)
-  			return 1
-  			;;
-  	esac
+    SHELL_TYPE=$(basename "$SHELL")
+
+    case "$SHELL_TYPE" in
+        bash)
+            # Typically use ~/.bashrc for interactive shells and ~/.bash_profile for login shells
+            if [ -f ~/.bash_profile ]; then
+                echo ~/.bash_profile
+            else
+                echo ~/.bashrc
+            fi
+            return 0
+            ;;
+        zsh)
+            echo ~/.zshrc
+            return 0
+            ;;
+        ksh)
+            echo ~/.kshrc
+            return 0
+            ;;
+        fish)
+            echo ~/.config/fish/config.fish
+            return 0
+            ;;
+        *)
+            echo "Unsupported shell: $SHELL_TYPE"
+            return 1
+            ;;
+    esac
 }
 
 # ensure a bash alias exists

@@ -61,7 +61,16 @@ if [ "$IS_APP" == true ]; then
   # Use the prod environment for production commands
   case "$COMMAND" in
     "image" | "push" | "deploy")
-      export ENV="prod"
+      echo "ARGS: $ARGS"
+      POSSIBLE_ENV="$1"
+      if [ -n "$POSSIBLE_ENV" ] && [ -d "${APP_DIRECTORY}/envs/${POSSIBLE_ENV}" ]; then
+        echo "Found ENV!!!"
+        export ENV="${POSSIBLE_ENV}"
+        shift 1
+        ARGS=$@
+      else
+        export ENV="prod"
+      fi
       ;;
     *)
       export ENV="dev"

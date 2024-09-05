@@ -11,7 +11,7 @@ function command_run {
   shift 1
   ARGS=$@
 
-  MAKE_FILE="${BIN_DIRECTORY}/makes/${OBJ}.sh"
+  MAKE_FILE="${BIN_DIRECTORY}/makers/${OBJ}.sh"
   if [ -f "$MAKE_FILE" ]; then
     source "$MAKE_FILE"
     # shellcheck disable=SC2086

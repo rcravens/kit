@@ -30,25 +30,33 @@ swarm_manager:
     ansible_private_key_file: ~/.ssh/__SSH_KEY_FILE__ # be sure this exists in the ${SERVER_DIRECTORY}/.ssh directory
 
 # This section is only necessary if you are going to use 'kit provision' command to provision and configure your swarm.
-#swarm_worker:
-#  hosts:
-#    worker1:
-#      ansible_host: __PUBLIC_IP_ADDRESS_OF_SWARM_WORKER__
-#    # Copy and paste for as many worker nodes that exist
-#    worker2:
-#      ansible_host: __PUBLIC_IP_ADDRESS_OF_SWARM_WORKER__
-#  vars:
-#    ansible_user: ubuntu
-#    ansible_private_key_file: ~/.ssh/__SSH_KEY_FILE__
+swarm_worker:
+  hosts:
+    worker1:
+      ansible_host: __IP_ADDRESS_OF_SWARM_WORKER__
+    # Copy and paste for as many worker nodes that exist
+    worker2:
+      ansible_host: __IP_ADDRESS_OF_SWARM_WORKER__
+  vars:
+    ansible_user: ubuntu
+    ansible_private_key_file: ~/.ssh/__SSH_KEY_FILE__
 
 swarm:
   children:
     swarm_manager:
-#    swarm_workers:
+    swarm_workers:
 
 all:
   children:
     swarm:
+  vars:
+    # The following four lines support ansible accessing swarm nodes that are provisioned in a private subnet
+    #   by using a jump box or a bastion server. If the nodes are public accessible, just comment these lines
+    #   and supply the public IP addresses at the top for direct connections.
+    jump_box_host: 100.26.108.96
+    jump_box_user: ubuntu
+    jump_box_key_file: ~/.ssh/laravel_demo.pem
+    ansible_ssh_common_args: "-o ProxyCommand='ssh -i {{jump_box_key_file}} -W %h:%p -q {{jump_box_user}}@{{jump_box_host}}'"
 XXX
 
   # create server_settings.yml

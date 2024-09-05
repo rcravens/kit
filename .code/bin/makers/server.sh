@@ -7,6 +7,10 @@ function make_run {
   fi
 
   NAME=$1
+  if [ -z "$NAME" ]; then
+    echo_red "Please provide a deployment server name."
+    exit 1
+  fi
 
   SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${NAME}"
   if [ -d "$SERVER_DIRECTORY" ]; then

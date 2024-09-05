@@ -24,12 +24,6 @@ FROM base_image AS dev
 ADD entry_point.sh /entry_point.sh
 WORKDIR /app/code
 
-############################## stage ##############################
-FROM base_image AS stage
-
-ADD entry_point.sh /entry_point.sh
-WORKDIR /app/code
-
 ############################## prod ##############################
 FROM base_image AS prod
 

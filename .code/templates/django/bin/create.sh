@@ -15,7 +15,6 @@
       git clone "${CODE_REPO_URL}" "${PATH_TO_CODE}"
   fi
 
-
 echo_yellow "Starting the application"
 eval "./kit ${APP_NAME} start"
 # HACK: Don't understand why the original start fails to mount the volume

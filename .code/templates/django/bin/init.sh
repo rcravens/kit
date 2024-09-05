@@ -21,7 +21,6 @@ export HTTP_ON_HOST
 # COPY .env.example to the default envs
 for env in "${ENVS[@]}"
 do
-  echo "$i"
   ENV_DIRECTORY="${APP_DIRECTORY}/envs/${env}"
   mkdir -p "${ENV_DIRECTORY}"
   ENV_FILE="${APP_DIRECTORY}/envs/${env}/.env"
@@ -30,6 +29,6 @@ do
   sed -i.bak "s|APP_ENVIRONMENT=.*|APP_ENVIRONMENT=dev|" "${ENV_FILE}"
   sed -i.bak "s|CODE_REPO_URL=.*|CODE_REPO_URL=${CODE_REPO_URL}|" "${ENV_FILE}"
   sed -i.bak "s|HTTP_ON_HOST=.*|HTTP_ON_HOST=${HTTP_ON_HOST}|" "${ENV_FILE}"
-  rm "${APP_DIRECTORY}/.env.dev.bak"
+  rm "${ENV_FILE}.bak"
 
 done

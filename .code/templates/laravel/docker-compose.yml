@@ -10,6 +10,7 @@ services:
         - NGINX_VERSION=${NGINX_VERSION}
         - APP_DOMAIN=${APP_DOMAIN}
         - CODE_REPO_URL=${CODE_REPO_URL}
+        - ENV=${APP_ENVIRONMENT}
     ports:
       - "${HTTP_ON_HOST}:80"
       - "${HTTPS_ON_HOST}:443"

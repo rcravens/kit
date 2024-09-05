@@ -31,7 +31,7 @@ function command_help() {
 function command_help_details() {
   echo_divider
   echo_yellow "💥 Available make commands:"
-  for COMMAND_FILE in $BIN_DIRECTORY/makes/*.sh
+  for COMMAND_FILE in $BIN_DIRECTORY/makers/*.sh
   do
     source "$COMMAND_FILE"
     make_help

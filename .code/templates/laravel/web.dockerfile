@@ -111,18 +111,20 @@ RUN chown laravel:laravel /var/www/html
 ############################## dev ##############################
 FROM base_image AS dev
 
-ARG APP_DOMAIN
+ARG ENV
+RUN echo $ENV
 
 # CONFIGURE PHP
-ADD ./php/www.conf /usr/local/etc/php-fpm.d/www.conf
-ADD ./php/php.ini /usr/local/etc/php/php.ini
-ADD ./php/ldap.conf /etc/openldap/ldap.conf
-ADD ./php/crontab /etc/crontabs/root
+ADD ./envs/${ENV}/php/www.conf /usr/local/etc/php-fpm.d/www.conf
+ADD ./envs/${ENV}/php/php.ini /usr/local/etc/php/php.ini
+ADD ./envs/${ENV}/php/ldap.conf /etc/openldap/ldap.conf
+ADD ./envs/${ENV}/cron/crontab /etc/crontabs/root
 
 # CONFIGURE NGINX
-ADD ./nginx/web_site.conf /etc/nginx/http.d/web_site.conf
+ARG APP_DOMAIN
+ADD ./envs/${ENV}/nginx/web_site.conf /etc/nginx/http.d/web_site.conf
 RUN mkdir -p /etc/nginx/certs
-ADD ./nginx/certs/ /etc/nginx/certs/
+ADD ./envs/${ENV}/nginx/certs/ /etc/nginx/certs/
 RUN cd /etc/nginx/certs && chmod +x create-ca.sh && ./create-ca.sh && chmod +x create-certificate.sh && ./create-certificate.sh "${APP_DOMAIN}"
 RUN rm -rf /etc/nginx/certs.app.* && \
     cp /etc/nginx/certs/${APP_DOMAIN}.crt /etc/nginx/certs/app.crt && \
@@ -133,29 +135,31 @@ RUN rm -rf /etc/nginx/certs.app.* && \
 STOPSIGNAL SIGQUIT
 
 # CONFIGURE SUPEVISORD
-COPY ./supervisord/supervisord-dev.conf /etc/supervisord.conf
+COPY ./envs/${ENV}/supervisord/supervisord.conf /etc/supervisord.conf
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
 
 ############################## prod ##############################
 FROM base_image AS prod
 
+ARG ENV
+RUN echo $ENV
 ARG CODE_REPO_URL
 ARG APP_DOMAIN
 
 RUN apk add git
 
 # CONFIGURE PHP
-ADD ./php/www.conf /usr/local/etc/php-fpm.d/www.conf
-ADD ./php/php.ini /usr/local/etc/php/php.ini
-ADD ./php/ldap.conf /etc/openldap/ldap.conf
-ADD ./php/crontab /etc/crontabs/root
+ADD ./envs/${ENV}/php/www.conf /usr/local/etc/php-fpm.d/www.conf
+ADD ./envs/${ENV}/php/php.ini /usr/local/etc/php/php.ini
+ADD ./envs/${ENV}/php/ldap.conf /etc/openldap/ldap.conf
+ADD ./envs/${ENV}/cron/crontab /etc/crontabs/root
 
 # CODE
 RUN rm -rf /var/www/html
 RUN mkdir -p /var/www/html
 RUN git clone ${CODE_REPO_URL} /var/www/html
-COPY ./laravel/.env.prod /var/www/html/.env
+COPY ./envs/${ENV}/laravel/.env.prod /var/www/html/.env
 RUN chown -R laravel:laravel /var/www
 
 # BUILD THE CODE
@@ -168,9 +172,9 @@ RUN npm run build
 USER root
 
 # CONFIGURE NGINX
-ADD ./nginx/web_site.conf /etc/nginx/http.d/web_site.conf
+ADD ./envs/${ENV}/nginx/web_site.conf /etc/nginx/http.d/web_site.conf
 RUN mkdir -p /etc/nginx/certs
-ADD ./nginx/certs/ /etc/nginx/certs/
+ADD ./envs/${ENV}/nginx/certs/ /etc/nginx/certs/
 RUN cd /etc/nginx/certs && chmod +x create-ca.sh && ./create-ca.sh && chmod +x create-certificate.sh && ./create-certificate.sh "${APP_DOMAIN}"
 RUN rm -rf /etc/nginx/certs.app.* && \
     cp /etc/nginx/certs/${APP_DOMAIN}.crt /etc/nginx/certs/app.crt && \

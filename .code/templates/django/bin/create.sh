@@ -14,15 +14,6 @@
       echo_yellow "Cloning Project From: ${CODE_REPO_URL}"
       git clone "${CODE_REPO_URL}" "${PATH_TO_CODE}"
   fi
-#    if [ -z "${CODE_REPO_URL}" ]; then
-#        # Create a new Django application
-#        run_docker_compose run --rm "${ENTRY_SERVICE}" django-admin startproject ${APP} .
-#        run_docker_compose run --rm "${ENTRY_SERVICE}" bash -c "pip freeze > requirements.txt"
-#    else
-#        # Clone an existing application
-#        echo_yellow "Cloning Project From: ${CODE_REPO_URL}"
-#        git clone "${CODE_REPO_URL}" "${PATH_TO_CODE}"
-#    fi
 
 
 echo_yellow "Starting the application"

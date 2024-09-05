@@ -6,7 +6,7 @@ function make_run {
      return 1
   fi
 
-  PROD_ENV_FILE="${APP_DIRECTORY}/.env.prod"
+  PROD_ENV_FILE="${APP_DIRECTORY}/envs/prod/.env"
   if [ ! -f "$PROD_ENV_FILE" ]; then
     echo_red "Error: Missing production environment file."
     return 1

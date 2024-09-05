@@ -2,6 +2,9 @@
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+declare -a ENVS=("dev" "prod")
+export $ENVS
+
 export ROOT_DIRECTORY="$SCRIPT_DIR"
 export CODE_DIRECTORY="$ROOT_DIRECTORY/.code"
 export BIN_DIRECTORY="$CODE_DIRECTORY/bin"
@@ -64,7 +67,7 @@ if [ "$IS_APP" == true ]; then
       export ENV="dev"
       ;;
   esac
-  export ENV_FILE="$APP_DIRECTORY/.env.${ENV}"
+  export ENV_FILE="$APP_DIRECTORY/envs/${ENV}/.env"
 
   # TEMPLATE - allow the application template to set environment variables
   if [ -f "$APP_DIRECTORY/bin/set_env.sh" ]; then

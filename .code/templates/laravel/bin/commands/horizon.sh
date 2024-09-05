@@ -13,11 +13,11 @@ function command_run {
         run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan horizon:install
     fi
 
-    if [ "$ARGS" == "start" ]; then
+    if [ "$ARGS" == "start" ] || [ "$ARGS" == "up" ]; then
       run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan horizon
       URL="https://${APP_DOMAIN}:${HTTPS_ON_HOST}/horizon"
       open "${URL}"
-    elif [ "$ARGS" == "stop" ]; then
+    elif [ "$ARGS" == "stop" ] || [ "$ARGS" == "down" ]; then
       run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan horizon:terminate
     else
         echo "Unknown command!"
@@ -27,7 +27,6 @@ function command_run {
 function command_help() {
     echo_command "kit ${APP} horizon start" "Starts horizon"
     echo_command "kit ${APP} horizon stop" "Stops horizon"
-    echo_command "kit ${APP} horizon destroy" "Stops horizon and delete associated images"
 }
 
 function command_help_details() {

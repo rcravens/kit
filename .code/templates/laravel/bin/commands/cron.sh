@@ -7,12 +7,10 @@ function command_run {
        return 1
     fi
 
-    if [ "$1" == "start" ]; then
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" up -d cron
-    elif [ "$1" == "stop" ]; then
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" down cron
-    elif [ "$1" == "destroy" ]; then
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" down --rmi all -v cron
+    if [ "$1" == "start" ] || [ "$1" == "up" ]; then
+      run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan schedule:work
+    elif [ "$1" == "stop" ] || [ "$1" == "down" ]; then
+      run_docker_compose exec -it -d "${ENTRY_SERVICE}" /bin/sh -c "kill \$(ps aux | grep '[s]chedule:work' | awk '{print \$1}' )"
     else
         echo "Unknown command!"
     fi
@@ -21,7 +19,6 @@ function command_run {
 function command_help() {
     echo_command "kit ${APP} cron start" "Starts horizon"
     echo_command "kit ${APP} cron stop" "Stops horizon"
-    echo_command "kit ${APP} cron destroy" "Stops horizon and delete associated images"
 }
 
 function command_help_details() {

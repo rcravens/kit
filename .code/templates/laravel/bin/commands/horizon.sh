@@ -1,28 +1,24 @@
 #!/usr/bin/env bash
 
 function command_run {
-    if [ -z "$2" ] && [ "$1" == "help" ]; then
+    if [ "$ARGS" == "help" ]; then
        command_help
        command_help_details
        return 1
     fi
 
-    echo "BROKEN...come and fix me: horizon.sh"
-    exit 1
     if [ ! -d "${PATH_TO_CODE}/vendor/laravel/horizon" ]; then
         echo_yellow "Horizon not found...installing now"
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm composer require laravel/horizon
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm artisan horizon:install
+        run_docker_compose exec -it "${ENTRY_SERVICE}" php /bin/composer.phar require laravel/horizon
+        run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan horizon:install
     fi
 
-    if [ "$1" == "start" ]; then
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" up -d horizon
-        URL="https://${APP_DOMAIN}:${HTTPS_ON_HOST}/horizon"
-        open "${URL}"
-    elif [ "$1" == "stop" ]; then
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" down horizon
-    elif [ "$1" == "destroy" ]; then
-        docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" down --rmi all -v horizon
+    if [ "$ARGS" == "start" ]; then
+      run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan horizon
+      URL="https://${APP_DOMAIN}:${HTTPS_ON_HOST}/horizon"
+      open "${URL}"
+    elif [ "$ARGS" == "stop" ]; then
+      run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan horizon:terminate
     else
         echo "Unknown command!"
     fi

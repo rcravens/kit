@@ -54,7 +54,24 @@ function command_run {
 
     # Call the init.sh script for the template to allow gathering of data an initializing the app
     if [ -f "$APP_DIRECTORY/bin/init.sh" ]; then
-     . "$APP_DIRECTORY/bin/init.sh"
+      # Run custom initialization script
+      . "$APP_DIRECTORY/bin/init.sh"
+    elif [ -f "$APP_DIRECTORY/envs/.env.template" ]; then
+      # Run standard init based on .env.template file
+
+      # For each of the existing environments, use the .env.template file
+      # as a template to create a new environment file with the correct environment variables.
+      ENV_DIRECTORY="${APP_DIRECTORY}/envs/*"
+      for DIR in ${ENV_DIRECTORY}; do
+        env="${DIR##*/}"
+
+        echo_yellow "Updating environment: ${env}"
+
+        ENV_TEMPLATE_FILE="${APP_DIRECTORY}/envs/.env.template"
+        ENV_FILE="${APP_DIRECTORY}/envs/${env}/.env"
+
+        update_env_using_template "$ENV_TEMPLATE_FILE" "$ENV_FILE" "$env"
+      done
     fi
 
     # Reload the env files now that they are set by the init.sh

@@ -126,10 +126,12 @@ update_env_using_template() {
   fi
 
   local ENV_FILE="$2"
+  local ENV="$3"
 
   # Create the name value pairs in the form of a dictionary
   declare -A NAME_VALUES
   NAME_VALUES["APP_NAME"]=$APP_NAME
+  NAME_VALUES["APP_ENVIRONMENT"]=${ENV:-dev}
 
   while IFS='=' read -ra line; do
     VAR_NAME="${line[0]}"

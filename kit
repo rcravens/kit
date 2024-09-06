@@ -117,7 +117,13 @@ fi
 function run_docker_compose()
 {
 #  set -o xtrace
-  docker compose -f "${APP_DIRECTORY}/docker-compose.yml" -f "${APP_DIRECTORY}/docker-compose.${ENV}.yml" --env-file "$ENV_FILE" "$@"
+  # Main compose file
+  COMPOSE_FILES=("-f" "${APP_DIRECTORY}/docker-compose.yml")
+  if [ -f "${APP_DIRECTORY}/envs/${ENV}/docker-compose.yml" ]; then
+    # Found an override compose file in the ENV directory
+    COMPOSE_FILES+=("-f" "${APP_DIRECTORY}/envs/${ENV}/docker-compose.yml")
+  fi
+  docker compose "${COMPOSE_FILES[@]}" --env-file "${ENV_FILE}" "$@"
 #  set +o xtrace
 }
 

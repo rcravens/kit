@@ -159,7 +159,7 @@ ADD ./envs/${ENV}/cron/crontab /etc/crontabs/root
 RUN rm -rf /var/www/html
 RUN mkdir -p /var/www/html
 RUN git clone ${CODE_REPO_URL} /var/www/html
-COPY ./envs/${ENV}/laravel/.env.prod /var/www/html/.env
+COPY ./envs/${ENV}/laravel/.env /var/www/html/.env
 RUN chown -R laravel:laravel /var/www
 
 # BUILD THE CODE
@@ -185,5 +185,5 @@ RUN rm -rf /etc/nginx/certs.app.* && \
 STOPSIGNAL SIGQUIT
 
 # CONFIGURE SUPEVISORD
-COPY ./supervisord/supervisord-dev.conf /etc/supervisord.conf
+COPY ./envs/${ENV}/supervisord/supervisord.conf /etc/supervisord.conf
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]

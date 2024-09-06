@@ -101,3 +101,73 @@ capitalize() {
   CAP_STR="$(tr '[:lower:]' '[:upper:]' <<< "${STR:0:1}")${STR:1}"
   echo "${CAP_STR}"
 }
+
+update_env_using_template() {
+  # This function takes two arguments:
+  # 1. The path to the template file
+  # 2. The destination path of the resulting .env file
+  #
+  # The function will read the template file and create a new file with the
+  # templated values replaced by the user responses (or the default value)
+  #
+  # The template file will have lines using the following format:
+  # VAR_NAME1="VALUE"             <--lines like this are ignored
+  # VAR_NAME2="?PROMPT|DEFAULT"   <--lines where the value starts with a ? are templates
+  #...
+  # EXAMPLE="?Enter the HTTPS port|443"
+  #
+  # The function will prompt the user for input for each variable, or use the default
+  # value if provided. The function will then create a new file named.env in the
+
+  local TEMPLATE_FILE="$1"
+  if [ ! -f "$TEMPLATE_FILE" ]; then
+    echo "Error: Template file not found: $TEMPLATE_FILE"
+    return 1
+  fi
+
+  local ENV_FILE="$2"
+
+  # Create the name value pairs in the form of a dictionary
+  declare -A NAME_VALUES
+  NAME_VALUES["APP_NAME"]=$APP_NAME
+
+  while IFS='=' read -ra line; do
+    VAR_NAME="${line[0]}"
+    VAR_VALUE="${line[1]}"
+    if [ -n "$VAR_VALUE" ]; then
+      VAR_VALUE="${VAR_VALUE//\"/}"
+      if [ "${VAR_VALUE:0:1}" == "?" ]; then
+        # Found a templated variable
+
+        # Strip off leading question mark
+        VAR_VALUE="${VAR_VALUE:1}"
+
+        # Split string on the | to provide prompt and default value
+        PROMPT=$(echo $VAR_VALUE | awk -F '|' '{print $1}')
+        DEFAULT_VALUE=$(echo $VAR_VALUE | awk -F '|' '{print $2}')
+
+        # Prompt the user for input, or use the default value if provided
+        read -p "${GREEN}${PROMPT} [default: $DEFAULT_VALUE]: ${RESET}" RESPONSE </dev/tty
+        RESPONSE=${RESPONSE:-$DEFAULT_VALUE}
+        NAME_VALUES[$VAR_NAME]=$RESPONSE
+      fi
+    fi
+  done < "${TEMPLATE_FILE}"
+
+#  echo "${NAME_VALUES[@]}"
+#  echo "${!NAME_VALUES[@]}"
+
+  # Copy the template file into place if an existing .env is not present
+  if [ ! -f "$ENV_FILE" ]; then
+    cp "${ENV_TEMPLATE_FILE}" "${ENV_FILE}"
+  fi
+
+  # Loop over all the dictionary keys and replace the values in the file with the values
+  for KEY in "${!NAME_VALUES[@]}"; do
+    VALUE="${NAME_VALUES[$KEY]}"
+    sed -i.bak "s|$KEY=.*|$KEY=$VALUE|" "${ENV_FILE}"
+  done
+  rm "${ENV_FILE}.bak"
+
+  return 0
+}

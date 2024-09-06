@@ -24,7 +24,13 @@ function make_run {
     exit 1
   fi
 
+  # Copy the source directory to the destination directory
   cp -a "$SOURCE_DIR" "$DEST_DIR"
+
+  # Use the .env.template file to create a .env file for this new environment
+  ENV_TEMPLATE_FILE="${APP_DIRECTORY}/envs/.env.template"
+  ENV_FILE="${APP_DIRECTORY}/envs/${NAME}/.env"
+  update_env_using_template "$ENV_TEMPLATE_FILE" "$ENV_FILE"
 
   echo_green "Created a new environment called '$NAME' you can modify settings here: ${DEST_DIR}."
 }

@@ -62,7 +62,14 @@ if [ "$IS_APP" == true ]; then
   case "$COMMAND" in
     "image" | "push" | "deploy")
       echo "ARGS: $ARGS"
-      POSSIBLE_ENV="$1"
+      POSSIBLE_ENV=""
+      if [ "$COMMAND" == "deploy" ]; then
+        if [ -n "$2" ]; then
+          POSSIBLE_ENV="$1"
+        fi
+      else
+        POSSIBLE_ENV="$1"
+      fi
       if [ -n "$POSSIBLE_ENV" ] && [ -d "${APP_DIRECTORY}/envs/${POSSIBLE_ENV}" ]; then
         echo "Found ENV!!!"
         export ENV="${POSSIBLE_ENV}"

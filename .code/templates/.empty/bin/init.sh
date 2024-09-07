@@ -12,3 +12,5 @@
 # files and customize them according to your needs.
 
 # Take a look at some other templates to get some ideas
+
+# NOTE: If you use the envs/.env.template to automatically prompt user for input and create .env files you do not need this file

@@ -156,6 +156,8 @@ ADD ./envs/${ENV}/php/ldap.conf /etc/openldap/ldap.conf
 ADD ./envs/${ENV}/cron/crontab /etc/crontabs/root
 
 # CODE
+ARG CACHE_DATE=break_the_cache
+RUN echo ${CACHE_DATE}
 RUN rm -rf /var/www/html
 RUN mkdir -p /var/www/html
 RUN git clone ${CODE_REPO_URL} /var/www/html

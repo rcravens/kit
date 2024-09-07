@@ -8,9 +8,9 @@ function command_run {
     fi
 
     if [ -z "$ARGS" ]; then
-        run_docker_compose build "${ENTRY_SERVICE}"
+        run_docker_compose build --build-arg CACHE_DATE="$(date)" "${ENTRY_SERVICE}"
     else
-        run_docker_compose build $ARGS
+        run_docker_compose build --build-arg CACHE_DATE="$(date)" $ARGS
     fi
 }
 

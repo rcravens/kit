@@ -1,7 +1,5 @@
 .env
-.env.prod
-.env.stage
-.env.dev
+.env.*
 .DS_Store
 .idea
 database/data

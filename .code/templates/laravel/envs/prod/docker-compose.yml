@@ -5,6 +5,31 @@ services:
     build:
       target: prod
     image: ${REGISTRY_URL}/${REGISTRY_REPO}:${REGISTRY_DEPLOYED_VERSION}
+    networks:
+      - app_network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+        order: start-first
+      restart_policy:
+        condition: on-failure
+
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    container_name: ${APP_NAME}_mysql_${APP_ENVIRONMENT}
+    ports:
+      - ${MYSQL_ON_HOST}:3306
+#    volumes:
+#      - /var/lib/mysql/${APP_NAME}_data_${APP_ENVIRONMENT}:/var/lib/mysql
+    networks:
+      - app_network
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     deploy:
       replicas: 1
       update_config:
@@ -12,3 +37,27 @@ services:
         delay: 10s
       restart_policy:
         condition: on-failure
+      placement:
+        constraints: [ node.role == manager ]
+
+  redis:
+    image: redis:${REDIS_VERSION}
+    container_name: ${APP_NAME}_redis_${APP_ENVIRONMENT}
+    ports:
+      - ${REDIS_ON_HOST}:6379
+    networks:
+      - app_network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [ node.role == manager ]
+
+networks:
+  app_network:
+    name: ${APP_NAME}_${APP_ENVIRONMENT}
+    driver: overlay

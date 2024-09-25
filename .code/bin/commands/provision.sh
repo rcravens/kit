@@ -13,6 +13,11 @@ function command_run {
     SERVER_SETTINGS_FILE="${SERVER_DIRECTORY}/server_settings.yml"
     SSH_DIR="${SERVER_DIRECTORY}/.ssh"
 
+    AWS_DIR="${SERVER_DIRECTORY}/.aws"
+    if [ ! -d "$AWS_DIR" ]; then
+      AWS_DIR="$HOME/.aws"
+    fi
+
     echo "ROOT_DIRECTORY: ${ROOT_DIRECTORY}"
     echo "SERVER: ${SERVER}"
     echo "INVENTORY_FILE: ${INVENTORY_FILE}"
@@ -41,7 +46,7 @@ function command_run {
       -v "$INVENTORY_FILE":/ansible/inventory.yml \
       -v "$SERVER_SETTINGS_FILE":/ansible/server_settings.yml \
       -v "$SSH_DIR":/root/.ssh \
-      -v ~/.aws:/root/.aws \
+      -v "$AWS_DIR":/root/.aws \
       rcravens/ansible ansible-playbook playbooks/configure.yml
 }
 

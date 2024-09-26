@@ -41,32 +41,9 @@ function command_run {
       fi
     fi
 
-    SERVER_SETTINGS="${SERVER_DIRECTORY}/server_settings.yml"
-    INVENTORY_FILE="${SERVER_DIRECTORY}/inventory.yml"
-    SSH_DIR="${SERVER_DIRECTORY}/.ssh"
-    echo "ROOT_DIRECTORY: ${ROOT_DIRECTORY}"
-    echo "SERVER: ${SERVER}"
-    echo "INVENTORY_FILE: ${INVENTORY_FILE}"
-    echo "SERVER_SETTINGS: ${SERVER_SETTINGS}"
     echo "DEPLOY_SETTINGS_FILE: ${DEPLOY_SETTINGS_FILE}"
-    echo "SSH_DIR: ${SSH_DIR}"
+    echo "SERVER: ${SERVER}"
     echo "STACK_FILE: ${STACK_FILE}"
-    echo "APPLICATION: ${APP}"
-
-    if [ ! -f "$INVENTORY_FILE" ]; then
-      echo_red "Inventory file not found: ${INVENTORY_FILE}"
-      exit 1
-    fi
-
-    if [ ! -f "$SERVER_SETTINGS" ]; then
-      echo_red "Server settings file not found: ${SERVER_SETTINGS}"
-      exit 1
-    fi
-
-    if [ ! -d "$SSH_DIR" ]; then
-      echo_red "SSH directory not found: ${SSH_DIR}"
-      exit 1
-    fi
 
     if [ ! -f "$STACK_FILE" ]; then
       echo_red "Deploy stack file not found: ${STACK_FILE}"
@@ -93,14 +70,19 @@ function command_run {
 #
 #    sed -i '' '/platform: linux\/amd64/d' "${STACK_FILE}"
 
-    docker run --rm --pull=always -it \
-      -v "$INVENTORY_FILE":/ansible/inventory.yml \
-      -v "$SERVER_SETTINGS":/ansible/server_settings.yml \
-      -v "$SSH_DIR":/root/.ssh \
+#    docker run --rm --pull=always -it \
+#      -v "$INVENTORY_FILE":/ansible/inventory.yml \
+#      -v "$SERVER_SETTINGS":/ansible/server_settings.yml \
+#      -v "$SSH_DIR":/root/.ssh \
+#      -v "$AWS_DIR":/root/.aws \
+#      -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
+#      -v "$STACK_FILE":/ansible/playbooks/swarm/stacks/"$APP".yml \
+#      rcravens/ansible ansible-playbook playbooks/swarm/deploy.yml
+
+    run_ansible "$SERVER" \
       -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
       -v "$STACK_FILE":/ansible/playbooks/swarm/stacks/"$APP".yml \
-      -v ~/.aws:/root/.aws \
-      rcravens/ansible ansible-playbook playbooks/swarm/deploy.yml
+      playbooks/configure.yml
 }
 
 function command_help() {

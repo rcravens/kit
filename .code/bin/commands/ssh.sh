@@ -7,7 +7,14 @@ function command_run {
        return 1
     fi
 
-    run_docker_compose  exec -it "${ENTRY_SERVICE}" /bin/sh
+    if [ -z "${ENTRY_SERVICE}" ]; then
+      echo "xxx"
+      echo "ENTRY_SERVICE: ${ENTRY_SERVICE}"
+      echo "ARGS: ${ARGS}"
+    else
+      run_docker_compose  exec -it "${ENTRY_SERVICE}" /bin/sh
+    fi
+
 }
 
 function command_help() {

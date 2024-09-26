@@ -8,46 +8,61 @@ function command_run {
     fi
 
     SERVER=$ARGS
-    SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
-    INVENTORY_FILE="${SERVER_DIRECTORY}/inventory.yml"
-    SERVER_SETTINGS_FILE="${SERVER_DIRECTORY}/server_settings.yml"
-    SSH_DIR="${SERVER_DIRECTORY}/.ssh"
 
-    AWS_DIR="${SERVER_DIRECTORY}/.aws"
-    if [ ! -d "$AWS_DIR" ]; then
-      AWS_DIR="$HOME/.aws"
-    fi
-
-    echo "ROOT_DIRECTORY: ${ROOT_DIRECTORY}"
-    echo "SERVER: ${SERVER}"
-    echo "INVENTORY_FILE: ${INVENTORY_FILE}"
-    echo "SERVER_SETTINGS_FILE: ${SERVER_SETTINGS_FILE}"
-    echo "SSH_DIR: ${SSH_DIR}"
-
-    if [ ! -f "$INVENTORY_FILE" ]; then
-      echo_red "Inventory file not found: ${INVENTORY_FILE}"
-      exit 1
-    fi
-
-    if [ ! -d "$SSH_DIR" ]; then
-      echo_red "SSH directory not found: ${SSH_DIR}"
-      exit 1
-    fi
-
-#    docker run --rm --pull=always -it \
-#      -v "$INVENTORY_FILE":/ansible/inventory.yml \
-#      -v "$SERVER_SETTINGS_FILE":/ansible/server_settings.yml \
-#      -v "$SSH_DIR":/root/.ssh \
-#      -v ~/.aws:/root/.aws \
-#      rcravens/ansible /bin/sh
+#    run_ansible_playbook "$SERVER" ssh
 #    exit 1
 
-    docker run --rm --pull=always -it \
-      -v "$INVENTORY_FILE":/ansible/inventory.yml \
-      -v "$SERVER_SETTINGS_FILE":/ansible/server_settings.yml \
-      -v "$SSH_DIR":/root/.ssh \
-      -v "$AWS_DIR":/root/.aws \
-      rcravens/ansible ansible-playbook playbooks/configure.yml
+
+
+  SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
+  INVENTORY_FILE="${SERVER_DIRECTORY}/inventory.yml"
+  SERVER_SETTINGS_FILE="${SERVER_DIRECTORY}/server_settings.yml"
+  SSH_DIR="${SERVER_DIRECTORY}/.ssh"
+
+  AWS_DIR="${SERVER_DIRECTORY}/.aws"
+  if [ ! -d "$AWS_DIR" ]; then
+    AWS_DIR="$HOME/.aws"
+  fi
+
+  echo "APP: ${APP}"
+  echo "ROOT_DIRECTORY: ${ROOT_DIRECTORY}"
+  echo "SERVER: ${SERVER}"
+  echo "INVENTORY_FILE: ${INVENTORY_FILE}"
+  echo "SERVER_SETTINGS FILE: ${SERVER_SETTINGS_FILE}"
+  echo "SSH_DIR: ${SSH_DIR}"
+  echo "AWS_DIR: ${AWS_DIR}"
+
+  if [ -z "$SERVER" ]; then
+    echo_red "Server name is required."
+    exit 1
+  fi
+
+  if [ ! -f "$INVENTORY_FILE" ]; then
+    echo_red "Inventory file not found: ${INVENTORY_FILE}"
+    exit 1
+  fi
+
+  if [ ! -d "$SSH_DIR" ]; then
+    echo_red "SSH directory not found: ${SSH_DIR}"
+    exit 1
+  fi
+
+  if [ ! -d "$AWS_DIR" ]; then
+    echo_red "AWS credential directory not found: ${AWS_DIR}"
+    exit 1
+  fi
+
+#  docker run --rm --pull=always -it \
+#    -v "$INVENTORY_FILE":/ansible/inventory.yml \
+#    -v "$SERVER_SETTINGS_FILE":/ansible/server_settings.yml \
+#    -v "$SSH_DIR":/root/.ssh \
+#    -v "$AWS_DIR":/root/.aws \
+#    rcravens/ansible ansible-playbook playbooks/sandbox.yml
+
+  run_ansible "$SERVER" \
+   -v "${SERVER_DIRECTORY}/swarm_settings.yml:/ansible/swarm_settings.yml" \
+   playbooks/provision.yml
+
 }
 
 function command_help() {

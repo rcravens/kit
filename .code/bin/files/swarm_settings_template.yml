@@ -1,0 +1,134 @@
+---
+# Needed if deploying images from Amazon ECR
+is_ecr_login_needed: true
+aws_region: us-east-1
+aws_account_id: ___AWS_ACCOUNT_ID___
+
+resource_prefix: ___PREFIX___
+domain: ___DOMAIN___
+sub_domain: ___SUB_DOMAIN___
+num_worker_nodes: 2
+
+vpc:
+  name: "{{resource_prefix}}-vpc"
+  cidr: 10.1.0.0/16
+  region: "{{aws_region}}"
+  igw:
+    name: "{{resource_prefix}}-vpc-igw"
+    route_table:
+      name: "{{resource_prefix}}-vpc-public"
+  nat:
+    name: "{{resource_prefix}}-vpc-nat-gateway-1"
+    route_table:
+      name: "{{resource_prefix}}-vpc-private"
+  subnets:
+    public:
+      - name: "{{resource_prefix}}-vpc-public-subnet-1"
+        cidr: 10.1.1.0/24
+        az: "{{aws_region}}a"
+      - name: "{{resource_prefix}}-vpc-public-subnet-2"
+        cidr: 10.1.2.0/24
+        az: "{{aws_region}}b"
+    private:
+      - name: "{{resource_prefix}}-vpc-private-subnet-1"
+        cidr: 10.1.3.0/24
+        az: "{{aws_region}}a"
+      - name: "{{resource_prefix}}-vpc-private-subnet-2"
+        cidr: 10.1.4.0/24
+        az: "{{aws_region}}b"
+  security_groups:
+    web:
+      name: "{{resource_prefix}}-web-sg"
+      description: Allow web traffic from anywhere
+      rules:
+        - proto: tcp
+          ports:
+            - 80
+            - 8080
+          cidr_ip: 0.0.0.0/0
+          rule_desc: Allow HTTP traffic from anywhere
+        - proto: tcp
+          ports:
+            - 443
+          cidr_ip: 0.0.0.0/0
+          rule_desc: Allow HTTPS traffic from anywhere
+    ssh:
+      name: "{{resource_prefix}}-ssh-sg"
+      description: Allow SSH traffic from anywhere
+      rules:
+        - proto: tcp
+          ports:
+            - 22
+          cidr_ip: 0.0.0.0/0
+          rule_desc: Allow SSH traffic from anywhere
+    swarm:
+      name: "{{resource_prefix}}-swarm-sg"
+      description: Allow swarm traffic from the VPC CIDR
+      rules:
+        - proto: tcp
+          ports:
+            - 2377
+          group_name: "{{resource_prefix}}-swarm-sg"
+          group_desc: Docker Swarm Communication Group
+          rule_desc: Cluster management communications.
+        - proto: tcp
+          ports:
+            - 7946
+          group_name: "{{resource_prefix}}-swarm-sg"
+          group_desc: Docker Swarm Communication Group
+          rule_desc: Communication among nodes.
+        - proto: udp
+          ports:
+            - 7946
+          group_name: "{{resource_prefix}}-swarm-sg"
+          group_desc: Docker Swarm Communication Group
+          rule_desc: Communication among nodes.
+        - proto: udp
+          ports:
+            - 4789
+          group_name: "{{resource_prefix}}-swarm-sg"
+          group_desc: Docker Swarm Communication Group
+          rule_desc: Overlay network traffic.
+  alb:
+    name: "{{resource_prefix}}-x-alb"
+    target_groups:
+      - name: "{{resource_prefix}}-alb-http-tg"
+        protocol: HTTP
+        port: 80
+      - name: "{{resource_prefix}}-alb-https-tg"
+        protocol: HTTPS
+        port: 443
+        ssl_policy: ELBSecurityPolicy-2015-05
+        certificates:
+          - CertificateArn: arn:aws:acm:us-east-1:781477923825:certificate/92d52dc2-d062-46e4-a61f-6c0a6ec92990
+      - name: "{{resource_prefix}}-alb-viz-tg"
+        protocol: HTTP
+        port: 8080
+  ec2:
+    key_pair_name: "{{resource_prefix}}-ec2-key-pair"
+    key_pair_local_directory: "~/.ssh/"
+    ami: "ami-0a0e5d9c7acc336f1"
+    default_instance_type: "t2.micro"
+    jump_box:
+      security_groups:
+        - "{{ resource_prefix }}-ssh-sg"
+      tags:
+        Name: "{{resource_prefix}}-jump-box"
+        JumpBox: yes
+    swarm_nodes:
+      security_groups:
+        - "{{ resource_prefix }}-web-sg"
+        - "{{ resource_prefix }}-ssh-sg"
+        - "{{ resource_prefix }}-swarm-sg"
+      managers:
+        count: 1
+        tags:
+          Name: "{{resource_prefix}}-swarm-manager"
+          Swarm: yes
+          SwarmType: manager
+      workers:
+        count: "{{num_worker_nodes}}"
+        tags:
+          Name: "{{resource_prefix}}-swarm-worker"
+          Swarm: yes
+          SwarmType: worker

@@ -1,22 +1,15 @@
 #!/usr/bin/env bash
 
 function command_run {
-    if [ -z "$2" ] && [ "$1" == "help" ]; then
-       command_help
-       command_help_details
-       return 1
-    fi
+  if [ -z "$2" ] && [ "$1" == "help" ]; then
+     command_help
+     command_help_details
+     return 1
+  fi
 
-    SERVER=$ARGS
-
-#    run_ansible_playbook "$SERVER" ssh
-#    exit 1
-
-
+  SERVER=$ARGS
 
   SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
-  INVENTORY_FILE="${SERVER_DIRECTORY}/inventory.yml"
-  SERVER_SETTINGS_FILE="${SERVER_DIRECTORY}/server_settings.yml"
   SSH_DIR="${SERVER_DIRECTORY}/.ssh"
 
   AWS_DIR="${SERVER_DIRECTORY}/.aws"
@@ -27,18 +20,11 @@ function command_run {
   echo "APP: ${APP}"
   echo "ROOT_DIRECTORY: ${ROOT_DIRECTORY}"
   echo "SERVER: ${SERVER}"
-  echo "INVENTORY_FILE: ${INVENTORY_FILE}"
-  echo "SERVER_SETTINGS FILE: ${SERVER_SETTINGS_FILE}"
   echo "SSH_DIR: ${SSH_DIR}"
   echo "AWS_DIR: ${AWS_DIR}"
 
   if [ -z "$SERVER" ]; then
     echo_red "Server name is required."
-    exit 1
-  fi
-
-  if [ ! -f "$INVENTORY_FILE" ]; then
-    echo_red "Inventory file not found: ${INVENTORY_FILE}"
     exit 1
   fi
 
@@ -60,7 +46,6 @@ function command_run {
 #    rcravens/ansible ansible-playbook playbooks/sandbox.yml
 
   run_ansible "$SERVER" \
-   -v "${SERVER_DIRECTORY}/swarm_settings.yml:/ansible/swarm_settings.yml" \
    playbooks/provision.yml
 
 }

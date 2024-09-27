@@ -52,6 +52,24 @@ vpc:
             - 443
           cidr_ip: 0.0.0.0/0
           rule_desc: Allow HTTPS traffic from anywhere
+    mysql:
+      name: "{{resource_prefix}}-mysql-sg"
+      description: Allow web traffic from anywhere
+      rules:
+        - proto: tcp
+          ports:
+            - 3306
+          cidr_ip: 0.0.0.0/0
+          rule_desc: Allow MySQL traffic from anywhere
+    redis:
+      name: "{{resource_prefix}}-redis-sg"
+      description: Allow redis traffic from anywhere
+      rules:
+        - proto: tcp
+          ports:
+            - 6379
+          cidr_ip: 0.0.0.0/0
+          rule_desc: Allow Redis traffic from anywhere
     ssh:
       name: "{{resource_prefix}}-ssh-sg"
       description: Allow SSH traffic from anywhere
@@ -132,3 +150,20 @@ vpc:
           Name: "{{resource_prefix}}-swarm-worker"
           Swarm: yes
           SwarmType: worker
+  rds:
+    provision: yes
+    id: "{{resource_prefix}}-mysql"
+    engine: "mysql"
+    instance_class: "db.t3.micro"
+    storage_encrypted: true
+    root_username: "root"
+    root_password: "supersecret"
+    allocated_storage: 100
+    db_name: "{{resource_prefix}}-db"
+  elasticache:
+    provision: yes
+    name: "{{resource_prefix}}-redis"
+    engine: "redis"
+    node_type: "cache.t2.micro"
+    num_nodes: 1
+    cache_port: 6379

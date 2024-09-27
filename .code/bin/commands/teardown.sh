@@ -7,14 +7,46 @@ function command_run {
        return 1
     fi
 
-    echo "coming soon...."
-    exit 1
+  SERVER=$ARGS
 
-#    docker run --rm --pull=always -it \
-#      -v "$ROOT_DIRECTORY/deploy.yml":/ansible/settings.yml \
-#      -v ~/.ssh:/root/.ssh:rw \
-#      -v ~/.aws:/root/.aws \
-#      rcravens/ansible ansible-playbook playbooks/teardown.yml
+  SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
+  SSH_DIR="${SERVER_DIRECTORY}/.ssh"
+
+  AWS_DIR="${SERVER_DIRECTORY}/.aws"
+  if [ ! -d "$AWS_DIR" ]; then
+    AWS_DIR="$HOME/.aws"
+  fi
+
+  echo "APP: ${APP}"
+  echo "ROOT_DIRECTORY: ${ROOT_DIRECTORY}"
+  echo "SERVER: ${SERVER}"
+  echo "SSH_DIR: ${SSH_DIR}"
+  echo "AWS_DIR: ${AWS_DIR}"
+
+  if [ -z "$SERVER" ]; then
+    echo_red "Server name is required."
+    exit 1
+  fi
+
+  if [ ! -d "$SSH_DIR" ]; then
+    echo_red "SSH directory not found: ${SSH_DIR}"
+    exit 1
+  fi
+
+  if [ ! -d "$AWS_DIR" ]; then
+    echo_red "AWS credential directory not found: ${AWS_DIR}"
+    exit 1
+  fi
+
+#  docker run --rm --pull=always -it \
+#    -v "$INVENTORY_FILE":/ansible/inventory.yml \
+#    -v "$SERVER_SETTINGS_FILE":/ansible/server_settings.yml \
+#    -v "$SSH_DIR":/root/.ssh \
+#    -v "$AWS_DIR":/root/.aws \
+#    rcravens/ansible ansible-playbook playbooks/sandbox.yml
+
+  run_ansible "$SERVER" \
+   playbooks/teardown.yml
 }
 
 function command_help() {

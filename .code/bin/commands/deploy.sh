@@ -82,7 +82,7 @@ function command_run {
     run_ansible "$SERVER" \
       -v "$DEPLOY_SETTINGS_FILE":/ansible/deploy_settings.yml \
       -v "$STACK_FILE":/ansible/playbooks/swarm/stacks/"$APP".yml \
-      playbooks/configure.yml
+      playbooks/deploy.yml
 }
 
 function command_help() {

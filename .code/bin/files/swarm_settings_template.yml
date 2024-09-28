@@ -9,9 +9,11 @@ domain: ___DOMAIN___
 sub_domain: ___SUB_DOMAIN___
 num_worker_nodes: 2
 
+cidr_first_two_octets: "10.1"
+
 vpc:
   name: "{{resource_prefix}}-vpc"
-  cidr: 10.1.0.0/16
+  cidr: "{{cidr_first_two_octets}}.0.0/16"
   region: "{{aws_region}}"
   igw:
     name: "{{resource_prefix}}-vpc-igw"
@@ -24,17 +26,17 @@ vpc:
   subnets:
     public:
       - name: "{{resource_prefix}}-vpc-public-subnet-1"
-        cidr: 10.1.1.0/24
+        cidr: "{{cidr_first_two_octets}}.1.0/24"
         az: "{{aws_region}}a"
       - name: "{{resource_prefix}}-vpc-public-subnet-2"
-        cidr: 10.1.2.0/24
+        cidr: "{{cidr_first_two_octets}}.2.0/24"
         az: "{{aws_region}}b"
     private:
       - name: "{{resource_prefix}}-vpc-private-subnet-1"
-        cidr: 10.1.3.0/24
+        cidr: "{{cidr_first_two_octets}}.3.0/24"
         az: "{{aws_region}}a"
       - name: "{{resource_prefix}}-vpc-private-subnet-2"
-        cidr: 10.1.4.0/24
+        cidr: "{{cidr_first_two_octets}}.4.0/24"
         az: "{{aws_region}}b"
   security_groups:
     web:

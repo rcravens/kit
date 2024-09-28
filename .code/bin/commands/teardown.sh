@@ -45,8 +45,7 @@ function command_run {
 #    -v "$AWS_DIR":/root/.aws \
 #    rcravens/ansible ansible-playbook playbooks/sandbox.yml
 
-  run_ansible "$SERVER" \
-   playbooks/teardown.yml
+  run_ansible "$SERVER" playbooks/teardown.yml
 }
 
 function command_help() {

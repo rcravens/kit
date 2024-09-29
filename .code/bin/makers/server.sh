@@ -22,7 +22,7 @@ function make_run {
   mkdir -p "$SERVER_DIRECTORY/.ssh"
 
   # create inventory.yml
-  cp "$BIN_DIRECTORY/files/swarm_inventory_template.yml" "$SERVER_DIRECTORY/inventory.yml"
+  #cp "$BIN_DIRECTORY/files/swarm_inventory_template.yml" "$SERVER_DIRECTORY/inventory.yml"
 
   # create server_settings.yml
   CLOUD_PROVIDER="aws"

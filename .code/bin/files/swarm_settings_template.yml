@@ -1,6 +1,5 @@
 ---
 # Needed if deploying images from Amazon ECR
-is_ecr_login_needed: true
 aws_region: us-east-1
 aws_account_id: ___AWS_ACCOUNT_ID___
 
@@ -8,7 +7,8 @@ resource_prefix: ___PREFIX___
 domain: ___DOMAIN___
 sub_domain: ___SUB_DOMAIN___
 num_worker_nodes: 2
-
+is_mysql_needed: yes
+is_redis_needed: yes
 cidr_first_two_octets: "10.1"
 
 vpc:
@@ -153,7 +153,7 @@ vpc:
           Swarm: yes
           SwarmType: worker
   rds:
-    provision: yes
+    provision: "{{is_mysql_needed}}"
     id: "{{resource_prefix}}-mysql"
     engine: "mysql"
     instance_class: "db.t3.micro"
@@ -163,7 +163,7 @@ vpc:
     allocated_storage: 100
     db_name: "{{resource_prefix}}-db"
   elasticache:
-    provision: yes
+    provision: "{{is_redis_needed}}"
     name: "{{resource_prefix}}-redis"
     engine: "redis"
     node_type: "cache.t2.micro"

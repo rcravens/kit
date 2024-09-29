@@ -74,14 +74,18 @@ Need multiple environments? No problem! Just repeat the process below for your s
 > - **Ansible** as a configuration management tool to ensure your nodes have the right packages and configurations required.
 
 Follow these steps to create a server environment:
-1. Manually create the desired number of linux boxes you want in your Docker Swarm. Future versions will automate this step, but for now you just need to have the new instances running with public / private ip addresses.
-2. Run `kit make server <name>` where `<name>` is the destination name (e.g., prod, stage, test). This will scaffold in the files needed to configure the Docker Swarm server. In the resulting directory:
-   1. Add the ssh key pair to the `.ssh` directory that was created.
-   2. Update the `inventory.yml` file with the IP addresses and key pairs for the manager and worker nodes.
-   3. Update the `server_settings.yml` file.
-3. Run `kit provision <name>` command. This runs an Ansible playbook that provisions and configures your nodes.
+1. Run `kit make server <name>` where `<name>` is the destination name (e.g., prod, stage, test). This will scaffold in the files needed to provision the Docker Swarm server. In the resulting directory:
+   1. Update the `swarm_settings.yml` file with the following information:
+      2. `___AWS_ACCOUNT_ID___` - the Amazon AWS account where the infrastructure will be provisioned.
+      3. `___PREFIX___` - the prefix used in all the infrastructure component names.
+      4. `___DOMAIN___` and `___SUB_DOMAIN___` - the domain and sub-domain to set up DNS records for. Your app will be available at https://___SUB_DOMAIN___.___DOMAIN___ 
+      5. `num_worker_nodes` - update this number to the desired number of worker nodes.
+      6. `is_mysql_needed` - update this flag if MySQL is needed. If this flag is `yes` then an RDS - MySQL variant will be provisioned. Scroll down to the RDS section and complete the configuration of db name, user, and passwords.
+      7. `is_redis_needed` - update this flag if Redis is needed. If this flag is `yes` then an Elasticahce - Redis variant will be provisioned.
+      8. `cidr_first_two_octets` - Set the first to octets of the CIDR block. This helps to avoid collisions if you are deploying multiple swarms.
+2. Run `kit provision <name>` command. This runs an Ansible playbook that provisions the infrastructure, and configures your Docker Swarm.
 
-After the above completes, you should have a destination where you can deploy your application. Repeat the above steps to create destinations for all your desired environments (e.g., test, stage, prod).
+After the above completes, you should have a cloud architecture where you can deploy your application. Repeat the above steps to create destinations for all your desired environments (e.g., test, stage, prod).
 
 ## 4️⃣ Deployments
 First we need to configure a Docker container registry for our application.

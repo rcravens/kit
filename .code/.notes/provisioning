@@ -1,0 +1,25 @@
+RIGHT NOW:
+    - servers
+        - server_one
+            - swarm_settings.yml
+        - server_two
+            - swarm_settings.yml
+
+FUTURE:
+    - vpcs
+        - vpc_one
+            - vpc_settings.yml
+            - rds
+                - rds_settings.yml
+            - redis
+                - redis_settings.yml
+            - swarms
+                - swarm_one
+                    - swarm_settings.yml
+                - swarm_two
+                    - swarm_settings.yml
+
+
+* Allows a single VPC to support multiple swarms.
+* More efficient use of IP addresses
+* Shared RDS / Redis servers among the swarm clusters

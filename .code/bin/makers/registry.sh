@@ -37,6 +37,10 @@ function make_run {
   read -p "${GREEN}Enter the registry account id or username: ${RESET}" ACCOUNT_ID
   export ACCOUNT_ID
 
+  # REGISTRY_PROFILE
+  read -p "${GREEN}Enter the AWS profile: ${RESET}" REGISTRY_PROFILE
+  export REGISTRY_PROFILE
+
   # REGISTRY_REPO
   read -p "${GREEN}Enter the repository name: ${RESET}" REGISTRY_REPO
   export REGISTRY_REPO
@@ -87,6 +91,7 @@ function make_run {
   sed -i.bak "s|REGISTRY_TYPE=.*|REGISTRY_TYPE=${REGISTRY_TYPE}|" "${PROD_ENV_FILE}"
   sed -i.bak "s|REGISTRY_URL=.*|REGISTRY_URL=${REGISTRY_URL}|" "${PROD_ENV_FILE}"
   sed -i.bak "s|REGISTRY_REPO=.*|REGISTRY_REPO=${REGISTRY_REPO}|" "${PROD_ENV_FILE}"
+  sed -i.bak "s|REGISTRY_PROFILE=.*|REGISTRY_PROFILE=${REGISTRY_PROFILE}|" "${PROD_ENV_FILE}"
   sed -i.bak "s|REGISTRY_DEPLOYED_VERSION=.*|REGISTRY_DEPLOYED_VERSION=${REGISTRY_DEPLOYED_VERSION}|" "${PROD_ENV_FILE}"
   sed -i.bak "s|REGISTRY_REGION=.*|REGISTRY_REGION=${REGISTRY_REGION}|" "${PROD_ENV_FILE}"
   sed -i.bak "s|REGISTRY_USERNAME=.*|REGISTRY_USERNAME=${REGISTRY_USERNAME}|" "${PROD_ENV_FILE}"

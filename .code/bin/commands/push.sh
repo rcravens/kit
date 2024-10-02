@@ -16,7 +16,7 @@ function command_run {
 
     if [ "${REGISTRY_TYPE}" == "aws" ] || [ "${REGISTRY_TYPE}" == "AWS" ]; then
         echo "Found AWS ECR Registry"
-        aws ecr get-login-password --region "${REGISTRY_REGION}" | docker login --username "${REGISTRY_USERNAME}" --password-stdin "${REGISTRY_URL}"
+        aws ecr get-login-password --region "${REGISTRY_REGION}" --profile "${REGISTRY_PROFILE}" | docker login --username "${REGISTRY_USERNAME}" --password-stdin "${REGISTRY_URL}"
         docker tag "${REGISTRY_URL}/${REGISTRY_REPO}:${REGISTRY_DEPLOYED_VERSION}" "${REGISTRY_URL}/${REGISTRY_REPO}:${TAG}"
         docker push "${REGISTRY_URL}/${REGISTRY_REPO}:${TAG}"
     elif [ "${REGISTRY_TYPE}" == "docker" ] || [ "${REGISTRY_TYPE}" == "DOCKER" ]; then

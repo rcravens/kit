@@ -96,6 +96,15 @@ Now the deployment process is super easy:
 2. Run `kit <app> push <tag>` to tag and push the image to the configured container registry.
 3. Run `kit <app> deploy <dest>` where `<dest>` is one of the servers you set up. This will deploy your application to that server.
 
+## 5️⃣ Running Remote Commands
+To run a remote command for an application execute the following:
+
+`kit <app> run <srv> <cmd>`
+
+This will create a new container using the `<app>` image on the manager node of the Docker Swarm. Then it will execute `<cmd>` inside this new container. Once execution completes, the container is destroyed.
+
+Example: `kit laravel run prod php artisan migrate`. The image for the `laravel` app is used to create a container on the `prod` docker swarm manager node and then `php artisan migrate` is executed inside this container.
+
 # General Information (WIP)
 
 ## 📁 Directory Structure

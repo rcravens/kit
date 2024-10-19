@@ -51,7 +51,7 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit provision <dest>" "Install necessary packages, configure Docker, and create a Docker Swarm."
+  echo_command "kit provision <srv>" "Install necessary packages, configure Docker, and create a Docker Swarm."
 }
 
 function command_help_details() {

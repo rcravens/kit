@@ -86,7 +86,7 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit <app> deploy <dest>" "Deploy application to Docker Swarm destination"
+  echo_command "kit <app> deploy <srv>" "Deploy application to Docker Swarm destination"
 }
 
 function command_help_details() {

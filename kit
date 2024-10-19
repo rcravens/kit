@@ -61,7 +61,7 @@ if [ "$IS_APP" == true ]; then
 
   # Use the prod environment for production commands
   case "$COMMAND" in
-    "image" | "push" | "deploy")
+    "image" | "push" | "deploy" | "run")
       echo "ARGS: $ARGS"
       POSSIBLE_ENV=""
       if [ "$COMMAND" == "deploy" ]; then

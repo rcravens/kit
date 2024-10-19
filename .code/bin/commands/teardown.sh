@@ -49,12 +49,12 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit teardown <dest>" "Shutdown and delete the nodes for this server."
+  echo_command "kit teardown <srv>" "Shutdown and delete the nodes for this server."
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit teardown <dest>"
+    echo_example "kit teardown <srv>"
     echo_divider
 }

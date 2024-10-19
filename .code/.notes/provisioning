@@ -13,6 +13,8 @@ FUTURE:
                 - rds_settings.yml
             - redis
                 - redis_settings.yml
+            - alb
+                - alb_settings.yml
             - swarms
                 - swarm_one
                     - swarm_settings.yml
@@ -23,3 +25,8 @@ FUTURE:
 * Allows a single VPC to support multiple swarms.
 * More efficient use of IP addresses
 * Shared RDS / Redis servers among the swarm clusters
+
+
+TODO:
+- allow full provisioning, but also allow provisioning swarms into existing VPC
+- there is a hard-coded certificate in the ALB provisioning

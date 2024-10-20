@@ -7,11 +7,9 @@ function command_run {
        return 1
     fi
 
-    SERVER=$ARGS
-    SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
     if [ -z "$SERVER" ] || [ ! -d "$SERVER_DIRECTORY" ]; then
       echo "Unexpected server: $SERVER"
-      echo_example "kit [app] deploy [server]"
+      echo_example "kit [app:server] deploy"
       exit 1
     fi
 
@@ -86,14 +84,14 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit <app> deploy <srv>" "Deploy application to Docker Swarm destination"
+  echo_command "kit <app:server> deploy" "Deploy application to a Docker Swarm server"
 }
 
 function command_help_details() {
     echo_divider
     echo_red "Before running this command be sure to copy 'deploy-example.yml' to 'deploy.yml' and update deployment data."
     echo "Examples:"
-    echo_example "kit laravel deploy test" "Deploy the ${RED}laravel${RESET} application to the ${RED}test${RESET} servers"
-    echo_example "kit laravel deploy prod" "Deploy the ${RED}laravel${RESET} application to the ${RED}prod${RESET} servers."
+    echo_example "kit laravel:test deploy" "Deploy the ${RED}laravel${RESET} application to the ${RED}test${RESET} servers"
+    echo_example "kit laravel:prod deploy" "Deploy the ${RED}laravel${RESET} application to the ${RED}prod${RESET} servers."
     echo_divider
 }

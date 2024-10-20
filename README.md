@@ -94,16 +94,16 @@ First we need to configure a Docker container registry for our application.
 Now the deployment process is super easy:
 1. Run `kit <app> image` to build a new production ready Docker image.
 2. Run `kit <app> push <tag>` to tag and push the image to the configured container registry.
-3. Run `kit <app> deploy <dest>` where `<dest>` is one of the servers you set up. This will deploy your application to that server.
+3. Run `kit <app:srv> deploy` where `<srv>` is one of the servers you set up. This will deploy your application to that server.
 
 ## 5️⃣ Running Remote Commands
 To run a remote command for an application execute the following:
 
-`kit <app> run <srv> <cmd>`
+`kit <app:srv> run <cmd>`
 
-This will create a new container using the `<app>` image on the manager node of the Docker Swarm. Then it will execute `<cmd>` inside this new container. Once execution completes, the container is destroyed.
+This will create a new container using the `<app>` image on the manager node of the `<srv>` Docker Swarm. Then it will execute `<cmd>` inside this new container. Once execution completes, the container is destroyed.
 
-Example: `kit laravel run prod php artisan migrate`. The image for the `laravel` app is used to create a container on the `prod` docker swarm manager node and then `php artisan migrate` is executed inside this container.
+Example: `kit laravel:prod run php artisan migrate`. The image for the `laravel` app is used to create a container on the `prod` docker swarm manager node and then `php artisan migrate` is executed inside this container.
 
 # General Information (WIP)
 
@@ -122,9 +122,11 @@ If you followed the Quick Start above you will find the following directory stru
         - `kit`: This is the main kit shell script. Entry point for all kit commands.
 
 ## 💥 Commands
-Commands have the following format: `kit <app> <command> <arguments>`
+Commands have the following format: `kit <app:srv> <command> <arguments>`
 
-- `<app>` is the application name. This kit allows you to create many apps under one directory. Defaults to the app corresponding to the first child directory in `./apps`.
+- `<app:srv>` is the application name and the deployment server.
+  - This kit allows you to create many apps under one directory. Defaults to the app corresponding to the first child directory in `./apps`.
+  - The `:srv` part is optional. If not specified, then the command is applied to the local dev environment. Some commands can be run on a remote server by specifying the `:srv` option. The `:srv` option needs to match the name of an existing server that was created using the `kit make server <name>` command.
 - `<command>` is the command to be run. This kit has a number of "base" commands (e.g., `deploy`, `destroy`, `down`,...) that provide base functionality. Once you create an application using the `kit new <template>` command, then each application can provide additional commands (e.g., laravel applications have `artisan` add-on commands).
 - Depending on the `<command>`, actions will be taken either on the `dev` or `prod` environments. The following files are used automatically when running commands that envoke Docker:
 

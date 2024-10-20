@@ -7,14 +7,11 @@ function command_run {
        return 1
     fi
 
-    SERVER=$1
-    shift 1
     CMD_LINE=$*
 
-    SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
     if [ -z "$SERVER" ] || [ ! -d "$SERVER_DIRECTORY" ]; then
       echo "Unexpected server: $SERVER"
-      echo_example "kit [app] run [server] [cmd]"
+      echo_example "kit [app:srv] run [cmd]"
       exit 1
     fi
 
@@ -36,12 +33,12 @@ function command_run {
 }
 
 function command_help() {
-  echo_command "kit <app> run <srv> <cmd>" "Run a command inside a new container for our application"
+  echo_command "kit <app:srv> run <cmd>" "Run a command inside a new container for our application"
 }
 
 function command_help_details() {
     echo_divider
     echo "Examples:"
-    echo_example "kit laravel run prod php artisan migrate" "Run ${RED}php artisan migrate${RESET} in the ${RED}laravel${RESET} application container on the ${RED}prod${RESET} server"
+    echo_example "kit laravel:prod run php artisan migrate" "Run ${RED}php artisan migrate${RESET} in the ${RED}laravel${RESET} application container on the ${RED}prod${RESET} server"
     echo_divider
 }

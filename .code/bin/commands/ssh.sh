@@ -10,7 +10,7 @@ function command_run {
     echo "APP: $APP"
     echo "SERVER: $SERVER"
     if [ -z "${ENTRY_SERVICE}" ]; then
-      DESTINATION_BOX_IP="$2"
+      DESTINATION_BOX_IP="$1"
 
       INVENTORY_FILE="$SERVERS_DIRECTORY/$SERVER/inventory.yml"
 #      echo $(parse_yaml "$INVENTORY_FILE")

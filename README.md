@@ -96,14 +96,28 @@ Now the deployment process is super easy:
 2. Run `kit <app> push <tag>` to tag and push the image to the configured container registry.
 3. Run `kit <app:srv> deploy` where `<srv>` is one of the servers you set up. This will deploy your application to that server.
 
-## 5️⃣ Running Remote Commands
+## 5️⃣ Shell Access and Running Remote Commands
+To get shell access run the following:
+
+`kit <app:srv> ssh <ip>`
+- `app` is the application
+- `srv` is the external server
+- `ip` is an optional IP address in the external server Docker Swarm
+
+Either `app` or `srv` should be specified. Examples:
+
+- `kit laravel ssh` gets shell access inside the local `laravel` application
+- `kit :prod ssh` gets shell access inside the manager node of the `prod` Docker Swarm
+- `kit :prod ssh 10.0.1.48` gets shell access inside `10.0.1.48` node of the `prod` Docker Swarm
+
 To run a remote command for an application execute the following:
 
 `kit <app:srv> run <cmd>`
 
-This will create a new container using the `<app>` image on the manager node of the `<srv>` Docker Swarm. Then it will execute `<cmd>` inside this new container. Once execution completes, the container is destroyed.
+This will create a new container using the `<app>` image on the manager node of the `<srv>` Docker Swarm. Then it will execute `<cmd>` inside this new container. Once execution completes, the container is destroyed. Examples:
 
-Example: `kit laravel:prod run php artisan migrate`. The image for the `laravel` app is used to create a container on the `prod` docker swarm manager node and then `php artisan migrate` is executed inside this container.
+- `kit laravel:prod run php artisan migrate` runs `php artisan migrate` in a container on the manager node of the `prod` Docker Swarm. The container is created from the `laravel` image.
+- `kit laravel:prod run "php artisan horizon &"` starts Laravel Horizon in a container on the manager node of the `prod` Docker Swarm. The container is created from the `laravel` image.
 
 # General Information (WIP)
 

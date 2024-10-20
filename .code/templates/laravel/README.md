@@ -6,7 +6,7 @@ This is a pretty simplified, but complete, workflow for using Docker and Docker 
 
 1. Run `kit new laravel` and then answer the questions. That's it!
 
-## 💥 Django Commands
+## 💥 Laravel Commands
 
 - `build`: Runs the following:
     - `composer install`

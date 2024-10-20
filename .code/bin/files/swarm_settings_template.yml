@@ -161,7 +161,7 @@ vpc:
     root_username: "root"
     root_password: "supersecret"
     allocated_storage: 100
-    db_name: "{{resource_prefix}}-db"
+    db_name: "{{resource_prefix}}_db"
   elasticache:
     provision: "{{is_redis_needed}}"
     name: "{{resource_prefix}}-redis"

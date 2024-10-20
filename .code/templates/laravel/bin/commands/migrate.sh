@@ -7,7 +7,12 @@ function command_run {
        return 1
     fi
 
-    run_docker_compose exec -it web php artisan migrate
+    if [ -z "$SERVER_DIRECTORY" ]; then
+      echo "No server specified, running on default server: ${BLUE}development${RESET}"
+      run_docker_compose exec -it web php artisan migrate
+    else
+      eval "./kit ${APP}:${SERVER} run \"php artisan migrate\""
+    fi
 }
 
 function command_help() {

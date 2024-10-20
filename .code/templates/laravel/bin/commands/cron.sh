@@ -7,12 +7,17 @@ function command_run {
        return 1
     fi
 
-    if [ "$1" == "start" ] || [ "$1" == "up" ]; then
-      run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan schedule:work
-    elif [ "$1" == "stop" ] || [ "$1" == "down" ]; then
-      run_docker_compose exec -it -d "${ENTRY_SERVICE}" /bin/sh -c "kill \$(ps aux | grep '[s]chedule:work' | awk '{print \$1}' )"
+    if [ -z "$SERVER_DIRECTORY" ]; then
+      echo "No server specified, running on default server: ${BLUE}development${RESET}"
+      if [ "$1" == "start" ] || [ "$1" == "up" ]; then
+        run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan schedule:work
+      elif [ "$1" == "stop" ] || [ "$1" == "down" ]; then
+        run_docker_compose exec -it -d "${ENTRY_SERVICE}" /bin/sh -c "kill \$(ps aux | grep '[s]chedule:work' | awk '{print \$1}' )"
+      else
+          echo "Unknown command!"
+      fi
     else
-        echo "Unknown command!"
+      eval "./kit ${APP}:${SERVER} run \"crond -f &\""
     fi
 }
 

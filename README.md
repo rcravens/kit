@@ -118,6 +118,7 @@ This will create a new container using the `<app>` image on the manager node of 
 
 - `kit laravel:prod run php artisan migrate` runs `php artisan migrate` in a container on the manager node of the `prod` Docker Swarm. The container is created from the `laravel` image.
 - `kit laravel:prod run "php artisan horizon &"` starts Laravel Horizon in a container on the manager node of the `prod` Docker Swarm. The container is created from the `laravel` image.
+- `kit laravel:prod run "crond -f`
 
 # General Information (WIP)
 

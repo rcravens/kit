@@ -7,20 +7,25 @@ function command_run {
        return 1
     fi
 
-    if [ ! -d "${PATH_TO_CODE}/vendor/laravel/horizon" ]; then
-        echo_yellow "Horizon not found...installing now"
-        run_docker_compose exec -it "${ENTRY_SERVICE}" php /bin/composer.phar require laravel/horizon
-        run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan horizon:install
-    fi
+    if [ -z "$SERVER_DIRECTORY" ]; then
+      echo "No server specified, running on default server: ${BLUE}development${RESET}"
+      if [ ! -d "${PATH_TO_CODE}/vendor/laravel/horizon" ]; then
+          echo_yellow "Horizon not found...installing now"
+          run_docker_compose exec -it "${ENTRY_SERVICE}" php /bin/composer.phar require laravel/horizon
+          run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan horizon:install
+      fi
 
-    if [ "$ARGS" == "start" ] || [ "$ARGS" == "up" ]; then
-      run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan horizon
-      URL="https://${APP_DOMAIN}:${HTTPS_ON_HOST}/horizon"
-      open "${URL}"
-    elif [ "$ARGS" == "stop" ] || [ "$ARGS" == "down" ]; then
-      run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan horizon:terminate
+      if [ "$ARGS" == "start" ] || [ "$ARGS" == "up" ]; then
+        run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan horizon
+        URL="https://${APP_DOMAIN}:${HTTPS_ON_HOST}/horizon"
+        open "${URL}"
+      elif [ "$ARGS" == "stop" ] || [ "$ARGS" == "down" ]; then
+        run_docker_compose exec -it -d "${ENTRY_SERVICE}" php artisan horizon:terminate
+      else
+          echo "Unknown command!"
+      fi
     else
-        echo "Unknown command!"
+      eval "./kit ${APP}:${SERVER} run \"php artisan horizon &\""
     fi
 }
 

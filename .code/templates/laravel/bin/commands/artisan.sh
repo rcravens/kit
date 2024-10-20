@@ -7,7 +7,28 @@ function command_run {
        return 1
     fi
 
-    run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan $ARGS
+    SERVER=$1
+    shift 1
+    CMD_LINE=$*
+
+    SERVER_DIRECTORY="${ROOT_DIRECTORY}/servers/${SERVER}"
+    if [ -z "$SERVER" ] || [ ! -d "$SERVER_DIRECTORY" ]; then
+      # This is not a server....prepend this back into the CMD_LINE
+      CMD_LINE="$SERVER $CMD_LINE"
+      SERVER=""
+    fi
+
+    echo "ARGS: $ARGS"
+    echo "SERVER: $SERVER"
+    echo "CMD_LINE: $CMD_LINE"
+    echo "ENTRY_SERVICE: $ENTRY_SERVICE"
+
+    if [ -z "$SERVER" ]; then
+      echo "No server specified, running on default server: ${BLUE}development${RESET}"
+      run_docker_compose exec -it "${ENTRY_SERVICE}" php artisan "${CMD_LINE}"
+    else
+       eval "./kit ${APP} run ${SERVER} php artisan ${CMD_LINE}"
+    fi
 }
 
 function command_help() {

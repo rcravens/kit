@@ -40,7 +40,7 @@ function echo_magenta {
 }
 
 function echo_divider {
-    echo "---------------------------------------------------------------"
+    echo "-----------------------------------------------------------------------------------"
 }
 
 # Function to echo out a command line with aligned descriptions

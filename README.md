@@ -11,7 +11,9 @@ This is an easy-to-use application starter kit. The workflows from creating a ne
 
 # ‼️ Getting Started
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/hKDQyOWAgtc/0.jpg)](https://www.youtube.com/watch?v=hKDQyOWAgtc)
+Here is **getting started** video using the Laravel template. The other templates follow the same pattern.
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/sUiXx6-mI44/0.jpg)](https://www.youtube.com/watch?v=sUiXx6-mI44)
 
 ## 1️⃣ Installation
 

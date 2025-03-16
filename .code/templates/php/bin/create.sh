@@ -7,8 +7,8 @@ if [ ! -d "${PATH_TO_CODE}" ]; then
 
     if [ -z "${CODE_REPO_URL}" ]; then
       echo_yellow "Creating PHP Hello World!"
-      echo_yellow "from: ${APP_DIRECTORY}/envs/${ENV}/www"
-      echo_yellow "to:   ${PATH_TO_CODE}"
+#      echo_yellow "from: ${APP_DIRECTORY}/envs/${ENV}/www"
+#      echo_yellow "to:   ${PATH_TO_CODE}"
       cp -R "${APP_DIRECTORY}/envs/${ENV}/www/" "${PATH_TO_CODE}"
     else
       echo_yellow "Cloning PHP Project From: ${CODE_REPO_URL}"

@@ -1,0 +1,50 @@
+{
+  "name"             : "php/demo",
+  "type"             : "project",
+  "description"      : "A skeleton 'Hello World' PHP application.",
+  "keywords"         : [
+    "php"
+  ],
+  "license"          : "MIT",
+  "require"          : {
+    "php": "^8.3"
+  },
+  "require-dev"      : {
+  },
+  "autoload"         : {
+    "psr-4": {
+    },
+    "files": [
+    ]
+  },
+  "autoload-dev"     : {
+    "psr-4": {
+    }
+  },
+  "scripts"          : {
+    "post-autoload-dump"       : [
+    ],
+    "post-update-cmd"          : [
+    ],
+    "post-root-package-install": [
+    ],
+    "post-create-project-cmd"  : [
+    ]
+  },
+  "extra"            : {
+    "laravel": {
+      "dont-discover": []
+    }
+  },
+  "config"           : {
+    "optimize-autoloader": true,
+    "preferred-install"  : "dist",
+    "sort-packages"      : true,
+    "allow-plugins"      : {
+      "pestphp/pest-plugin": true,
+      "php-http/discovery" : true
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable"    : true
+}
